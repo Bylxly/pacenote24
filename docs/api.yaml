@@ -1,0 +1,1253 @@
+openapi: 3.0.3
+info:
+  title: Pacenote24 API
+  version: 0.4.1
+  description: API für Benutzer, Gruppen, Sessions, Tracks und Sichtbarkeiten
+
+servers:
+  - url: http://localhost
+    description: Lokale Entwicklungsumgebung
+
+paths:
+  /ajax/users/read.php:
+    get:
+      summary: Benutzer lesen
+      description: Mit id wird ein einzelner Benutzer geladen, ohne id eine Liste.
+      parameters:
+        - in: query
+          name: id
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Benutzer oder Benutzerliste erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/UserGetResponse'
+                  - $ref: '#/components/schemas/UserListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/users/create.php:
+    post:
+      summary: Benutzer erstellen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        '201':
+          description: Benutzer erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: E-Mail existiert bereits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/users/update.php:
+    post:
+      summary: Benutzer aktualisieren
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: Benutzer erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: E-Mail existiert bereits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/users/delete.php:
+    post:
+      summary: Benutzer löschen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDeleteRequest'
+      responses:
+        '200':
+          description: Benutzer erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Benutzer kann wegen verknüpfter Datensätze nicht gelöscht werden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/groups/read.php:
+    get:
+      summary: Gruppen lesen
+      description: Mit id wird eine einzelne Gruppe geladen, ohne id eine Liste.
+      parameters:
+        - in: query
+          name: id
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Gruppe oder Gruppenliste erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/GroupGetResponse'
+                  - $ref: '#/components/schemas/GroupListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/groups/create.php:
+    post:
+      summary: Gruppe erstellen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCreateRequest'
+      responses:
+        '201':
+          description: Gruppe erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Gruppenname existiert bereits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/groups/update.php:
+    post:
+      summary: Gruppe aktualisieren
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupUpdateRequest'
+      responses:
+        '200':
+          description: Gruppe erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Gruppenname existiert bereits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/groups/delete.php:
+    post:
+      summary: Gruppe löschen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupDeleteRequest'
+      responses:
+        '200':
+          description: Gruppe erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Gruppe kann wegen verknüpfter Datensätze nicht gelöscht werden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/sessions/read.php:
+    get:
+      summary: Sessions lesen
+      description: Mit id wird eine einzelne Session geladen, ohne id eine Liste. Optional filterbar über user_id.
+      parameters:
+        - in: query
+          name: id
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: user_id
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Session oder Sessionliste erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SessionGetResponse'
+                  - $ref: '#/components/schemas/SessionListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/sessions/create.php:
+    post:
+      summary: Session erstellen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionCreateRequest'
+      responses:
+        '201':
+          description: Session erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Benutzer nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/sessions/update.php:
+    post:
+      summary: Session aktualisieren
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionUpdateRequest'
+      responses:
+        '200':
+          description: Session erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/sessions/delete.php:
+    post:
+      summary: Session löschen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionDeleteRequest'
+      responses:
+        '200':
+          description: Session erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/routes/read.php:
+    get:
+      summary: Tracks lesen
+      description: Mit id wird ein einzelner Track geladen, ohne id eine Liste. Optional filterbar.
+      parameters:
+        - in: query
+          name: id
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: owner_user_id
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: visible_for_user_id
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: visible_for_group_id
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Track oder Trackliste erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/TrackGetResponse'
+                  - $ref: '#/components/schemas/TrackListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/routes/create.php:
+    post:
+      summary: Track erstellen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackCreateRequest'
+      responses:
+        '201':
+          description: Track erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Besitzer nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/routes/update.php:
+    post:
+      summary: Track aktualisieren
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackUpdateRequest'
+      responses:
+        '200':
+          description: Track erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/routes/delete.php:
+    post:
+      summary: Track löschen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackDeleteRequest'
+      responses:
+        '200':
+          description: Track erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Track kann wegen verknüpfter Datensätze nicht gelöscht werden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/group-members/read.php:
+    get:
+      summary: Gruppenmitgliedschaften lesen
+      description: Mit user_id und group_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
+      parameters:
+        - in: query
+          name: user_id
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: group_id
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Gruppenmitgliedschaft oder Liste erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/GroupMemberGetResponse'
+                  - $ref: '#/components/schemas/GroupMemberListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/group-members/create.php:
+    post:
+      summary: Benutzer zu Gruppe hinzufügen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupMemberCreateRequest'
+      responses:
+        '201':
+          description: Gruppenmitgliedschaft erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupMemberCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Benutzer oder Gruppe nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Gruppenmitgliedschaft existiert bereits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/group-members/delete.php:
+    post:
+      summary: Benutzer aus Gruppe entfernen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupMemberDeleteRequest'
+      responses:
+        '200':
+          description: Gruppenmitgliedschaft erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/track-visible-users/read.php:
+    get:
+      summary: Benutzer-Sichtbarkeiten für Tracks lesen
+      description: Mit user_id und track_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
+      parameters:
+        - in: query
+          name: user_id
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: track_id
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Sichtbarkeit oder Liste erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/TrackVisibleUserGetResponse'
+                  - $ref: '#/components/schemas/TrackVisibleUserListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/track-visible-users/create.php:
+    post:
+      summary: Track für Benutzer freigeben
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackVisibleUserCreateRequest'
+      responses:
+        '201':
+          description: Sichtbarkeit erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackVisibleUserCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Benutzer oder Track nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Sichtbarkeit existiert bereits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/track-visible-users/delete.php:
+    post:
+      summary: Track-Freigabe für Benutzer entfernen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackVisibleUserDeleteRequest'
+      responses:
+        '200':
+          description: Sichtbarkeit erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/track-visible-groups/read.php:
+    get:
+      summary: Gruppen-Sichtbarkeiten für Tracks lesen
+      description: Mit group_id und track_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
+      parameters:
+        - in: query
+          name: group_id
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: track_id
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Sichtbarkeit oder Liste erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/TrackVisibleGroupGetResponse'
+                  - $ref: '#/components/schemas/TrackVisibleGroupListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /ajax/track-visible-groups/create.php:
+    post:
+      summary: Track für Gruppe freigeben
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackVisibleGroupCreateRequest'
+      responses:
+        '201':
+          description: Sichtbarkeit erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackVisibleGroupCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Gruppe oder Track nicht gefunden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Sichtbarkeit existiert bereits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/track-visible-groups/delete.php:
+    post:
+      summary: Track-Freigabe für Gruppe entfernen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackVisibleGroupDeleteRequest'
+      responses:
+        '200':
+          description: Sichtbarkeit erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  responses:
+    BadRequest:
+      description: Ungültige Anfrage
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Ressource nicht gefunden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+      required:
+        - success
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+      required:
+        - success
+        - error
+
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        email:
+          type: string
+          format: email
+          maxLength: 100
+      required:
+        - user_id
+        - email
+
+    Group:
+      type: object
+      properties:
+        group_id:
+          type: integer
+        name:
+          type: string
+          maxLength: 50
+      required:
+        - group_id
+        - name
+
+    Session:
+      type: object
+      properties:
+        session_id:
+          type: integer
+        user_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        timeout:
+          type: string
+          format: date-time
+      required:
+        - session_id
+        - user_id
+        - created_at
+        - timeout
+
+    Track:
+      type: object
+      properties:
+        track_id:
+          type: integer
+        title:
+          type: string
+          nullable: true
+          maxLength: 100
+        owner_user_id:
+          type: integer
+        compiled_time:
+          type: string
+          format: date-time
+        json_data:
+          type: object
+          additionalProperties: true
+      required:
+        - track_id
+        - owner_user_id
+        - compiled_time
+        - json_data
+
+    GroupMember:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        group_id:
+          type: integer
+      required:
+        - user_id
+        - group_id
+
+    TrackVisibleUser:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        track_id:
+          type: integer
+      required:
+        - user_id
+        - track_id
+
+    TrackVisibleGroup:
+      type: object
+      properties:
+        group_id:
+          type: integer
+        track_id:
+          type: integer
+      required:
+        - group_id
+        - track_id
+
+    UserGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/User'
+      required:
+        - success
+        - data
+
+    UserListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+      required:
+        - success
+        - data
+
+    UserCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        user_id:
+          type: integer
+      required:
+        - success
+        - user_id
+
+    GroupGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/Group'
+      required:
+        - success
+        - data
+
+    GroupListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+      required:
+        - success
+        - data
+
+    GroupCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        group_id:
+          type: integer
+      required:
+        - success
+        - group_id
+
+    SessionGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/Session'
+      required:
+        - success
+        - data
+
+    SessionListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Session'
+      required:
+        - success
+        - data
+
+    SessionCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        session_id:
+          type: integer
+      required:
+        - success
+        - session_id
+
+    TrackGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/Track'
+      required:
+        - success
+        - data
+
+    TrackListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Track'
+      required:
+        - success
+        - data
+
+    TrackCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        track_id:
+          type: integer
+      required:
+        - success
+        - track_id
+
+    GroupMemberGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/GroupMember'
+      required:
+        - success
+        - data
+
+    GroupMemberListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupMember'
+      required:
+        - success
+        - data
+
+    GroupMemberCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/GroupMember'
+      required:
+        - success
+        - data
+
+    TrackVisibleUserGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/TrackVisibleUser'
+      required:
+        - success
+        - data
+
+    TrackVisibleUserListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackVisibleUser'
+      required:
+        - success
+        - data
+
+    TrackVisibleUserCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/TrackVisibleUser'
+      required:
+        - success
+        - data
+
+    TrackVisibleGroupGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/TrackVisibleGroup'
+      required:
+        - success
+        - data
+
+    TrackVisibleGroupListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackVisibleGroup'
+      required:
+        - success
+        - data
+
+    TrackVisibleGroupCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/TrackVisibleGroup'
+      required:
+        - success
+        - data
+
+    UserCreateRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        password:
+          type: string
+      required:
+        - id
+        - email
+        - password
+
+    UserDeleteRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+      required:
+        - id
+
+    GroupCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+      required:
+        - name
+
+    GroupUpdateRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          maxLength: 50
+      required:
+        - id
+        - name
+
+    GroupDeleteRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+      required:
+        - id
+
+    SessionCreateRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        timeout:
+          type: string
+          format: date-time
+      required:
+        - user_id
+        - timeout
+
+    SessionUpdateRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        timeout:
+          type: string
+          format: date-time
+      required:
+        - id
+        - timeout
+
+    SessionDeleteRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+      required:
+        - id
+
+    TrackCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          nullable: true
+          maxLength: 100
+        owner_user_id:
+          type: integer
+        json_data:
+          type: object
+          additionalProperties: true
+      required:
+        - owner_user_id
+        - json_data
+
+    TrackUpdateRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+          nullable: true
+          maxLength: 100
+        json_data:
+          type: object
+          additionalProperties: true
+      required:
+        - id
+        - json_data
+
+    TrackDeleteRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+      required:
+        - id
+
+    GroupMemberCreateRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        group_id:
+          type: integer
+      required:
+        - user_id
+        - group_id
+
+    GroupMemberDeleteRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        group_id:
+          type: integer
+      required:
+        - user_id
+        - group_id
+
+    TrackVisibleUserCreateRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        track_id:
+          type: integer
+      required:
+        - user_id
+        - track_id
+
+    TrackVisibleUserDeleteRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        track_id:
+          type: integer
+      required:
+        - user_id
+        - track_id
+
+    TrackVisibleGroupCreateRequest:
+      type: object
+      properties:
+        group_id:
+          type: integer
+        track_id:
+          type: integer
+      required:
+        - group_id
+        - track_id
+
+    TrackVisibleGroupDeleteRequest:
+      type: object
+      properties:
+        group_id:
+          type: integer
+        track_id:
+          type: integer
+      required:
+        - group_id
+        - track_id

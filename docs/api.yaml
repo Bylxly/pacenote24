@@ -9,7 +9,7 @@ servers:
     description: Lokale Entwicklungsumgebung
 
 paths:
-  /ajax/users/read.php:
+  /ajax/users.php:
     get:
       summary: Benutzer lesen
       description: Mit id wird ein einzelner Benutzer geladen, ohne id eine Liste.
@@ -112,7 +112,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /ajax/groups/read.php:
+  /ajax/groups.php:
     get:
       summary: Gruppen lesen
       description: Mit id wird eine einzelne Gruppe geladen, ohne id eine Liste.
@@ -215,7 +215,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /ajax/sessions/read.php:
+  /ajax/sessions.php:
     get:
       summary: Sessions lesen
       description: Mit id wird eine einzelne Session geladen, ohne id eine Liste. Optional filterbar über user_id.
@@ -311,7 +311,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /ajax/routes/read.php:
+  /ajax/routes.php:
     get:
       summary: Tracks lesen
       description: Mit id wird ein einzelner Track geladen, ohne id eine Liste. Optional filterbar.
@@ -423,7 +423,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /ajax/group-members/read.php:
+  /ajax/group-members.php:
     get:
       summary: Gruppenmitgliedschaften lesen
       description: Mit user_id und group_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
@@ -504,7 +504,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /ajax/track-visible-users/read.php:
+  /ajax/track-visible-users.php:
     get:
       summary: Benutzer-Sichtbarkeiten für Tracks lesen
       description: Mit user_id und track_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
@@ -585,7 +585,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /ajax/track-visible-groups/read.php:
+  /ajax/track-visible-groups.php:
     get:
       summary: Gruppen-Sichtbarkeiten für Tracks lesen
       description: Mit group_id und track_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.

@@ -27,6 +27,7 @@ project-root/
 │   ├── models/                    # Datenmodelle
 │   ├── services/                  # Fachlogik / Business Services
 │   │   ├── AuthService.php        # Login, Session, Berechtigungen
+│   │   ├── Database.php           # Datenbank-Schnittstelle
 │   │   ├── UserService.php        # Benutzerbezogene Logik
 │   │   ├── RouteService.php       # Logik rund um Routen
 │   │   ├── PaceNoteService.php    # Logik für Pace Notes
@@ -39,5 +40,6 @@ project-root/
 │   └── demo_data.sql              # Demo- und Testdaten
 │
 ├── docs/                          # Projektdokumentation
+│   ├── api.yaml                   # API Schema
 └── tests/                         # Tests
 ```

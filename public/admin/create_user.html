@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuen Nutzer anlegen</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input { margin-top: 4px; width: 300px; padding: 6px; }
+        button { margin-top: 15px; padding: 8px 16px; cursor: pointer; }
+        .success { color: green; margin: 10px 0; }
+        .error { color: red; margin: 10px 0; }
+        .back-link { margin-bottom: 20px; display: block; }
+    </style>
+</head>
+<body>
+    <a class="back-link" href="adminpanel.html">← Zurück zur Übersicht</a>
+
+    <h2>Neuen Nutzer anlegen</h2>
+    <div id="success" class="success" style="display:none;"></div>
+    <div id="error" class="error" style="display:none;"></div>
+
+    <form id="create-form">
+        <label for="email">E-Mail:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Passwort:</label>
+        <input type="password" id="password" name="password" required>
+
+        <br>
+        <button type="submit">Nutzer anlegen</button>
+    </form>
+
+    <script>
+        document.getElementById('create-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/ajax/users/create.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+                const data = await response.json();
+
+                if (data.success && data.user_id) {
+                    showSuccess('Nutzer erfolgreich angelegt (ID: ' + data.user_id + ').');
+                    hideError();
+                    document.getElementById('create-form').reset();
+                } else {
+                    showError(data.error || 'Unbekannter Fehler.');
+                    hideSuccess();
+                }
+            } catch (err) {
+                showError('API nicht erreichbar: ' + err.message);
+                hideSuccess();
+            }
+        });
+
+        function showSuccess(msg) {
+            const el = document.getElementById('success');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function hideSuccess() {
+            document.getElementById('success').style.display = 'none';
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

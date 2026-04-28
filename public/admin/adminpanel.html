@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adminpanel – Nutzerverwaltung</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        thead { background-color: #f2f2f2; }
+        .error { color: red; margin-bottom: 10px; }
+        .actions { margin-top: 20px; }
+        .actions button { margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Nutzerverwaltung</h2>
+    <div id="error" class="error" style="display:none;"></div>
+    <table>
+        <thead>
+            <tr><th>ID</th><th>E-Mail</th><th>Aktionen</th></tr>
+        </thead>
+        <tbody id="user-table-body">
+            <tr><td colspan="3">Lade Nutzer…</td></tr>
+        </tbody>
+    </table>
+    <div class="actions">
+        <button onclick="location.href='create_user.html'">Neuen Nutzer anlegen</button>
+    </div>
+
+    <script>
+        async function loadUsers() {
+            try {
+                const response = await fetch('/ajax/users.php');
+                const data = await response.json();
+
+                if (!data.success || !Array.isArray(data.data)) {
+                    showError('Fehler beim Laden der Nutzer: ' + (data.error || 'Unbekannter Fehler.'));
+                    return;
+                }
+
+                const tbody = document.getElementById('user-table-body');
+                if (data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3">Keine Nutzer vorhanden.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.data.forEach(user => {
+                    const tr = document.createElement('tr');
+
+                    const tdId = document.createElement('td');
+                    tdId.innerHTML = '<strong>' + escapeHtml(String(user.user_id)) + '</strong>';
+
+                    const tdEmail = document.createElement('td');
+                    tdEmail.textContent = user.email;
+
+                    const tdActions = document.createElement('td');
+                    const btn = document.createElement('button');
+                    btn.textContent = 'Profil anzeigen';
+                    btn.dataset.userId = user.user_id;
+                    btn.addEventListener('click', () => {
+                        location.href = 'user_detail.html?id=' + encodeURIComponent(user.user_id);
+                    });
+                    tdActions.appendChild(btn);
+
+                    tr.appendChild(tdId);
+                    tr.appendChild(tdEmail);
+                    tr.appendChild(tdActions);
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                showError('API nicht erreichbar: ' + err.message);
+            }
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        loadUsers();
+    </script>
+</body>
+</html>

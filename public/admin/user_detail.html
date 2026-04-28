@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutzerprofil verwalten</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input { margin-top: 4px; width: 300px; padding: 6px; }
+        button { margin-top: 10px; padding: 8px 16px; cursor: pointer; }
+        .success { color: green; margin: 10px 0; }
+        .error { color: red; margin: 10px 0; }
+        .danger-zone { margin-top: 30px; border-top: 2px solid red; padding-top: 15px; }
+        .back-link { margin-bottom: 20px; display: block; }
+    </style>
+</head>
+<body>
+    <a class="back-link" href="adminpanel.html">← Zurück zur Übersicht</a>
+
+    <div id="success" class="success" style="display:none;"></div>
+    <div id="error" class="error" style="display:none;"></div>
+
+    <h2>Profil verwalten</h2>
+    <div id="profile-form" style="display:none;">
+        <form id="update-form">
+            <label>User ID:</label>
+            <input type="text" id="user-id-display" disabled>
+
+            <label for="email">E-Mail Adresse:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Neues Passwort (leer lassen, wenn unverändert):</label>
+            <input type="password" id="password" name="password" autocomplete="new-password">
+
+            <br>
+            <button type="submit">Speichern</button>
+        </form>
+
+        <div class="danger-zone">
+            <h3>Gefahrenbereich</h3>
+            <p>Das Löschen eines Nutzers kann nicht rückgängig gemacht werden.</p>
+            <button id="delete-btn" style="background:red; color:white;">
+                Nutzer unwiderruflich löschen
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(location.search);
+        const userId = parseInt(params.get('id'), 10);
+
+        if (!userId || isNaN(userId)) {
+            showError('Ungültige oder fehlende User-ID.');
+        } else {
+            loadUser(userId);
+        }
+
+        let currentUserId = null;
+
+        document.getElementById('update-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (currentUserId !== null) {
+                await updateUser(currentUserId);
+            }
+        });
+
+        document.getElementById('delete-btn').addEventListener('click', async () => {
+            if (currentUserId === null) return;
+            if (!confirm('Bist du dir wirklich sicher, dass du diesen Nutzer unwiderruflich löschen möchtest?')) {
+                return;
+            }
+            await deleteUser(currentUserId);
+        });
+
+        async function loadUser(id) {
+            try {
+                const response = await fetch('/ajax/users.php?id=' + encodeURIComponent(id));
+                const data = await response.json();
+
+                if (!data.success) {
+                    showError('Nutzer mit ID ' + id + ' konnte nicht gefunden werden.');
+                    return;
+                }
+
+                const user = data.data;
+                currentUserId = user.user_id;
+                document.getElementById('user-id-display').value = user.user_id;
+                document.getElementById('email').value = user.email;
+                document.getElementById('profile-form').style.display = 'block';
+            } catch (err) {
+                showError('API nicht erreichbar: ' + err.message);
+            }
+        }
+
+        async function updateUser(id) {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            const payload = { id, email };
+            if (password !== '') {
+                payload.password = password;
+            }
+
+            try {
+                const response = await fetch('/ajax/users/update.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showSuccess('Profil erfolgreich aktualisiert.');
+                    hideError();
+                } else {
+                    showError(data.error || 'Aktualisierung fehlgeschlagen.');
+                    hideSuccess();
+                }
+            } catch (err) {
+                showError('API nicht erreichbar: ' + err.message);
+                hideSuccess();
+            }
+        }
+
+        async function deleteUser(id) {
+            try {
+                const response = await fetch('/ajax/users/delete.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id }),
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    location.href = 'adminpanel.html?msg=deleted';
+                } else {
+                    showError('Löschen fehlgeschlagen: ' + (data.error || 'Unbekannter Fehler.'));
+                }
+            } catch (err) {
+                showError('API nicht erreichbar: ' + err.message);
+            }
+        }
+
+        function showSuccess(msg) {
+            const el = document.getElementById('success');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function hideSuccess() {
+            document.getElementById('success').style.display = 'none';
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('error');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

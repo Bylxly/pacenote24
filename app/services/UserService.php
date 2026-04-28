@@ -48,7 +48,11 @@ class UserService
         );
         $stmt->execute(['id' => $id, 'email' => $email, 'pw_hash' => $pwHash]);
 
-        return $stmt->rowCount() > 0;
+        if ($stmt->rowCount() > 0) {
+            return true;
+        }
+
+        return $this->getUserById($id) !== null;
     }
 
     public function deleteUser(int $id): bool {

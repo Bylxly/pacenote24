@@ -39,7 +39,7 @@ class UserService
 
         $result = $this->db->lastInsertId();
 
-        return $result ?: null;
+        return $result === '' ? null : (int) $result;
     }
 
     public function updateUser(int $id, string $email, string $pwHash): bool {

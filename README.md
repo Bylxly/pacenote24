@@ -30,7 +30,10 @@ project-root/
 │   │   ├── Database.php           # Datenbank-Schnittstelle
 │   │   ├── UserService.php        # Benutzerbezogene Logik
 │   │   ├── RouteService.php       # Logik rund um Routen
-│   │   ├── PaceNoteService.php    # Logik für Pace Notes
+│   │   ├── GroupService.php       # Logik für Gruppen
+│   │   ├── SessionService.php     # Logik für Sessions
+│   │   ├── TrackVisibleGroupService.php       # Logik für TrackVisibleGroupService
+│   │   ├── TrackVisibleUserService.php       # Logik für TrackVisibleUserService
 │   │   └── ExportService.php      # Export-Funktionen
 │   ├── views/                     # Templates / Ausgabe
 │   └── helpers/                   # Hilfsfunktionen / Utilities

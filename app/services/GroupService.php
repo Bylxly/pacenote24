@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../app/services/Database.php';
+require_once __DIR__ . '/Database.php';
 
 class GroupService
 {
@@ -30,7 +30,7 @@ class GroupService
         return $result ?: null;
     }
 
-    public function createGroup(String $name): ?int {
+    public function createGroup(string $name): ?int {
         $stmt = $this->db->prepare(
             'INSERT INTO groups(name) VALUES (:name)'
         );
@@ -39,7 +39,7 @@ class GroupService
         return $result ?: null;
     }
 
-    public function updateGroup(int $id, String $name): ?bool {
+    public function updateGroup(int $id, string $name): bool {
         $stmt = $this->db->prepare(
             'UPDATE groups SET name = :name WHERE group_id = :id'
         );
@@ -47,7 +47,7 @@ class GroupService
         return $stmt->rowCount() > 0;
     }
 
-    public function deleteGroup(int $id): ?bool {
+    public function deleteGroup(int $id): bool {
         $stmt = $this->db->prepare(
             'DELETE FROM groups WHERE group_id = :id'
         );

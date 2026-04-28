@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../app/services/Database.php';
+require_once __DIR__ . '/Database.php';
 
 class UserService
 {
@@ -30,7 +30,7 @@ class UserService
         return $result ?: null;
     }
 
-    public function createUser(String $email, String $pw_hash): ?int {
+    public function createUser(string $email, string $pw_hash): ?int {
         $stmt = $this->db->prepare(
             'INSERT INTO users(email, pw_hash) VALUES (:email, :pw_hash)'
         );
@@ -42,7 +42,7 @@ class UserService
         return $result ?: null;
     }
 
-    public function updateUser(int $id, String $email, String $pw_hash): ?bool {
+    public function updateUser(int $id, string $email, string $pw_hash): bool {
         $stmt = $this->db->prepare(
             'UPDATE users SET email = :email, pw_hash = :pw_hash WHERE user_id = :id'
         );
@@ -51,7 +51,7 @@ class UserService
         return $stmt->rowCount() > 0;
     }
 
-    public function deleteUser(int $id): ?bool {
+    public function deleteUser(int $id): bool {
         $stmt = $this->db->prepare(
             'DELETE FROM users WHERE user_id = :id'
         );

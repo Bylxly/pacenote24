@@ -36,7 +36,7 @@ class GroupService
         );
         $stmt->execute(['name' => $name]);
         $result = $this->db->lastInsertId();
-        return $result ?: null;
+        return $result === '' ? null : (int) $result;
     }
 
     public function updateGroup(int $id, string $name): bool {

@@ -44,7 +44,17 @@ class GroupService
             'UPDATE groups SET name = :name WHERE group_id = :id'
         );
         $stmt->execute(['id' => $id, 'name' => $name]);
-        return $stmt->rowCount() > 0;
+
+        if ($stmt->rowCount() > 0) {
+            return true;
+        }
+
+        $existsStmt = $this->db->prepare(
+            'SELECT 1 FROM groups WHERE group_id = :id'
+        );
+        $existsStmt->execute(['id' => $id]);
+
+        return $existsStmt->fetchColumn() !== false;
     }
 
     public function deleteGroup(int $id): bool {

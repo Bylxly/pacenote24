@@ -1,15 +1,4 @@
 <?php
-/**
- * Administrative user overview.
- *
- * Loads the full user collection from the API and presents it in a
- * tabular view. Per-row data is fetched individually to ensure that
- * the detail representation, rather than the list summary, is the
- * source of truth for displayed fields.
- *
- * @author  Admin Tooling
- * @since   0.4.1
- */
 
 declare(strict_types=1);
 
@@ -17,7 +6,6 @@ require_once __DIR__ . '/ajax/ApiClient.php';
 
 $apiClient = new ApiClient('http://localhost');
 
-/** @var array<int, array{user_id:int, email:string}> $users */
 $users = [];
 
 try {

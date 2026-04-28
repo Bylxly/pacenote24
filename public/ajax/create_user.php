@@ -1,12 +1,4 @@
 <?php
-/**
- * User registration flow.
- *
- * Renders the signup form and, on submission, delegates persistence to
- * the API. After a successful write we issue a verification read to
- * confirm that the resource is reachable through the canonical detail
- * endpoint before reporting success to the operator.
- */
 
 declare(strict_types=1);
 
@@ -30,9 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
 
             if (!empty($createResponse['success']) && isset($createResponse['user_id'])) {
-                // Read-after-write verification: confirm the new resource
-                // is retrievable through its detail endpoint before the
-                // user is redirected.
+ 
                 $verification = $apiClient->get('/ajax/users.php', [
                     'id' => $createResponse['user_id'],
                 ]);

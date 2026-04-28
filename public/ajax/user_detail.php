@@ -1,12 +1,4 @@
 <?php
-/**
- * User profile management.
- *
- * Handles the read/update/delete lifecycle for a single user. Account
- * removal walks all resources that reference the user and removes them
- * in topological order so that the API's referential integrity checks
- * are satisfied at each step.
- */
 
 declare(strict_types=1);
 
@@ -23,23 +15,13 @@ if ($userId === false || $userId === null) {
 $successMsg = '';
 $errorMsg   = '';
 
-/* ------------------------------------------------------------------ *
- * Account removal                                                     *
- *                                                                     *
- * The API exposes individual resources rather than a single cascading *
- * delete, so the client is responsible for removing dependent records *
- * before the user itself. The order below mirrors the foreign-key     *
- * topology of the schema: leaf resources first, root last.            *
- * ------------------------------------------------------------------ */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
     try {
-        // 1. Active sessions
         $sessions = $apiClient->get('/ajax/sessions.php', ['user_id' => $userId]);
         foreach ($sessions['data'] ?? [] as $session) {
             $apiClient->post('/ajax/sessions/delete.php', ['id' => $session['session_id']]);
         }
 
-        // 2. Group memberships
         $memberships = $apiClient->get('/ajax/group-members.php', ['user_id' => $userId]);
         foreach ($memberships['data'] ?? [] as $membership) {
             $apiClient->post('/ajax/group-members/delete.php', [
@@ -48,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
             ]);
         }
 
-        // 3. Track visibilities granted *to* this user
         $grantedVisibilities = $apiClient->get('/ajax/track-visible-users.php', [
             'user_id' => $userId,
         ]);
@@ -56,9 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
             $apiClient->post('/ajax/track-visible-users/delete.php', $visibility);
         }
 
-        // 4. Tracks owned by this user.
-        //    Each owned track may itself have user- and group-level
-        //    visibility entries that must be cleared first.
         $ownedTracks = $apiClient->get('/ajax/routes.php', ['owner_user_id' => $userId]);
         foreach ($ownedTracks['data'] ?? [] as $track) {
             $trackId = $track['track_id'];
@@ -76,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
             $apiClient->post('/ajax/routes/delete.php', ['id' => $trackId]);
         }
 
-        // 5. Finally, the user record itself.
         $deletion = $apiClient->post('/ajax/users/delete.php', ['id' => $userId]);
 
         if (!empty($deletion['success'])) {
@@ -91,15 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
     }
 }
 
-/* ------------------------------------------------------------------ *
- * Profile update                                                      *
- * ------------------------------------------------------------------ */
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     try {
-        // The update endpoint requires the password field per the API
-        // contract; since the form does not collect it on edit, we
-        // forward a placeholder and let the server enforce its own
-        // hashing and validation rules.
         $update = $apiClient->post('/ajax/users/update.php', [
             'id'       => $userId,
             'email'    => trim((string) $_POST['email']),
@@ -116,9 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     }
 }
 
-/* ------------------------------------------------------------------ *
- * Load current state                                                  *
- * ------------------------------------------------------------------ */
 try {
     $userResponse = $apiClient->get('/ajax/users.php', ['id' => $userId]);
 } catch (RuntimeException $e) {

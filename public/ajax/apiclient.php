@@ -1,11 +1,4 @@
 <?php
-/**
- * Lightweight JSON-over-HTTP client for the Pacenote24 internal API.
- *
- * Wraps PHP stream contexts to avoid a hard dependency on cURL and
- * provides uniform error handling, automatic JSON (de)serialisation,
- * and structured exception propagation.
- */
 
 declare(strict_types=1);
 
@@ -20,12 +13,6 @@ final class ApiClient
         $this->timeoutSeconds = $timeoutSeconds;
     }
 
-    /**
-     * Issue a GET request and decode the JSON response.
-     *
-     * @param array<string, scalar> $query
-     * @return array<string, mixed>
-     */
     public function get(string $path, array $query = []): array
     {
         $url = $this->baseUrl . $path;
@@ -35,21 +22,11 @@ final class ApiClient
         return $this->dispatch('GET', $url, null);
     }
 
-    /**
-     * Issue a POST request with a JSON body and decode the response.
-     *
-     * @param array<string, mixed> $payload
-     * @return array<string, mixed>
-     */
     public function post(string $path, array $payload): array
     {
         return $this->dispatch('POST', $this->baseUrl . $path, $payload);
     }
 
-    /**
-     * @param array<string, mixed>|null $payload
-     * @return array<string, mixed>
-     */
     private function dispatch(string $method, string $url, ?array $payload): array
     {
         $context = stream_context_create([

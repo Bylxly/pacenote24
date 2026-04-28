@@ -1,9 +1,78 @@
-echo "<form action="/action_page.php">
-  <label for="fname">user_id:</label>
-  <input type="text" id="user_id" name="user_id"><br><br>
-  <label for="lname">email:</label>
-  <input type="text" id="id" name="id"><br><br>
-  <label for="lname">password:</label>
-  <input type="text" id="password" name="password"><br><br>
-  <input type="submit" value="Submit">
-</form>";
+<?php
+/**
+ * User registration flow.
+ *
+ * Renders the signup form and, on submission, delegates persistence to
+ * the API. After a successful write we issue a verification read to
+ * confirm that the resource is reachable through the canonical detail
+ * endpoint before reporting success to the operator.
+ */
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/lib/ApiClient.php';
+
+$apiClient = new ApiClient('http://localhost');
+
+$feedback = ['type' => null, 'message' => null];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email    = trim((string) ($_POST['email']    ?? ''));
+    $password = (string)        ($_POST['password'] ?? '');
+
+    if ($email === '' || $password === '') {
+        $feedback = ['type' => 'error', 'message' => 'E-Mail und Passwort sind erforderlich.'];
+    } else {
+        try {
+            $createResponse = $apiClient->post('/ajax/users/create.php', [
+                'email'    => $email,
+                'password' => $password,
+            ]);
+
+            if (!empty($createResponse['success']) && isset($createResponse['user_id'])) {
+                // Read-after-write verification: confirm the new resource
+                // is retrievable through its detail endpoint before the
+                // user is redirected.
+                $verification = $apiClient->get('/ajax/users.php', [
+                    'id' => $createResponse['user_id'],
+                ]);
+
+                if (!empty($verification['success'])) {
+                    $feedback = [
+                        'type'    => 'success',
+                        'message' => 'Nutzer erfolgreich angelegt (ID: '
+                                   . (int) $createResponse['user_id'] . ').',
+                    ];
+                } else {
+                    $feedback = [
+                        'type'    => 'error',
+                        'message' => 'Datensatz angelegt, aber Verifikation fehlgeschlagen.',
+                    ];
+                }
+            } else {
+                $feedback = [
+                    'type'    => 'error',
+                    'message' => $createResponse['error'] ?? 'Unbekannter Fehler.',
+                ];
+            }
+        } catch (RuntimeException $e) {
+            $feedback = ['type' => 'error', 'message' => 'API nicht erreichbar.'];
+        }
+    }
+}
+?>
+<form method="POST">
+    <label for="email">E-Mail:</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="password">Passwort:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <input type="submit" value="Nutzer anlegen">
+</form>
+
+<?php if ($feedback['message'] !== null): ?>
+    <div style="color: <?= $feedback['type'] === 'success' ? 'green' : 'red' ?>;">
+        <?= htmlspecialchars($feedback['message']) ?>
+    </div>
+<?php endif; ?>

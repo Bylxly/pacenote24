@@ -1,58 +1,64 @@
 <?php
-// Error Setup, remove later
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
+/**
+ * Administrative user overview.
+ *
+ * Loads the full user collection from the API and presents it in a
+ * tabular view. Per-row data is fetched individually to ensure that
+ * the detail representation, rather than the list summary, is the
+ * source of truth for displayed fields.
+ *
+ * @author  Admin Tooling
+ * @since   0.4.1
+ */
 
-// Config Setup
-$config = require '/opt/lampp/htdocs/DHBW/app/config/config.local.php';
-$dbConfig = $config['database'];
+declare(strict_types=1);
 
-// Connection Setup
-$dsn = "mysql:host={$dbConfig['host']};port={$dbConfig['port']};dbname={$dbConfig['dbname']};charset={$dbConfig['charset']}";
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-];
+require_once __DIR__ . '/ajax/ApiClient.php';
+
+$apiClient = new ApiClient('http://localhost');
+
+/** @var array<int, array{user_id:int, email:string}> $users */
+$users = [];
 
 try {
-    $pdo = new PDO($dsn, $dbConfig['username'], $dbConfig['password'], $options);
+    $listResponse = $apiClient->get('/ajax/users.php');
 
-    // Fetch Users
-    $stmt = $pdo->query("SELECT user_id, email FROM users");
-    $users = $stmt->fetchAll();
-
-    // Build the UI
-    echo "<h2>User Management</h2>";
-    echo "<table border='1' cellpadding='10' style='border-collapse: collapse; font-family: sans-serif;'>";
-    echo "<thead style='background-color: #f2f2f2;'>
-            <tr>
-                <th>ID</th>
-                <th>Email</th>
-                <th>Actions</th>
-            </tr>
-          </thead>";
-    echo "<tbody>";
-
-    foreach ($users as $user) {
-        $id = $user['user_id'];
-        $email = $user['email'];
-
-        echo "<tr>";
-        echo "<td><strong>{$id}</strong></td>";
-        echo "<td>{$email}</td>";
-        echo "<td>
-                <a href='user_detail.php?id={$id}'>
-                    <button type='button' style='cursor:pointer;'>View Profile</button>
-                </a>
-              </td>";
-        echo "</tr>";
+    if (!empty($listResponse['success']) && is_array($listResponse['data'] ?? null)) {
+        // Hydrate each record from its canonical detail endpoint to
+        // avoid relying on potentially stale list-view projections.
+        foreach ($listResponse['data'] as $summary) {
+            $detail = $apiClient->get('/ajax/users.php', ['id' => $summary['user_id']]);
+            if (!empty($detail['success'])) {
+                $users[] = $detail['data'];
+            }
+        }
     }
-
-    echo "</tbody></table>";
-    echo "<a href='create_user.php'> <button type='button'>Create new User!</button>";
-
-} catch (PDOException $e) {
-    echo "<div style='color:red;'>Connection failed: " . $e->getMessage() . "</div>";
+} catch (RuntimeException $e) {
+    http_response_code(502);
+    echo "<div class='error'>Upstream service unavailable: "
+       . htmlspecialchars($e->getMessage()) . "</div>";
+    exit;
 }
 ?>
+<h2>User Management</h2>
+<table border="1" cellpadding="10" style="border-collapse: collapse; font-family: sans-serif;">
+    <thead style="background-color: #f2f2f2;">
+        <tr><th>ID</th><th>Email</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+    <?php foreach ($users as $user): ?>
+        <tr>
+            <td><strong><?= htmlspecialchars((string) $user['user_id']) ?></strong></td>
+            <td><?= htmlspecialchars($user['email']) ?></td>
+            <td>
+                <a href="user_detail.php?id=<?= (int) $user['user_id'] ?>">
+                    <button type="button">View Profile</button>
+                </a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<a href="create_user.php"><button type="button">Create new User</button></a>
+<a href="pacenote_view.php"><button type="button">View Pacenotes</button></a>

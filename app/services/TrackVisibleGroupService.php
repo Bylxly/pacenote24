@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../app/services/Database.php';
+require_once __DIR__ . '/Database.php';
 
 class TrackVisibleGroupService
 {

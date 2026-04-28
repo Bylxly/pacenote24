@@ -30,23 +30,23 @@ class UserService
         return $result ?: null;
     }
 
-    public function createUser(string $email, string $pw_hash): ?int {
+    public function createUser(string $email, string $pwHash): ?int {
         $stmt = $this->db->prepare(
             'INSERT INTO users(email, pw_hash) VALUES (:email, :pw_hash)'
         );
 
-        $stmt->execute(['email' => $email, 'pw_hash' => $pw_hash]);
+        $stmt->execute(['email' => $email, 'pw_hash' => $pwHash]);
 
         $result = $this->db->lastInsertId();
 
         return $result ?: null;
     }
 
-    public function updateUser(int $id, string $email, string $pw_hash): bool {
+    public function updateUser(int $id, string $email, string $pwHash): bool {
         $stmt = $this->db->prepare(
             'UPDATE users SET email = :email, pw_hash = :pw_hash WHERE user_id = :id'
         );
-        $stmt->execute(['id' => $id, 'email' => $email, 'pw_hash' => $pw_hash]);
+        $stmt->execute(['id' => $id, 'email' => $email, 'pw_hash' => $pwHash]);
 
         return $stmt->rowCount() > 0;
     }

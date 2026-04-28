@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../app/services/Database.php';
+require_once __DIR__ . '/Database.php';
 
 class RouteService
 {
@@ -57,7 +57,9 @@ class RouteService
             'json_data' => $jsonData
         ]);
 
-        return $this->db->lastInsertId() ? (int)$this->db->lastInsertId() : null;
+        $lastInsertId = $this->db->lastInsertId();
+
+        return $lastInsertId ? (int)$lastInsertId : null;
     }
 
     public function updateRoute(int $id, string $title, string $jsonData): bool

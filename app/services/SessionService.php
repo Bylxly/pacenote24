@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../app/services/Database.php';
+require_once __DIR__ . '/Database.php';
 
 class SessionService
 {
@@ -56,7 +56,9 @@ class SessionService
             'timeout' => $timeout
         ]);
 
-        return $this->db->lastInsertId() ? (int)$this->db->lastInsertId() : null;
+        $lastInsertId = $this->db->lastInsertId();
+
+        return $lastInsertId ? (int)$lastInsertId : null;
     }
 
     public function updateSession(int $id, string $timeout): bool

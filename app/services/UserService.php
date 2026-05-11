@@ -30,6 +30,15 @@ class UserService
         return $result ?: null;
     }
 
+    public function getUserByEmail(string $email): ?array {
+        $stmt = $this->db->prepare(
+            'SELECT user_id, email, pw_hash FROM users WHERE email = :email'
+        );
+        $stmt->execute(['email' => $email]);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
     public function createUser(string $email, string $pwHash): ?int {
         $stmt = $this->db->prepare(
             'INSERT INTO users(email, pw_hash) VALUES (:email, :pw_hash)'

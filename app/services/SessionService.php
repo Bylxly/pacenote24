@@ -66,7 +66,7 @@ class SessionService
 
         $lastInsertId = $this->db->lastInsertId();
 
-        return $lastInsertId ? (int)$lastInsertId : null;
+        return $lastInsertId ? $lastInsertId : null;
     }
 
     public function updateSession(string $id, string $timeout): bool

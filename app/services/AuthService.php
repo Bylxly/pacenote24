@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
-require_once __DIR__ . '/../app/services/UserService.php';
+require_once __DIR__ . '/UserService.php';
 
 // E-Mail und Passwort aus dem Formular holen (mit Fallback)
 $email = $_POST['email'] ?? '';
@@ -22,7 +22,7 @@ $userService = new UserService();
 // Benutzer-Daten anhand der E-Mail aus der API holen
 $user = $userService->getUserByEmail($email);
 
-// Prüfen, ob ein Benutzer gefunden wurde
+// Prüfen ob ein Benutzer gefunden wurde
 if ($user !== null) {
     
     // Passwort mit dem Hash aus der Datenbank vergleichen
@@ -33,20 +33,20 @@ if ($user !== null) {
         $_SESSION['account_loggedin'] = TRUE;
         $_SESSION['account_name'] = $user['email']; 
         
-        // ACHTUNG: In deiner Klasse heißt die Spalte 'user_id', nicht mehr 'id'
+        
         $_SESSION['account_id'] = $user['user_id']; 
         
         // Erfolgreich weiterleiten
-        header("Location: login.html?status=success");
+        header("Location: /pacenote24/public/login.html?status=success");
         exit;
     } else {
         // Passwort inkorrekt
-        header("Location: login.html?status=error_pw");
+        header("Location: /pacenote24/public/login.html?status=error_pw");
         exit;
     }
 } else {
     // Benutzer (E-Mail) existiert nicht in der Datenbank
-    header("Location: login.html?status=error_username");
+    header("Location: /pacenote24/public/login.html?status=error_username");
     exit;
 }
 ?>

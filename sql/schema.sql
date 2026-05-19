@@ -22,7 +22,7 @@ CREATE TABLE sessions (
 
 -- tracks table
 CREATE TABLE tracks (
-    track_id INT AUTO_INCREMENT PRIMARY KEY,
+    route_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(100),
     owner_user_id INT NOT NULL,
     compiled_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -42,17 +42,17 @@ CREATE TABLE group_member (
 -- track_visible_user table
 CREATE TABLE track_visible_user (
     user_id INT NOT NULL,
-    track_id INT NOT NULL,
+    route_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (track_id) REFERENCES tracks(track_id),
-    PRIMARY KEY (user_id, track_id)
+    FOREIGN KEY (route_id) REFERENCES tracks(route_id),
+    PRIMARY KEY (user_id, route_id)
 );
 
 -- track_visible_group table
 CREATE TABLE track_visible_group (
     group_id INT NOT NULL,
-    track_id INT NOT NULL,
+    route_id INT NOT NULL,
     FOREIGN KEY (group_id) REFERENCES groups(group_id),
-    FOREIGN KEY (track_id) REFERENCES tracks(track_id),
-    PRIMARY KEY (group_id, track_id)
+    FOREIGN KEY (route_id) REFERENCES tracks(route_id),
+    PRIMARY KEY (group_id, route_id)
 );

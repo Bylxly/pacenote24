@@ -507,7 +507,7 @@ paths:
   /ajax/track-visible-users.php:
     get:
       summary: Benutzer-Sichtbarkeiten für Tracks lesen
-      description: Mit user_id und track_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
+      description: Mit user_id und route_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
       parameters:
         - in: query
           name: user_id
@@ -515,7 +515,7 @@ paths:
           schema:
             type: integer
         - in: query
-          name: track_id
+          name: route_id
           required: false
           schema:
             type: integer
@@ -588,7 +588,7 @@ paths:
   /ajax/track-visible-groups.php:
     get:
       summary: Gruppen-Sichtbarkeiten für Tracks lesen
-      description: Mit group_id und track_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
+      description: Mit group_id und route_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
       parameters:
         - in: query
           name: group_id
@@ -596,7 +596,7 @@ paths:
           schema:
             type: integer
         - in: query
-          name: track_id
+          name: route_id
           required: false
           schema:
             type: integer
@@ -750,7 +750,7 @@ components:
     Track:
       type: object
       properties:
-        track_id:
+        route_id:
           type: integer
         title:
           type: string
@@ -765,7 +765,7 @@ components:
           type: object
           additionalProperties: true
       required:
-        - track_id
+        - route_id
         - owner_user_id
         - compiled_time
         - json_data
@@ -786,22 +786,22 @@ components:
       properties:
         user_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - user_id
-        - track_id
+        - route_id
 
     TrackVisibleGroup:
       type: object
       properties:
         group_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - group_id
-        - track_id
+        - route_id
 
     UserGetResponse:
       type: object
@@ -937,11 +937,11 @@ components:
       properties:
         success:
           type: boolean
-        track_id:
+        route_id:
           type: integer
       required:
         - success
-        - track_id
+        - route_id
 
     GroupMemberGetResponse:
       type: object
@@ -1176,7 +1176,7 @@ components:
           additionalProperties: true
       required:
         - id
-        - json_data
+      minProperties: 2
 
     TrackDeleteRequest:
       type: object
@@ -1213,41 +1213,41 @@ components:
       properties:
         user_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - user_id
-        - track_id
+        - route_id
 
     TrackVisibleUserDeleteRequest:
       type: object
       properties:
         user_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - user_id
-        - track_id
+        - route_id
 
     TrackVisibleGroupCreateRequest:
       type: object
       properties:
         group_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - group_id
-        - track_id
+        - route_id
 
     TrackVisibleGroupDeleteRequest:
       type: object
       properties:
         group_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - group_id
-        - track_id
+        - route_id

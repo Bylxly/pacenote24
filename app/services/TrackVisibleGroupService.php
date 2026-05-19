@@ -25,12 +25,12 @@ class TrackVisibleGroupService
         $stmt = $this->db->prepare(
             'SELECT * FROM track_visible_group
              WHERE group_id = :group_id
-             AND track_id = :track_id'
+             AND route_id = :route_id'
         );
 
         $stmt->execute([
             'group_id' => $groupId,
-            'track_id' => $trackId
+            'route_id' => $trackId
         ]);
 
         $result = $stmt->fetch();
@@ -52,10 +52,10 @@ class TrackVisibleGroupService
     public function getTrackVisibleGroupsByTrackId(int $trackId): array
     {
         $stmt = $this->db->prepare(
-            'SELECT * FROM track_visible_group WHERE track_id = :track_id'
+            'SELECT * FROM track_visible_group WHERE route_id = :route_id'
         );
 
-        $stmt->execute(['track_id' => $trackId]);
+        $stmt->execute(['route_id' => $trackId]);
 
         return $stmt->fetchAll();
     }
@@ -63,13 +63,13 @@ class TrackVisibleGroupService
     public function createTrackVisibleGroup(int $groupId, int $trackId): bool
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO track_visible_group (group_id, track_id)
-             VALUES (:group_id, :track_id)'
+            'INSERT INTO track_visible_group (group_id, route_id)
+             VALUES (:group_id, :route_id)'
         );
 
         $stmt->execute([
             'group_id' => $groupId,
-            'track_id' => $trackId
+            'route_id' => $trackId
         ]);
 
         return $stmt->rowCount() > 0;
@@ -80,12 +80,12 @@ class TrackVisibleGroupService
         $stmt = $this->db->prepare(
             'DELETE FROM track_visible_group
              WHERE group_id = :group_id
-             AND track_id = :track_id'
+             AND route_id = :route_id'
         );
 
         $stmt->execute([
             'group_id' => $groupId,
-            'track_id' => $trackId
+            'route_id' => $trackId
         ]);
 
         return $stmt->rowCount() > 0;

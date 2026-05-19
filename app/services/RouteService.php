@@ -23,7 +23,7 @@ class RouteService
     public function getRouteById(int $id): ?array
     {
         $stmt = $this->db->prepare(
-            'SELECT * FROM tracks WHERE track_id = :id'
+            'SELECT * FROM tracks WHERE route_id = :id'
         );
 
         $stmt->execute(['id' => $id]);
@@ -62,21 +62,25 @@ class RouteService
         return $lastInsertId ? (int)$lastInsertId : null;
     }
 
-    public function updateRoute(int $id, string $title, string $jsonData): bool
+    public function updateRoute(int $id, ?string $title = null, ?string $jsonData = null): bool
     {
-        $stmt = $this->db->prepare(
-            'UPDATE tracks
-             SET title = :title,
-                 compiled_time = CURRENT_TIMESTAMP,
-                 json_data = :json_data
-             WHERE track_id = :id'
-        );
+        $fields = ['compiled_time = CURRENT_TIMESTAMP'];
+        $params = ['id' => $id];
 
-        $stmt->execute([
-            'id' => $id,
-            'title' => $title,
-            'json_data' => $jsonData
-        ]);
+        if ($title !== null) {
+            $fields[] = 'title = :title';
+            $params['title'] = $title;
+        }
+
+        if ($jsonData !== null) {
+            $fields[] = 'json_data = :json_data';
+            $params['json_data'] = $jsonData;
+        }
+
+        $stmt = $this->db->prepare(
+            'UPDATE tracks SET ' . implode(', ', $fields) . ' WHERE track_id = :id'
+        );
+        $stmt->execute($params);
 
         return $stmt->rowCount() > 0;
     }
@@ -84,11 +88,35 @@ class RouteService
     public function deleteRoute(int $id): bool
     {
         $stmt = $this->db->prepare(
-            'DELETE FROM tracks WHERE track_id = :id'
+            'DELETE FROM tracks WHERE route_id = :id'
         );
 
         $stmt->execute(['id' => $id]);
 
         return $stmt->rowCount() > 0;
+    }
+
+    // visible_for_user_id -> JOIN auf track_visible_user
+    public function getRoutesByVisibleUserId(int $userId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT t.* FROM tracks t
+         JOIN track_visible_user tvu ON t.route_id = tvu.route_id
+         WHERE tvu.user_id = :user_id'
+        );
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->fetchAll();
+    }
+
+// visible_for_group_id -> JOIN auf track_visible_group
+    public function getRoutesByVisibleGroupId(int $groupId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT t.* FROM tracks t
+         JOIN track_visible_group tvg ON t.route_id = tvg.route_id
+         WHERE tvg.group_id = :group_id'
+        );
+        $stmt->execute(['group_id' => $groupId]);
+        return $stmt->fetchAll();
     }
 }

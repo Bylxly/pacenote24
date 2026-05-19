@@ -25,13 +25,13 @@ INSERT INTO tracks (owner_user_id, json_data, title) VALUES
 (2, '{}', 'Training Route'),
 (3, '{}', 'Rallye Demo');
 -- tracks_visible_users
-INSERT INTO track_visible_user (user_id, track_id) VALUES
+INSERT INTO track_visible_user (user_id, route_id) VALUES
 (2, 1),
 (3, 1),
 (1, 2);
 
 -- track_visible_group
-INSERT INTO track_visible_group (group_id, track_id) VALUES
+INSERT INTO track_visible_group (group_id, route_id) VALUES
 (2, 1),
 (3, 2);
 

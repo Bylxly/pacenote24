@@ -13,17 +13,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $body = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($body['id'], $body['email'], $body['password'])) {
+if (!isset($body['id'])) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'id, email und password erforderlich']);
+    echo json_encode(['success' => false, 'error' => 'id erforderlich']);
+    exit;
+}
+
+if (!isset($body['email']) && !isset($body['password'])) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'email oder password erforderlich']);
     exit;
 }
 
 try {
     $service = new UserService();
 
-    $pwHash = password_hash($body['password'], PASSWORD_BCRYPT);
-    $updated = $service->updateUser((int)$body['id'], $body['email'], $pwHash);
+    $email  = $body['email'] ?? null;
+    $pwHash = isset($body['password']) ? password_hash($body['password'], PASSWORD_BCRYPT) : null;
+
+    $updated = $service->updateUser((int)$body['id'], $email, $pwHash);
 
     if (!$updated) {
         http_response_code(404);

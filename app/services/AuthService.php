@@ -1,8 +1,5 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 session_start();
 
 // funktion zum überprüfen ob der nutzer eingeloggt ist und eine session hat, ansonsten weiterleitung zur login seite
@@ -46,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Passwort ist korrekt!
             
             // Session-Variablen deklarieren
-            $_SESSION['user_loggedin'] = TRUE;
             session_regenerate_id(true);
             $_SESSION['user_name'] = $user['email']; 
             
@@ -58,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Passwort inkorrekt
             header("Location: /pacenote24/public/login.html?status=error_pw");
-            $_SESSION['test'] = "false";
             exit;
         }
     } else {

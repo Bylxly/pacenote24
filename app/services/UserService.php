@@ -51,18 +51,24 @@ class UserService
         return $result === '' ? null : (int) $result;
     }
 
-    public function updateUser(int $id, string $email, string $pwHash): bool {
+  public function updateUser(int $id, string $email, string|null $pwHash): bool {
+    if ($pwHash !== null) {
         $stmt = $this->db->prepare(
             'UPDATE users SET email = :email, pw_hash = :pw_hash WHERE user_id = :id'
         );
         $stmt->execute(['id' => $id, 'email' => $email, 'pw_hash' => $pwHash]);
-
-        if ($stmt->rowCount() > 0) {
-            return true;
-        }
-
-        return $this->getUserById($id) !== null;
+    } else {
+        $stmt = $this->db->prepare(
+            'UPDATE users SET email = :email WHERE user_id = :id'
+        );
+        $stmt->execute(['id' => $id, 'email' => $email]);
     }
+
+    if ($stmt->rowCount() > 0) {
+        return true;
+    }
+    return $this->getUserById($id) !== null;
+}
 
     public function deleteUser(int $id): bool {
         $stmt = $this->db->prepare(

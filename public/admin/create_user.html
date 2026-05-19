@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Create User</title>
+<meta charset="UTF-8">
+<title>Create User</title>
 </head>
 <body>
-
 <form id="create-form">
-    <label for="email">E-Mail:</label><br>
-    <input type="email" id="email" name="email" required><br><br>
-
-    <label for="password">Passwort:</label><br>
-    <input type="password" id="password" name="password" required><br><br>
-
-    <input type="submit" value="Nutzer anlegen">
+<label for="email">E-Mail:</label><br>
+<input type="email" id="email" name="email" required><br><br>
+<label for="password">Passwort:</label><br>
+<input type="password" id="password" name="password" required><br><br>
+<input type="submit" value="Nutzer anlegen">
 </form>
-
 <div id="feedback"></div>
-
 <script type="module">
 import { api } from '../assets/js/api.js';
-
 const form     = document.getElementById('create-form');
 const feedback = document.getElementById('feedback');
+
+function validatePassword(password) {
+    if (password.length < 8)          return 'Passwort muss mindestens 8 Zeichen lang sein.';
+    if (!/[^A-Za-z0-9]/.test(password)) return 'Passwort muss mindestens ein Sonderzeichen enthalten.';
+    return null;
+}
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     feedback.innerHTML = '';
-
     const email    = form.email.value.trim();
     const password = form.password.value;
 
@@ -36,12 +35,16 @@ form.addEventListener('submit', async (e) => {
         return;
     }
 
+    const pwError = validatePassword(password);
+    if (pwError) {
+        showFeedback('error', pwError);
+        return;
+    }
+
     try {
         const createResponse = await api.post('/ajax/users/create.php', { email, password });
-
         if (createResponse.success && createResponse.user_id) {
             const verification = await api.get('/ajax/users.php', { id: createResponse.user_id });
-
             if (verification.success) {
                 showFeedback('success', `Nutzer erfolgreich angelegt (ID: ${parseInt(createResponse.user_id)}).`);
                 form.reset();
@@ -66,6 +69,5 @@ function escHtml(str) {
         .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 </script>
-
 </body>
 </html>

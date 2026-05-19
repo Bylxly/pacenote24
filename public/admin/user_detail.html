@@ -70,6 +70,12 @@ function renderPage(user) {
     document.getElementById('delete-form').addEventListener('submit', handleDelete);
 }
 
+function validatePassword(password) {
+    if (password.length < 8)             return 'Passwort muss mindestens 8 Zeichen lang sein.';
+    if (!/[^A-Za-z0-9]/.test(password))  return 'Passwort muss mindestens ein Sonderzeichen enthalten.';
+    return null;
+}
+
 async function handleUpdate(e) {
     e.preventDefault();
     successMsg.textContent = '';
@@ -78,12 +84,19 @@ async function handleUpdate(e) {
     const email    = e.target.email.value.trim();
     const password = e.target.password.value;
 
+    if (password) {
+        const pwError = validatePassword(password);
+        if (pwError) {
+            errorMsg.textContent = pwError;
+            return;
+        }
+    }
+
     const payload = { id: userId, email };
     if (password) payload.password = password;
 
     try {
         const update = await api.post('/ajax/users/update.php', payload);
-
         if (update.success) {
             successMsg.textContent = 'Profil erfolgreich aktualisiert.';
             e.target.password.value = '';

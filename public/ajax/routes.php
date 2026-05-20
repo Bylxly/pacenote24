@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../app/services/RouteService.php';
+require_once __DIR__ . '/../../app/helpers/Request.php';
+
 
 header('Content-Type: application/json');
 
@@ -10,11 +12,7 @@ try {
 
     if (isset($_GET['id'])) {
 
-        if (!is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Id muss eine positive Zahl > 0 sein']);
-            exit;
-        }
+        Request::requirePositiveInt($_GET, 'id');
 
         $route = $service->getRouteById((int)$_GET['id']);
 
@@ -26,12 +24,15 @@ try {
 
         echo json_encode(['success' => true, 'data' => $route]);
     } elseif (isset($_GET['owner_user_id'])) {
+        Request::requirePositiveInt($_GET, 'owner_user_id');
         $routes = $service->getRoutesByOwnerUserId((int)$_GET['owner_user_id']);
         echo json_encode(['success' => true, 'data' => $routes]);
     } elseif (isset($_GET['visible_for_user_id'])) {
+        Request::requirePositiveInt($_GET, 'visible_for_user_id');
         $routes = $service->getRoutesByVisibleUserId((int)$_GET['visible_for_user_id']);
         echo json_encode(['success' => true, 'data' => $routes]);
     } elseif (isset($_GET['visible_for_group_id'])) {
+        Request::requirePositiveInt($_GET, 'visible_for_group_id');
         $routes = $service->getRoutesByVisibleGroupId((int)$_GET['visible_for_group_id']);
         echo json_encode(['success' => true, 'data' => $routes]);
     } else {

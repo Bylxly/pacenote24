@@ -2,37 +2,20 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../../app/services/UserService.php';
+require_once __DIR__ . '/../../../app/helpers/Request.php';
+
 
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'error' => 'Methode nicht erlaubt']);
-    exit;
-}
-
-$body = json_decode(file_get_contents('php://input'), true);
-
-if (!isset($body['id'])) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'id erforderlich']);
-    exit;
-}
-
-if (!isset($body['email']) && !isset($body['password'])) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'email oder password erforderlich']);
-    exit;
-}
+Request::requireMethod('POST');
+$body = Request::getBody();
+Request::requireFields($body, ['id']);
+Request::requireAtLeastOneField($body, ['email', 'password']);
 
 try {
     $service = new UserService();
 
-    if (!is_numeric($body['id']) || (int)$body['id'] <= 0) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'id muss eine positive Zahl > 0 sein']);
-        exit;
-    }
+    Request::requirePositiveInt($body, 'id');
 
     $email  = $body['email'] ?? null;
 
@@ -47,16 +30,9 @@ try {
 
     $pwHash = isset($body['password']) ? password_hash($body['password'], PASSWORD_BCRYPT) : null;
 
-    if ($email !== null && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'email ungültig']);
-        exit;
-    }
-
-    if ($email !== null && strlen($email) > 100) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'email zu lang']);
-        exit;
+    if ($email !== null) {
+        Request::requireValidEmail($body, 'email');
+        Request::requireMaxLength($body, 'email', 100);
     }
 
     $updated = $service->updateUser((int)$body['id'], $email, $pwHash);

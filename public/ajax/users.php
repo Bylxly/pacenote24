@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../app/services/UserService.php';
+require_once __DIR__ . '/../../app/helpers/Request.php';
+
 
 header('Content-Type: application/json');
 
@@ -10,11 +12,7 @@ try {
 
     if (isset($_GET['id'])) {
 
-        if (!is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => 'Id muss eine positive Zahl > 0 sein']);
-            exit;
-        }
+        Request::requirePositiveInt($_GET, 'id');
 
         $user = $service->getUserById((int)$_GET['id']);
 

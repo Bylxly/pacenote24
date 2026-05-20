@@ -20,6 +20,13 @@ class PaceNoteService {
         6 => 130.0,
     ];
 
+    /**
+     * Parses a GeoJSON string and returns route coordinates as associative ['lat', 'lng', 'elevation_m'] points.
+     * GeoJSON uses [longitude, latitude] order; this method normalises to named keys.
+     *
+     * @throws InvalidArgumentException if the input is not valid JSON
+     * @throws RuntimeException if no LineString geometry is found
+     */
     public function extractRoutePoints(string $geoJsonString): array {
         $data = json_decode($geoJsonString, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -37,6 +44,10 @@ class PaceNoteService {
         }, $coordinates)));
     }
 
+    /**
+     * Recursively searches a decoded GeoJSON structure for the first LineString coordinates array.
+     * Handles Feature, FeatureCollection, and GeometryCollection wrappers.
+     */
     private function findCoordinates(array $data): array {
         if (isset($data['type'])) {
             if ($data['type'] === 'LineString' && isset($data['coordinates'])) {
@@ -69,7 +80,10 @@ class PaceNoteService {
         return [];
     }
 
-    // GeoJSON coordinate order is [lng, lat]; we swap to associative ['lat', 'lng']
+    /**
+     * Converts a raw GeoJSON coordinate [lng, lat] or [lng, lat, elevation] to an associative point.
+     * Returns null if the entry is malformed or contains non-numeric values.
+     */
     private function normalizeCoordinatePair($coord): ?array {
         if (!is_array($coord) || count($coord) < 2) {
             return null;
@@ -86,6 +100,12 @@ class PaceNoteService {
         ];
     }
 
+    /**
+     * Resamples a polyline to evenly spaced points at the given interval using linear interpolation.
+     * The first and last original points are always included in the result.
+     *
+     * @throws InvalidArgumentException if $intervalMeters <= 0
+     */
     public function interpolateRoute(array $points, float $intervalMeters): array {
         if ($intervalMeters <= 0) {
             throw new InvalidArgumentException('Interval must be greater than zero.');
@@ -193,6 +213,11 @@ class PaceNoteService {
         return $this->interpolateRoute($smooth, $intervalMeters);
     }
 
+    /**
+     * Main entry point: parses a GeoJSON route and returns an array of pace note entries.
+     * Each note contains position, direction, severity (1–6), corner radius, and gradient data.
+     * Returns an empty array if the route has too few points to classify.
+     */
     public function createPaceNotes(string $geoJsonString): array {
         $routePoints = $this->extractRoutePoints($geoJsonString);
 
@@ -218,6 +243,11 @@ class PaceNoteService {
         return $this->attachDistancesToCandidates($candidates, $densePoints);
     }
 
+    /**
+     * Assigns a curvature marking (direction + severity) to every dense sample point.
+     * Uses three-point circle geometry with neighbours at ±CLASSIFICATION_NEIGHBOR_SPACING steps.
+     * Points too close to either end of the array default to a straight marking.
+     */
     private function classifyRoutePoints(array $points): array {
         $classified = [];
         $neighborOffset = self::CLASSIFICATION_NEIGHBOR_SPACING;
@@ -268,6 +298,10 @@ class PaceNoteService {
         return $classified;
     }
 
+    /**
+     * Collapses the per-point classification into a candidate list, emitting one entry
+     * each time the marking (direction + severity) changes.
+     */
     private function buildInitialCandidates(array $classifiedPoints): array {
         $candidates = [];
         $currentKey = null;
@@ -288,6 +322,10 @@ class PaceNoteService {
         return $candidates;
     }
 
+    /**
+     * Removes a note when the corner immediately loosens in the same turn direction
+     * (e.g. R3 → R5 collapses to R3, because the driver is already warned about the tighter apex).
+     */
     private function filterDescendingSeverity(array $candidates): array {
         for ($i = count($candidates) - 1; $i >= 1; $i--) {
             if ($this->isMoreSevereThan($candidates[$i - 1]['marking'], $candidates[$i]['marking'])
@@ -299,6 +337,11 @@ class PaceNoteService {
         return array_values($candidates);
     }
 
+    /**
+     * Merges a tighter follow-up corner into its predecessor when both share the same direction
+     * and are within ASCENDING_COLLAPSE_MAX_GAP sample points apart.
+     * The earlier note inherits the higher severity so the driver gets the worst-case warning first.
+     */
     private function collapseAscendingSeverity(array $candidates): array {
         for ($i = count($candidates) - 1; $i >= 1; $i--) {
             if ($this->isSameDirection($candidates[$i]['marking'], $candidates[$i - 1]['marking'])
@@ -312,6 +355,10 @@ class PaceNoteService {
         return array_values($candidates);
     }
 
+    /**
+     * Converts raw candidates into the final note format, appending cumulative distances,
+     * inter-note distances, position coordinates, and gradient data.
+     */
     private function attachDistancesToCandidates(array $candidates, array $points): array {
         $cumulativeDistances = $this->buildCumulativeDistances($points);
         $notes = [];
@@ -344,6 +391,10 @@ class PaceNoteService {
         return $notes;
     }
 
+    /**
+     * Returns the route distance (m) between a candidate and the one before it.
+     * For the first candidate, returns its distance from the start of the route.
+     */
     private function distanceBetweenRouteIndices(array $candidates, int $candidateIndex, array $cumulativeDistances): float {
         $pointIndex = $candidates[$candidateIndex]['index'];
 
@@ -356,6 +407,9 @@ class PaceNoteService {
         return $cumulativeDistances[$pointIndex] - $cumulativeDistances[$previousPointIndex];
     }
 
+    /**
+     * Returns an array where index i holds the total route distance (m) from points[0] to points[i].
+     */
     private function buildCumulativeDistances(array $points): array {
         $distances = [0.0];
 
@@ -416,6 +470,11 @@ class PaceNoteService {
         return (($points[$afterIdx]['elevation_m'] - $points[$beforeIdx]['elevation_m']) / $horizontalDist) * 100.0;
     }
 
+    /**
+     * Classifies a gradient percentage as 'uphill', 'downhill', or 'flat'.
+     * Returns null when no elevation data is available (gradient is null).
+     * The flat threshold is ±GRADIENT_FLAT_THRESHOLD_PERCENT.
+     */
     private function gradientType(?float $gradientPercent): ?string {
         if ($gradientPercent === null) {
             return null;
@@ -430,7 +489,7 @@ class PaceNoteService {
     }
 
     /**
-     * Serialises pace notes to a versioned JSON envelope and writes them to $filePath.
+     * Serialises pace notes to a versioned JSON string.
      *
      * JSON schema (schema_version 1.0):
      * {
@@ -457,7 +516,7 @@ class PaceNoteService {
      *   ]
      * }
      */
-    public function exportToJson(array $notes, string $filePath): void {
+    public function exportToJson(array $notes): string {
         $hasElevation = !empty($notes) && ($notes[0]['elevation_m'] ?? null) !== null;
         $totalDistance = !empty($notes) ? (float)(end($notes)['distance_from_start_m'] ?? 0) : 0.0;
 
@@ -497,14 +556,7 @@ class PaceNoteService {
             throw new RuntimeException('JSON encoding failed: ' . json_last_error_msg());
         }
 
-        $dir = dirname($filePath);
-        if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new RuntimeException("Cannot create directory: $dir");
-        }
-
-        if (file_put_contents($filePath, $json) === false) {
-            throw new RuntimeException("Cannot write file: $filePath");
-        }
+        return $json;
     }
 
     /**
@@ -554,6 +606,9 @@ class PaceNoteService {
         return $errors;
     }
 
+    /**
+     * Returns a marking array representing a straight section (no turn, direction = 'straight').
+     */
     private function createStraightMarking(): array {
         return [
             'direction' => 'straight',
@@ -562,6 +617,10 @@ class PaceNoteService {
         ];
     }
 
+    /**
+     * Returns a marking array for a directional turn with the given severity class (1–6).
+     * The label uses the rally co-driver shorthand, e.g. 'L3' or 'R1'.
+     */
     private function createTurnMarking(string $direction, int $severity): array {
         $prefix = $direction === 'right' ? 'R' : 'L';
 
@@ -572,10 +631,17 @@ class PaceNoteService {
         ];
     }
 
+    /**
+     * Produces a string key that uniquely identifies a marking by direction and severity.
+     * Used to detect changes between consecutive classified points.
+     */
     private function markingKey(array $marking): string {
         return $marking['direction'] . ':' . ($marking['severity'] === null ? 'straight' : (string)$marking['severity']);
     }
 
+    /**
+     * Returns true when both markings share the same direction (both left, right, or straight).
+     */
     private function isSameDirection(array $a, array $b): bool {
         return $a['direction'] === $b['direction'];
     }
@@ -602,6 +668,10 @@ class PaceNoteService {
         return $a['severity'] < $b['severity'];
     }
 
+    /**
+     * Maps a corner's comfortable-speed estimate (km/h) to a severity class 1–6.
+     * Returns 0 when the speed exceeds the class-6 limit, treating the section as a straight.
+     */
     private function severityFromSpeedKmh(float $speedKmh): int {
         if ($speedKmh > self::SEVERITY_SPEED_LIMITS_KMH[6]) {
             return 0;
@@ -616,6 +686,11 @@ class PaceNoteService {
         return 0;
     }
 
+    /**
+     * Projects a geographic coordinate into a local Cartesian (x, z) plane in metres,
+     * centred on the given origin. Uses an equirectangular approximation, which is accurate
+     * enough for the short inter-point distances used in curvature classification.
+     */
     private function toLocalCartesianMeters(float $lat, float $lng, float $originLat, float $originLng): array {
         $latRad = deg2rad($lat);
         $originLatRad = deg2rad($originLat);
@@ -640,6 +715,31 @@ class PaceNoteService {
             sin($dLon / 2) * sin($dLon / 2);
 
         return self::EARTH_RADIUS_M * 2 * atan2(sqrt($a), sqrt(1 - $a));
+    }
+
+    /**
+     * Primary entry point for pace note generation.
+     *
+     * Runs the full pipeline: GeoJSON parsing → route classification → validation → JSON serialisation.
+     * Always use this method instead of calling the individual steps manually.
+     *
+     * Returns a JSON string conforming to schema version 1.0 (see exportToJson()).
+     * An empty notes array is a valid result for routes with no classifiable corners.
+     *
+     * @throws InvalidArgumentException if $geoJson is malformed or contains no LineString
+     * @throws RuntimeException if the generated notes fail plausibility validation
+     */
+    public function generatePaceNotes(string $geoJson): string {
+        $notes = $this->createPaceNotes($geoJson);
+
+        if (!empty($notes)) {
+            $errors = $this->validatePaceNotes($notes);
+            if (!empty($errors)) {
+                throw new RuntimeException('Pace note validation failed: ' . implode('; ', $errors));
+            }
+        }
+
+        return $this->exportToJson($notes);
     }
 }
 
@@ -756,7 +856,7 @@ class PaceNoteService {
 
             // JSON export
             $outputFile = sys_get_temp_dir() . '/pace_notes_' . preg_replace('/\W+/', '_', $label) . '.json';
-            $service->exportToJson($notes, $outputFile);
+            file_put_contents($outputFile, $service->exportToJson($notes));
             echo "JSON exportiert nach: $outputFile\n";
 
         } catch (Exception $e) {

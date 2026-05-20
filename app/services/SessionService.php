@@ -1,4 +1,7 @@
 <?php
+
+use Random\RandomException;
+
 require_once __DIR__ . '/Database.php';
 
 class SessionService
@@ -20,7 +23,7 @@ class SessionService
         return $stmt->fetchAll();
     }
 
-    public function getSessionById(int $id): ?array
+    public function getSessionById(string $id): ?array
     {
         $stmt = $this->db->prepare(
             'SELECT * FROM sessions WHERE session_id = :id'
@@ -44,24 +47,29 @@ class SessionService
         return $stmt->fetchAll();
     }
 
+    /**
+     * @throws RandomException
+     */
     public function createSession(int $userId, string $timeout): ?int
     {
+        $sessionId = bin2hex(random_bytes(32));
         $stmt = $this->db->prepare(
-            'INSERT INTO sessions (user_id, created_at, timeout)
-             VALUES (:user_id, CURRENT_TIMESTAMP, :timeout)'
+            'INSERT INTO sessions (session_id, user_id, created_at, timeout)
+             VALUES (:session_id, :user_id, CURRENT_TIMESTAMP, :timeout)'
         );
 
         $stmt->execute([
+            'session_id' => $sessionId,
             'user_id' => $userId,
             'timeout' => $timeout
         ]);
 
         $lastInsertId = $this->db->lastInsertId();
 
-        return $lastInsertId ? (int)$lastInsertId : null;
+        return $lastInsertId ? $lastInsertId : null;
     }
 
-    public function updateSession(int $id, string $timeout): bool
+    public function updateSession(string $id, string $timeout): bool
     {
         $stmt = $this->db->prepare(
             'UPDATE sessions
@@ -77,7 +85,7 @@ class SessionService
         return $stmt->rowCount() > 0;
     }
 
-    public function deleteSession(int $id): bool
+    public function deleteSession(string $id): bool
     {
         $stmt = $this->db->prepare(
             'DELETE FROM sessions WHERE session_id = :id'

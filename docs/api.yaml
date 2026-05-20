@@ -224,7 +224,7 @@ paths:
           name: id
           required: false
           schema:
-            type: integer
+            type: string
         - in: query
           name: user_id
           required: false
@@ -732,7 +732,7 @@ components:
       type: object
       properties:
         session_id:
-          type: integer
+          type: string
         user_id:
           type: integer
         created_at:
@@ -903,7 +903,7 @@ components:
         success:
           type: boolean
         session_id:
-          type: integer
+          type: string
       required:
         - success
         - session_id
@@ -1130,7 +1130,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         timeout:
           type: string
           format: date-time
@@ -1142,7 +1142,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
       required:
         - id
 

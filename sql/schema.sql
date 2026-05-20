@@ -13,7 +13,7 @@ CREATE TABLE users (
 
 -- session table
 CREATE TABLE sessions (
-    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id VARCHAR(64) PRIMARY KEY,
     user_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     timeout TIMESTAMP NOT NULL,

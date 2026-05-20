@@ -2,31 +2,19 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../../app/services/GroupService.php';
+require_once __DIR__ . '/../../../app/helpers/Request.php';
+
 
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'error' => 'Methode nicht erlaubt']);
-    exit;
-}
-
-$body = json_decode(file_get_contents('php://input'), true);
-
-if (!isset($body['id'], $body['name'])) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Id und Name erforderlich']);
-    exit;
-}
+Request::requireMethod('POST');
+$body = Request::getBody();
+Request::requireFields($body, ['id', 'name']);
 
 try {
     $service = new GroupService();
 
-    if (!is_numeric($body['id']) || (int)$body['id'] <= 0) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'id muss eine positive Zahl > 0 sein']);
-        exit;
-    }
+    Request::requirePositiveInt($body, 'id');
 
     if (empty($body['name'])) {
         http_response_code(400);
@@ -34,11 +22,7 @@ try {
         exit;
     }
 
-    if (strlen($body['name']) > 50) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Name darf max. 50 Zeichen lang sein']);
-        exit;
-    }
+    Request::requireMaxLength($body, 'name', 50);
 
     $updated = $service->updateGroup($body['id'], $body['name']);
 

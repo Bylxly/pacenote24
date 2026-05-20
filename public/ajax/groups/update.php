@@ -22,6 +22,24 @@ if (!isset($body['id'], $body['name'])) {
 try {
     $service = new GroupService();
 
+    if (!is_numeric($body['id']) || (int)$body['id'] <= 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'id muss eine positive Zahl > 0 sein']);
+        exit;
+    }
+
+    if (empty($body['name'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Name darf nicht leer sein']);
+        exit;
+    }
+
+    if (strlen($body['name']) > 50) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Name darf max. 50 Zeichen lang sein']);
+        exit;
+    }
+
     $updated = $service->updateGroup($body['id'], $body['name']);
 
     if (!$updated) {

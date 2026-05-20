@@ -9,6 +9,13 @@ try {
     $service = new GroupService();
 
     if (isset($_GET['id'])) {
+
+        if (!is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Id muss eine positive Zahl > 0 sein']);
+            exit;
+        }
+
         $group = $service->getGroupById((int)$_GET['id']);
 
         if ($group === null) {

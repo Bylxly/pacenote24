@@ -21,6 +21,13 @@ if (!isset($body['id'])) {
 
 try {
     $service = new UserService();
+
+    if (!is_numeric($body['id']) || (int)$body['id'] <= 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'id muss eine positive Zahl > 0 sein']);
+        exit;
+    }
+
     $deleted = $service->deleteUser((int)$body['id']);
 
     if (!$deleted) {
@@ -32,6 +39,6 @@ try {
     echo json_encode(['success' => true]);
 
 } catch (Throwable $e) {
-    http_response_code(409);
+    http_response_code(400);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }

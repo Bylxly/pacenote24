@@ -28,11 +28,29 @@ if (!isset($body['json_data'])) {
 try {
     $service = new RouteService();
 
+    if (isset($body['title']) && strlen($body['title']) > 100) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Titel darf max. 100 Zeichen lang sein']);
+        exit;
+    }
+
+    if (json_validate($body['json_data']) === false) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Das JSON Format ist nicht valide']);
+        exit;
+    }
+
+    if ((int)$body['owner_user_id'] <= 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'owner_user_id muss eine positive Zahl > 0 sein']);
+        exit;
+    }
+
     $routeId = $service->createRoute($body['title'], $body['owner_user_id'], json_encode($body['json_data']));
 
     if ($routeId === null) {
         http_response_code(409);
-        echo json_encode(['success' => false, 'error' => 'Tja']);
+        echo json_encode(['success' => false, 'error' => 'Fehler beim Erstellen']);
         exit;
     }
 

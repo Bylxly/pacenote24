@@ -22,6 +22,18 @@ if (!isset($body['name'])) {
 try {
     $service = new GroupService();
 
+    if (empty($body['name'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Name darf nicht leer sein']);
+        exit;
+    }
+
+    if (strlen($body['name']) > 50) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Name darf max. 50 Zeichen lang sein']);
+        exit;
+    }
+
     $groupId = $service->createGroup($body['name']);
 
     if ($groupId === null) {

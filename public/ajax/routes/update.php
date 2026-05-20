@@ -28,8 +28,27 @@ if (!isset($body['title']) && !isset($body['json_data'])) {
 try {
     $service = new RouteService();
 
-    $title    = $body['title'] ?? null;
+    if (!is_numeric($body['id']) || (int)$body['id'] <= 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'id muss eine positive Zahl > 0 sein']);
+        exit;
+    }
+
+    $title = $body['title'] ?? null;
+
+    if (isset($body['json_data']) && json_validate($body['json_data']) === false) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Das JSON Format ist nicht valide']);
+        exit;
+    }
+
     $jsonData = isset($body['json_data']) ? json_encode($body['json_data']) : null;
+
+    if ($title !== null && strlen($title) > 100) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Titel darf max. 100 Zeichen lang sein']);
+        exit;
+    }
 
     $updated = $service->updateRoute((int)$body['id'], $title, $jsonData);
 

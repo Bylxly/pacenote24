@@ -22,6 +22,12 @@ if (!isset($body['id'])) {
 try {
     $service = new RouteService();
 
+    if (!is_numeric($body['id']) || (int)$body['id'] <= 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'id muss eine positive Zahl > 0 sein']);
+        exit;
+    }
+
     $deleted = $service->deleteRoute($body['id']);
 
     if (!$deleted) {

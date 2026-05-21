@@ -52,18 +52,18 @@ class SessionService
     /**
      * @throws RandomException
      */
-    public function createSession(int $userId, string $timeout): ?string
+    public function createSession(int $userId): ?string
     {
         $sessionId = bin2hex(random_bytes(32));
         $stmt = $this->db->prepare(
             'INSERT INTO sessions (session_id, user_id, created_at, timeout)
-             VALUES (:session_id, :user_id, CURRENT_TIMESTAMP, :timeout)'
+             VALUES (:session_id, :user_id, CURRENT_TIMESTAMP, DATE_ADD(NOW(), INTERVAL :timeout SECOND))'
         );
 
         $stmt->execute([
             'session_id' => $sessionId,
             'user_id' => $userId,
-            'timeout' => $timeout
+            'timeout' => $this->config['session']['timeout_seconds']
         ]);
 
         return $stmt->rowCount() > 0 ? $sessionId : null;

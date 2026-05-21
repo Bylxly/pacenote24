@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Route Detail</title>
+</head>
+<body>
+
+<a href="pacenote_view.html">← Zurück zur Übersicht</a>
+
+<div id="success-msg" style="color: green;"></div>
+<div id="error-msg" style="color: red;"></div>
+
+<div id="page-content"></div>
+
+<script type="module">
+import { api } from '../assets/js/api.js';
+
+const successMsg  = document.getElementById('success-msg');
+const errorMsg    = document.getElementById('error-msg');
+const pageContent = document.getElementById('page-content');
+
+const params  = new URLSearchParams(location.search);
+const routeId = parseInt(params.get('id'));
+
+if (!routeId || isNaN(routeId)) {
+    document.body.innerHTML = 'Ungültige Route-ID.';
+    throw new Error('Invalid route ID');
+}
+
+let route, allUsers, allGroups, visibleUsers, visibleGroups;
+
+try {
+    const [routeRes, usersRes, groupsRes, visUsersRes, visGroupsRes] = await Promise.all([
+        api.get('/ajax/routes.php',               { id: routeId }),
+        api.get('/ajax/users.php'),
+        api.get('/ajax/groups.php'),
+        api.get('/ajax/track-visible-users.php',  { track_id: routeId }),
+        api.get('/ajax/track-visible-groups.php', { track_id: routeId }),
+    ]);
+
+    if (!routeRes.success) {
+        document.body.innerHTML = 'Route nicht gefunden.';
+        throw new Error('Route not found');
+    }
+
+    route        = routeRes.data;
+    allUsers     = usersRes.data  ?? [];
+    allGroups    = groupsRes.data ?? [];
+    visibleUsers  = visUsersRes.data  ?? [];
+    visibleGroups = visGroupsRes.data ?? [];
+} catch (e) {
+    document.body.innerHTML = 'API nicht erreichbar.';
+    throw e;
+}
+
+renderPage();
+
+function renderPage() {
+    const visibleUserIds  = new Set(visibleUsers.map(v => v.user_id));
+    const visibleGroupIds = new Set(visibleGroups.map(v => v.group_id));
+
+    const userOptions = allUsers
+        .filter(u => !visibleUserIds.has(u.user_id))
+        .map(u => `<option value="${parseInt(u.user_id)}">${escHtml(u.email)}</option>`)
+        .join('');
+
+    const groupOptions = allGroups
+        .filter(g => !visibleGroupIds.has(g.group_id))
+        .map(g => `<option value="${parseInt(g.group_id)}">${escHtml(g.name)}</option>`)
+        .join('');
+
+    const visibleUsersRows = visibleUsers.map(v => {
+        const user = allUsers.find(u => u.user_id === v.user_id);
+        return `
+            <tr>
+                <td>${escHtml(String(v.user_id))}</td>
+                <td>${escHtml(user?.email ?? '—')}</td>
+                <td>
+                    <button type="button" data-userid="${parseInt(v.user_id)}" class="remove-user">
+                        Entfernen
+                    </button>
+                </td>
+            </tr>`;
+    }).join('');
+
+    const visibleGroupsRows = visibleGroups.map(v => {
+        const group = allGroups.find(g => g.group_id === v.group_id);
+        return `
+            <tr>
+                <td>${escHtml(String(v.group_id))}</td>
+                <td>${escHtml(group?.name ?? '—')}</td>
+                <td>
+                    <button type="button" data-groupid="${parseInt(v.group_id)}" class="remove-group">
+                        Entfernen
+                    </button>
+                </td>
+            </tr>`;
+    }).join('');
+
+    pageContent.innerHTML = `
+        <h2>Route verwalten</h2>
+
+        <form id="update-form">
+            <label>Track ID:</label><br>
+            <input type="text" value="${escHtml(String(route.route_id))}" disabled><br><br>
+
+            <label>Owner (User ID):</label><br>
+            <input type="text" value="${escHtml(String(route.owner_user_id))}" disabled><br><br>
+
+            <label>Zuletzt kompiliert:</label><br>
+            <input type="text" value="${escHtml(route.compiled_time ?? '—')}" disabled><br><br>
+
+            <label>Titel:</label><br>
+            <input type="text" name="title" value="${escHtml(route.title ?? '')}" required><br><br>
+
+            <button type="submit">Speichern</button>
+        </form>
+
+        <hr>
+
+        <h3>Sichtbarkeit – Benutzer</h3>
+        <table border="1" cellpadding="8" style="border-collapse: collapse; font-family: sans-serif;">
+            <thead style="background-color: #f2f2f2;">
+                <tr><th>User ID</th><th>E-Mail</th><th>Action</th></tr>
+            </thead>
+            <tbody id="visible-users-tbody">
+                ${visibleUsersRows || '<tr><td colspan="3">Keine Benutzer.</td></tr>'}
+            </tbody>
+        </table>
+        <br>
+        <form id="add-user-form">
+            <select name="user_id" ${userOptions ? '' : 'disabled'}>
+                ${userOptions || '<option>Alle Benutzer bereits hinzugefügt</option>'}
+            </select>
+            <button type="submit" ${userOptions ? '' : 'disabled'}>Benutzer hinzufügen</button>
+        </form>
+
+        <hr>
+
+        <h3>Sichtbarkeit – Gruppen</h3>
+        <table border="1" cellpadding="8" style="border-collapse: collapse; font-family: sans-serif;">
+            <thead style="background-color: #f2f2f2;">
+                <tr><th>Group ID</th><th>Name</th><th>Action</th></tr>
+            </thead>
+            <tbody id="visible-groups-tbody">
+                ${visibleGroupsRows || '<tr><td colspan="3">Keine Gruppen.</td></tr>'}
+            </tbody>
+        </table>
+        <br>
+        <form id="add-group-form">
+            <select name="group_id" ${groupOptions ? '' : 'disabled'}>
+                ${groupOptions || '<option>Alle Gruppen bereits hinzugefügt</option>'}
+            </select>
+            <button type="submit" ${groupOptions ? '' : 'disabled'}>Gruppe hinzufügen</button>
+        </form>
+
+        <hr>
+
+        <h3>Gefahrenbereich</h3>
+        <p>Das Löschen einer Route kann nicht rückgängig gemacht werden.</p>
+        <form id="delete-form">
+            <button type="submit">Route unwiderruflich löschen</button>
+        </form>
+    `;
+
+    document.getElementById('update-form').addEventListener('submit', handleUpdate);
+    document.getElementById('add-user-form').addEventListener('submit', handleAddUser);
+    document.getElementById('add-group-form').addEventListener('submit', handleAddGroup);
+    document.getElementById('delete-form').addEventListener('submit', handleDelete);
+
+    document.querySelectorAll('.remove-user').forEach(btn => {
+        btn.addEventListener('click', () => handleRemoveUser(parseInt(btn.dataset.userid)));
+    });
+
+    document.querySelectorAll('.remove-group').forEach(btn => {
+        btn.addEventListener('click', () => handleRemoveGroup(parseInt(btn.dataset.groupid)));
+    });
+}
+
+async function handleUpdate(e) {
+    e.preventDefault();
+    clearMessages();
+
+    const title = e.target.title.value.trim();
+
+    try {
+        const res = await api.post('/ajax/routes/update.php', {
+            id:        routeId,
+            title,
+            json_data: JSON.parse(route.json_data ?? '{}'),
+        });
+
+        if (res.success) {
+            route.title = title;
+            successMsg.textContent = 'Route erfolgreich aktualisiert.';
+        } else {
+            errorMsg.textContent = res.error ?? 'Aktualisierung fehlgeschlagen.';
+        }
+    } catch (e) {
+        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
+    }
+}
+
+async function handleAddUser(e) {
+    e.preventDefault();
+    clearMessages();
+
+    const userId = parseInt(e.target.user_id.value);
+
+    try {
+        const res = await api.post('/ajax/track-visible-users/create.php', {
+            user_id:  userId,
+            track_id: routeId,
+        });
+
+        if (res.success) {
+            visibleUsers.push({ user_id: userId, track_id: routeId });
+            renderPage();
+            successMsg.textContent = 'Benutzer hinzugefügt.';
+        } else {
+            errorMsg.textContent = res.error ?? 'Hinzufügen fehlgeschlagen.';
+        }
+    } catch (e) {
+        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
+    }
+}
+
+async function handleRemoveUser(userId) {
+    clearMessages();
+
+    try {
+        const res = await api.post('/ajax/track-visible-users/delete.php', {
+            user_id:  userId,
+            track_id: routeId,
+        });
+
+        if (res.success) {
+            visibleUsers = visibleUsers.filter(v => v.user_id !== userId);
+            renderPage();
+            successMsg.textContent = 'Benutzer entfernt.';
+        } else {
+            errorMsg.textContent = res.error ?? 'Entfernen fehlgeschlagen.';
+        }
+    } catch (e) {
+        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
+    }
+}
+
+async function handleAddGroup(e) {
+    e.preventDefault();
+    clearMessages();
+
+    const groupId = parseInt(e.target.group_id.value);
+
+    try {
+        const res = await api.post('/ajax/track-visible-groups/create.php', {
+            group_id: groupId,
+            track_id: routeId,
+        });
+
+        if (res.success) {
+            visibleGroups.push({ group_id: groupId, track_id: routeId });
+            renderPage();
+            successMsg.textContent = 'Gruppe hinzugefügt.';
+        } else {
+            errorMsg.textContent = res.error ?? 'Hinzufügen fehlgeschlagen.';
+        }
+    } catch (e) {
+        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
+    }
+}
+
+async function handleRemoveGroup(groupId) {
+    clearMessages();
+
+    try {
+        const res = await api.post('/ajax/track-visible-groups/delete.php', {
+            group_id: groupId,
+            track_id: routeId,
+        });
+
+        if (res.success) {
+            visibleGroups = visibleGroups.filter(v => v.group_id !== groupId);
+            renderPage();
+            successMsg.textContent = 'Gruppe entfernt.';
+        } else {
+            errorMsg.textContent = res.error ?? 'Entfernen fehlgeschlagen.';
+        }
+    } catch (e) {
+        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
+    }
+}
+
+async function handleDelete(e) {
+    e.preventDefault();
+
+    if (!confirm('Bist du dir wirklich sicher, dass du diese Route unwiderruflich löschen möchtest?')) {
+        return;
+    }
+
+    clearMessages();
+
+    try {
+        for (const v of visibleUsers) {
+            await api.post('/ajax/track-visible-users/delete.php', {
+                user_id:  v.user_id,
+                track_id: routeId,
+            });
+        }
+
+        for (const v of visibleGroups) {
+            await api.post('/ajax/track-visible-groups/delete.php', {
+                group_id: v.group_id,
+                track_id: routeId,
+            });
+        }
+
+        const res = await api.post('/ajax/routes/delete.php', { id: routeId });
+
+        if (res.success) {
+            window.location.href = 'pacenote_view.html?msg=deleted';
+        } else {
+            errorMsg.textContent = 'Löschen fehlgeschlagen: ' + (res.error ?? 'Unbekannter Fehler.');
+        }
+    } catch (e) {
+        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
+    }
+}
+
+function clearMessages() {
+    successMsg.textContent = '';
+    errorMsg.textContent   = '';
+}
+
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+
+</body>
+</html>

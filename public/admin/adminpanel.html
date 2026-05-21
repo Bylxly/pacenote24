@@ -12,14 +12,14 @@
 
 <table border="1" cellpadding="10" style="border-collapse: collapse; font-family: sans-serif;">
     <thead style="background-color: #f2f2f2;">
-        <tr><th>ID</th><th>Email</th><th>Actions</th></tr>
+        <tr><th>ID</th><th>Email</th><th>Gruppen</th><th>Actions</th></tr>
     </thead>
     <tbody id="user-tbody"></tbody>
 </table>
 
 <br>
 <a href="create_user.html"><button type="button">Create new User</button></a>
-<a href="pacenote_view.php"><button type="button">View Pacenotes</button></a>
+<a href="pacenote_view.html"><button type="button">View Pacenotes</button></a>
 
 <script type="module">
 import { api } from '../assets/js/api.js';
@@ -28,17 +28,33 @@ const tbody = document.getElementById('user-tbody');
 const error = document.getElementById('error');
 
 try {
-    const listResponse = await api.get('/ajax/users.php');
+    const [usersRes, groupsRes, membersRes] = await Promise.all([
+        api.get('/ajax/users.php'),
+        api.get('/ajax/groups.php'),
+        api.get('/ajax/group-members.php'),
+    ]);
 
-    if (!listResponse.success || !Array.isArray(listResponse.data)) {
-        throw new Error(listResponse.error ?? 'Unknown error');
+    if (!usersRes.success || !Array.isArray(usersRes.data)) {
+        throw new Error(usersRes.error ?? 'Unknown error');
     }
 
-    for (const user of listResponse.data) {
+    const groups  = groupsRes.data  ?? [];
+    const members = membersRes.data ?? [];
+
+    const groupMap  = Object.fromEntries(groups.map(g => [g.group_id, g.name]));
+    const memberMap = {};
+    for (const m of members) {
+        if (!memberMap[m.user_id]) memberMap[m.user_id] = [];
+        memberMap[m.user_id].push(groupMap[m.group_id] ?? `ID ${m.group_id}`);
+    }
+
+    for (const user of usersRes.data) {
+        const userGroups = (memberMap[user.user_id] ?? []).map(g => escHtml(g)).join(', ') || '—';
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td><strong>${escHtml(String(user.user_id))}</strong></td>
             <td>${escHtml(user.email)}</td>
+            <td>${userGroups}</td>
             <td>
                 <a href="user_detail.html?id=${parseInt(user.user_id)}">
                     <button type="button">View Profile</button>

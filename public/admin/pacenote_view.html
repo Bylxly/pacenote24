@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Pacenote Overview</title>
+</head>
+<body>
+
+<h2>Pacenote Management</h2>
+
+<a href="adminpanel.html">← Zurück zum Admin Panel</a>
+
+<div id="error"></div>
+
+<br><br>
+
+<table border="1" cellpadding="10" style="border-collapse: collapse; font-family: sans-serif;">
+    <thead style="background-color: #f2f2f2;">
+        <tr>
+            <th>ID</th>
+            <th>Titel</th>
+            <th>Owner (User ID)</th>
+            <th>Zuletzt kompiliert</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="route-tbody"></tbody>
+</table>
+
+<script type="module">
+import { api } from '../assets/js/api.js';
+
+const tbody = document.getElementById('route-tbody');
+const error = document.getElementById('error');
+
+try {
+    const listResponse = await api.get('/ajax/routes.php');
+
+    if (!listResponse.success || !Array.isArray(listResponse.data)) {
+        throw new Error(listResponse.error ?? 'Unknown error');
+    }
+
+    if (listResponse.data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">Keine Routen vorhanden.</td></tr>';
+    }
+
+    for (const route of listResponse.data) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><strong>${escHtml(String(route.route_id))}</strong></td>
+            <td>${escHtml(route.title ?? '—')}</td>
+            <td>${escHtml(String(route.owner_user_id))}</td>
+            <td>${escHtml(route.compiled_time ?? '—')}</td>
+            <td>
+                <a href="route_detail.html?id=${parseInt(route.route_id)}">
+                    <button type="button">Details</button>
+                </a>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    }
+} catch (e) {
+    error.innerHTML = `<div style="color: red;">Upstream service unavailable: ${escHtml(e.message)}</div>`;
+}
+
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+
+</body>
+</html>

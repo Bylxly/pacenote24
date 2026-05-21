@@ -1,277 +1,322 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>User Detail</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Detail</title>
+  <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
 
-<a href="adminpanel.html">← Zurück zur Übersicht</a>
+<header class="admin-header">
+  <span class="admin-header__badge">Admin</span>
+  <nav class="admin-header__breadcrumb">
+    <a href="adminpanel.html">User Management</a>
+    <span>›</span>
+    <strong>Profil verwalten</strong>
+  </nav>
+</header>
 
-<div id="success-msg" style="color: green;"></div>
-<div id="error-msg" style="color: red;"></div>
+<main class="admin-main">
 
-<div id="page-content"></div>
+  <div id="banner-success" class="banner banner--success"></div>
+  <div id="banner-error"   class="banner banner--error"></div>
+
+  <div id="page-content"></div>
+
+</main>
 
 <script type="module">
 import { api } from '../assets/js/api.js';
 
-const successMsg  = document.getElementById('success-msg');
-const errorMsg    = document.getElementById('error-msg');
-const pageContent = document.getElementById('page-content');
+const bannerSuccess = document.getElementById('banner-success');
+const bannerError   = document.getElementById('banner-error');
+const pageContent   = document.getElementById('page-content');
 
 const params = new URLSearchParams(location.search);
 const userId = parseInt(params.get('id'));
 
 if (!userId || isNaN(userId)) {
-    document.body.innerHTML = 'Ungültige User-ID.';
-    throw new Error('Invalid user ID');
+  document.body.innerHTML = '<main class="admin-main"><p>Ungültige User-ID.</p></main>';
+  throw new Error('Invalid user ID');
 }
 
 let user, allGroups, memberships;
 try {
-    const [userRes, groupsRes, membersRes] = await Promise.all([
-        api.get('/ajax/users.php',         { id: userId }),
-        api.get('/ajax/groups.php'),
-        api.get('/ajax/group-members.php', { user_id: userId }),
-    ]);
+  const [userRes, groupsRes, membersRes] = await Promise.all([
+    api.get('/ajax/users.php',         { id: userId }),
+    api.get('/ajax/groups.php'),
+    api.get('/ajax/group-members.php', { user_id: userId }),
+  ]);
 
-    if (!userRes.success) {
-        document.body.innerHTML = 'Nutzer nicht gefunden.';
-        throw new Error('User not found');
-    }
+  if (!userRes.success) {
+    document.body.innerHTML = '<main class="admin-main"><p>Nutzer nicht gefunden.</p></main>';
+    throw new Error('User not found');
+  }
 
-    user        = userRes.data;
-    allGroups   = groupsRes.data  ?? [];
-    memberships = membersRes.data ?? [];
+  user        = userRes.data;
+  allGroups   = groupsRes.data  ?? [];
+  memberships = membersRes.data ?? [];
 } catch (e) {
-    document.body.innerHTML = 'API nicht erreichbar.';
-    throw e;
+  document.body.innerHTML = '<main class="admin-main"><p>API nicht erreichbar.</p></main>';
+  throw e;
 }
 
 renderPage();
 
-function validatePassword(password) {
-    if (password.length < 8)             return 'Passwort muss mindestens 8 Zeichen lang sein.';
-    if (!/[^A-Za-z0-9]/.test(password))  return 'Passwort muss mindestens ein Sonderzeichen enthalten.';
-    return null;
+function showSuccess(msg) {
+  bannerSuccess.textContent = msg;
+  bannerSuccess.classList.add('visible');
+  bannerError.classList.remove('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function renderPage() {
-    const memberGroupIds = new Set(memberships.map(m => m.group_id));
-
-    const groupOptions = allGroups
-        .filter(g => !memberGroupIds.has(g.group_id))
-        .map(g => `<option value="${parseInt(g.group_id)}">${escHtml(g.name)}</option>`)
-        .join('');
-
-    const memberRows = memberships.map(m => {
-        const group = allGroups.find(g => g.group_id === m.group_id);
-        return `
-            <tr>
-                <td>${escHtml(String(m.group_id))}</td>
-                <td>${escHtml(group?.name ?? '—')}</td>
-                <td>
-                    <button type="button" data-groupid="${parseInt(m.group_id)}" class="remove-group">
-                        Entfernen
-                    </button>
-                </td>
-            </tr>`;
-    }).join('');
-
-    pageContent.innerHTML = `
-        <h2>Profil verwalten</h2>
-        <form id="update-form">
-            <label>User ID:</label><br>
-            <input type="text" value="${escHtml(String(user.user_id))}" disabled><br>
-
-            <label>E-Mail Adresse:</label><br>
-            <input type="email" name="email" value="${escHtml(user.email)}" required><br><br>
-
-            <label>Passwort (leer lassen = unverändert):</label><br>
-            <input type="password" name="password"><br><br>
-
-            <button type="submit" name="update">Speichern</button>
-        </form>
-
-        <hr>
-
-        <h3>Gruppen</h3>
-        <table border="1" cellpadding="8" style="border-collapse: collapse; font-family: sans-serif;">
-            <thead style="background-color: #f2f2f2;">
-                <tr><th>Group ID</th><th>Name</th><th>Action</th></tr>
-            </thead>
-            <tbody id="groups-tbody">
-                ${memberRows || '<tr><td colspan="3">Keine Gruppenmitgliedschaften.</td></tr>'}
-            </tbody>
-        </table>
-        <br>
-        <form id="add-group-form">
-            <select name="group_id" ${groupOptions ? '' : 'disabled'}>
-                ${groupOptions || '<option>Alle Gruppen bereits zugewiesen</option>'}
-            </select>
-            <button type="submit" ${groupOptions ? '' : 'disabled'}>Gruppe hinzufügen</button>
-        </form>
-
-        <hr>
-
-        <h3>Gefahrenbereich</h3>
-        <p>Das Löschen eines Nutzers kann nicht rückgängig gemacht werden.</p>
-        <form id="delete-form">
-            <button type="submit" name="delete_user">Nutzer unwiderruflich löschen</button>
-        </form>
-    `;
-
-    document.getElementById('update-form').addEventListener('submit', handleUpdate);
-    document.getElementById('add-group-form').addEventListener('submit', handleAddGroup);
-    document.getElementById('delete-form').addEventListener('submit', handleDelete);
-
-    document.querySelectorAll('.remove-group').forEach(btn => {
-        btn.addEventListener('click', () => handleRemoveGroup(parseInt(btn.dataset.groupid)));
-    });
-}
-
-async function handleUpdate(e) {
-    e.preventDefault();
-    clearMessages();
-
-    const email    = e.target.email.value.trim();
-    const password = e.target.password.value;
-
-    if (password) {
-        const pwError = validatePassword(password);
-        if (pwError) {
-            errorMsg.textContent = pwError;
-            return;
-        }
-    }
-
-    const payload = { id: userId, email };
-    if (password) payload.password = password;
-
-    try {
-        const update = await api.post('/ajax/users/update.php', payload);
-        if (update.success) {
-            successMsg.textContent = 'Profil erfolgreich aktualisiert.';
-            e.target.password.value = '';
-        } else {
-            errorMsg.textContent = update.error ?? 'Aktualisierung fehlgeschlagen.';
-        }
-    } catch (e) {
-        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
-    }
-}
-
-async function handleAddGroup(e) {
-    e.preventDefault();
-    clearMessages();
-
-    const groupId = parseInt(e.target.group_id.value);
-
-    try {
-        const res = await api.post('/ajax/group-members/create.php', {
-            user_id:  userId,
-            group_id: groupId,
-        });
-
-        if (res.success) {
-            memberships.push({ user_id: userId, group_id: groupId });
-            renderPage();
-            successMsg.textContent = 'Gruppe hinzugefügt.';
-        } else {
-            errorMsg.textContent = res.error ?? 'Hinzufügen fehlgeschlagen.';
-        }
-    } catch (e) {
-        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
-    }
-}
-
-async function handleRemoveGroup(groupId) {
-    clearMessages();
-
-    try {
-        const res = await api.post('/ajax/group-members/delete.php', {
-            user_id:  userId,
-            group_id: groupId,
-        });
-
-        if (res.success) {
-            memberships = memberships.filter(m => m.group_id !== groupId);
-            renderPage();
-            successMsg.textContent = 'Gruppe entfernt.';
-        } else {
-            errorMsg.textContent = res.error ?? 'Entfernen fehlgeschlagen.';
-        }
-    } catch (e) {
-        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
-    }
-}
-
-async function handleDelete(e) {
-    e.preventDefault();
-
-    if (!confirm('Bist du dir wirklich sicher, dass du diesen User unwiderruflich löschen möchtest?')) {
-        return;
-    }
-
-    clearMessages();
-
-    try {
-        const sessions = await api.get('/ajax/sessions.php', { user_id: userId });
-        for (const session of sessions.data ?? []) {
-            await api.post('/ajax/sessions/delete.php', { id: session.session_id });
-        }
-
-        for (const membership of memberships) {
-            await api.post('/ajax/group-members/delete.php', {
-                user_id:  membership.user_id,
-                group_id: membership.group_id,
-            });
-        }
-
-        const grantedVisibilities = await api.get('/ajax/track-visible-users.php', { user_id: userId });
-        for (const visibility of grantedVisibilities.data ?? []) {
-            await api.post('/ajax/track-visible-users/delete.php', visibility);
-        }
-
-        const ownedTracks = await api.get('/ajax/routes.php', { owner_user_id: userId });
-        for (const track of ownedTracks.data ?? []) {
-            const trackId = track.route_id;
-
-            const userVis = await api.get('/ajax/track-visible-users.php', { track_id: trackId });
-            for (const visibility of userVis.data ?? []) {
-                await api.post('/ajax/track-visible-users/delete.php', visibility);
-            }
-
-            const groupVis = await api.get('/ajax/track-visible-groups.php', { track_id: trackId });
-            for (const visibility of groupVis.data ?? []) {
-                await api.post('/ajax/track-visible-groups/delete.php', visibility);
-            }
-
-            await api.post('/ajax/routes/delete.php', { id: trackId });
-        }
-
-        const deletion = await api.post('/ajax/users/delete.php', { id: userId });
-
-        if (deletion.success) {
-            window.location.href = 'adminpanel.html?msg=deleted';
-        } else {
-            errorMsg.textContent = 'Löschung fehlgeschlagen: ' + (deletion.error ?? 'Unbekannter Fehler.');
-        }
-    } catch (e) {
-        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
-    }
+function showError(msg) {
+  bannerError.textContent = msg;
+  bannerError.classList.add('visible');
+  bannerSuccess.classList.remove('visible');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function clearMessages() {
-    successMsg.textContent = '';
-    errorMsg.textContent   = '';
+  bannerSuccess.classList.remove('visible');
+  bannerError.classList.remove('visible');
+}
+
+function validatePassword(password) {
+  if (password.length < 8)            return 'Passwort muss mindestens 8 Zeichen lang sein.';
+  if (!/[^A-Za-z0-9]/.test(password)) return 'Passwort muss mindestens ein Sonderzeichen enthalten.';
+  return null;
+}
+
+function renderPage() {
+  const memberGroupIds = new Set(memberships.map(m => m.group_id));
+
+  const groupOptions = allGroups
+    .filter(g => !memberGroupIds.has(g.group_id))
+    .map(g => `<option value="${parseInt(g.group_id)}">${escHtml(g.name)}</option>`)
+    .join('');
+
+  const memberRowsTable = memberships.map(m => {
+    const group = allGroups.find(g => g.group_id === m.group_id);
+    return `
+      <tr>
+        <td><span class="id-badge">${escHtml(String(m.group_id))}</span></td>
+        <td>${escHtml(group?.name ?? '—')}</td>
+        <td>
+          <button type="button" class="btn btn-danger btn-sm remove-group"
+            data-groupid="${parseInt(m.group_id)}">Entfernen</button>
+        </td>
+      </tr>`;
+  }).join('');
+
+  const memberCardsStack = memberships.map(m => {
+    const group = allGroups.find(g => g.group_id === m.group_id);
+    return `
+      <div class="stack-card">
+        <div class="stack-card__row">
+          <span class="stack-card__label">ID</span>
+          <span class="stack-card__value id-badge">${escHtml(String(m.group_id))}</span>
+        </div>
+        <div class="stack-card__row">
+          <span class="stack-card__label">Name</span>
+          <span class="stack-card__value">${escHtml(group?.name ?? '—')}</span>
+        </div>
+        <div class="stack-card__actions">
+          <button type="button" class="btn btn-danger btn-sm remove-group"
+            data-groupid="${parseInt(m.group_id)}">Entfernen</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  pageContent.innerHTML = `
+    <div class="card">
+      <div class="card__header"><span class="card__title">Profil</span></div>
+      <div class="card__body">
+        <form id="update-form">
+          <div class="form-group">
+            <label>User ID</label>
+            <input type="text" value="${escHtml(String(user.user_id))}" disabled>
+          </div>
+          <div class="form-group">
+            <label for="email">E-Mail Adresse</label>
+            <input type="email" name="email" id="email" value="${escHtml(user.email)}" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Passwort <span class="muted" style="text-transform:none;font-weight:400;">(leer lassen = unverändert)</span></label>
+            <input type="password" name="password" id="password" placeholder="Neues Passwort">
+          </div>
+          <button type="submit" class="btn btn-primary">Speichern</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card__header"><span class="card__title">Gruppen</span></div>
+      <div class="card__body" style="padding:0;">
+        <table class="admin-table">
+          <thead>
+            <tr><th>ID</th><th>Name</th><th>Action</th></tr>
+          </thead>
+          <tbody id="groups-tbody">
+            ${memberRowsTable || '<tr><td colspan="3" class="muted" style="padding:1rem;">Keine Gruppenmitgliedschaften.</td></tr>'}
+          </tbody>
+        </table>
+        <div id="groups-stack" class="card-stack" style="padding:1rem;">
+          ${memberCardsStack || '<p class="muted">Keine Gruppenmitgliedschaften.</p>'}
+        </div>
+      </div>
+      <div class="card__body" style="border-top:1px solid var(--border);">
+        <form id="add-group-form">
+          <div class="inline-add">
+            <div class="form-group">
+              <label>Gruppe hinzufügen</label>
+              <select name="group_id" ${groupOptions ? '' : 'disabled'}>
+                ${groupOptions || '<option>Alle Gruppen bereits zugewiesen</option>'}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" ${groupOptions ? '' : 'disabled'}>
+              Hinzufügen
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card card--danger">
+      <div class="card__header"><span class="card__title">Gefahrenbereich</span></div>
+      <div class="card__body">
+        <p style="color:var(--muted);margin-bottom:1rem;font-size:0.9rem;">
+          Das Löschen eines Nutzers kann nicht rückgängig gemacht werden.
+        </p>
+        <form id="delete-form">
+          <button type="submit" class="btn btn-danger">Nutzer unwiderruflich löschen</button>
+        </form>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('update-form').addEventListener('submit', handleUpdate);
+  document.getElementById('add-group-form').addEventListener('submit', handleAddGroup);
+  document.getElementById('delete-form').addEventListener('submit', handleDelete);
+  document.querySelectorAll('.remove-group').forEach(btn => {
+    btn.addEventListener('click', () => handleRemoveGroup(parseInt(btn.dataset.groupid)));
+  });
+}
+
+async function handleUpdate(e) {
+  e.preventDefault();
+  clearMessages();
+
+  const email    = e.target.email.value.trim();
+  const password = e.target.password.value;
+
+  if (password) {
+    const pwError = validatePassword(password);
+    if (pwError) { showError(pwError); return; }
+  }
+
+  const payload = { id: userId, email };
+  if (password) payload.password = password;
+
+  try {
+    const res = await api.post('/ajax/users/update.php', payload);
+    if (res.success) {
+      showSuccess('Profil erfolgreich aktualisiert.');
+      e.target.password.value = '';
+    } else {
+      showError(res.error ?? 'Aktualisierung fehlgeschlagen.');
+    }
+  } catch (e) {
+    showError('API-Kommunikationsfehler: ' + e.message);
+  }
+}
+
+async function handleAddGroup(e) {
+  e.preventDefault();
+  clearMessages();
+  const groupId = parseInt(e.target.group_id.value);
+  try {
+    const res = await api.post('/ajax/group-members/create.php', { user_id: userId, group_id: groupId });
+    if (res.success) {
+      memberships.push({ user_id: userId, group_id: groupId });
+      renderPage();
+      showSuccess('Gruppe hinzugefügt.');
+    } else {
+      showError(res.error ?? 'Hinzufügen fehlgeschlagen.');
+    }
+  } catch (e) {
+    showError('API-Kommunikationsfehler: ' + e.message);
+  }
+}
+
+async function handleRemoveGroup(groupId) {
+  clearMessages();
+  try {
+    const res = await api.post('/ajax/group-members/delete.php', { user_id: userId, group_id: groupId });
+    if (res.success) {
+      memberships = memberships.filter(m => m.group_id !== groupId);
+      renderPage();
+      showSuccess('Gruppe entfernt.');
+    } else {
+      showError(res.error ?? 'Entfernen fehlgeschlagen.');
+    }
+  } catch (e) {
+    showError('API-Kommunikationsfehler: ' + e.message);
+  }
+}
+
+async function handleDelete(e) {
+  e.preventDefault();
+  if (!confirm('Bist du dir wirklich sicher, dass du diesen User unwiderruflich löschen möchtest?')) return;
+  clearMessages();
+
+  try {
+    const sessions = await api.get('/ajax/sessions.php', { user_id: userId });
+    for (const session of sessions.data ?? []) {
+      await api.post('/ajax/sessions/delete.php', { id: session.session_id });
+    }
+
+    for (const membership of memberships) {
+      await api.post('/ajax/group-members/delete.php', {
+        user_id: membership.user_id, group_id: membership.group_id,
+      });
+    }
+
+    const grantedVisibilities = await api.get('/ajax/track-visible-users.php', { user_id: userId });
+    for (const v of grantedVisibilities.data ?? []) {
+      await api.post('/ajax/track-visible-users/delete.php', v);
+    }
+
+    const ownedTracks = await api.get('/ajax/routes.php', { owner_user_id: userId });
+    for (const track of ownedTracks.data ?? []) {
+      const trackId = track.route_id;
+      const userVis = await api.get('/ajax/track-visible-users.php', { track_id: trackId });
+      for (const v of userVis.data ?? []) {
+        await api.post('/ajax/track-visible-users/delete.php', v);
+      }
+      const groupVis = await api.get('/ajax/track-visible-groups.php', { track_id: trackId });
+      for (const v of groupVis.data ?? []) {
+        await api.post('/ajax/track-visible-groups/delete.php', v);
+      }
+      await api.post('/ajax/routes/delete.php', { id: trackId });
+    }
+
+    const deletion = await api.post('/ajax/users/delete.php', { id: userId });
+    if (deletion.success) {
+      window.location.href = 'adminpanel.html?msg=deleted';
+    } else {
+      showError('Löschung fehlgeschlagen: ' + (deletion.error ?? 'Unbekannter Fehler.'));
+    }
+  } catch (e) {
+    showError('API-Kommunikationsfehler: ' + e.message);
+  }
 }
 
 function escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 </script>
 

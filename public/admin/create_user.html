@@ -1,70 +1,109 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Create User</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nutzer anlegen</title>
+  <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
 
-<form id="create-form">
-    <label for="email">E-Mail:</label><br>
-    <input type="email" id="email" name="email" required><br><br>
+<header class="admin-header">
+  <span class="admin-header__badge">Admin</span>
+  <nav class="admin-header__breadcrumb">
+    <a href="adminpanel.html">User Management</a>
+    <span>›</span>
+    <strong>Nutzer anlegen</strong>
+  </nav>
+</header>
 
-    <label for="password">Passwort:</label><br>
-    <input type="password" id="password" name="password" required><br><br>
+<main class="admin-main">
 
-    <input type="submit" value="Nutzer anlegen">
-</form>
+  <div id="banner-success" class="banner banner--success"></div>
+  <div id="banner-error"   class="banner banner--error"></div>
 
-<div id="feedback"></div>
+  <div class="card">
+    <div class="card__header">
+      <span class="card__title">Neuen Nutzer erstellen</span>
+    </div>
+    <div class="card__body">
+      <form id="create-form">
+
+        <div class="form-group">
+          <label for="email">E-Mail Adresse</label>
+          <input type="email" id="email" name="email" placeholder="nutzer@beispiel.de" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Passwort</label>
+          <input type="password" id="password" name="password" placeholder="Mindestens 8 Zeichen + Sonderzeichen" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Nutzer anlegen</button>
+
+      </form>
+    </div>
+  </div>
+
+</main>
 
 <script type="module">
 import { api } from '../assets/js/api.js';
 
-const form     = document.getElementById('create-form');
-const feedback = document.getElementById('feedback');
+const form          = document.getElementById('create-form');
+const bannerSuccess = document.getElementById('banner-success');
+const bannerError   = document.getElementById('banner-error');
+
+function showSuccess(msg) {
+  bannerSuccess.textContent = msg;
+  bannerSuccess.classList.add('visible');
+  bannerError.classList.remove('visible');
+}
+
+function showError(msg) {
+  bannerError.textContent = msg;
+  bannerError.classList.add('visible');
+  bannerSuccess.classList.remove('visible');
+}
+
+function validatePassword(password) {
+  if (password.length < 8)            return 'Passwort muss mindestens 8 Zeichen lang sein.';
+  if (!/[^A-Za-z0-9]/.test(password)) return 'Passwort muss mindestens ein Sonderzeichen enthalten.';
+  return null;
+}
 
 form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    feedback.innerHTML = '';
+  e.preventDefault();
 
-    const email    = form.email.value.trim();
-    const password = form.password.value;
+  const email    = form.email.value.trim();
+  const password = form.password.value;
 
-    if (!email || !password) {
-        showFeedback('error', 'E-Mail und Passwort sind erforderlich.');
-        return;
+  if (!email || !password) {
+    showError('E-Mail und Passwort sind erforderlich.');
+    return;
+  }
+
+  const pwError = validatePassword(password);
+  if (pwError) { showError(pwError); return; }
+
+  try {
+    const createResponse = await api.post('/ajax/users/create.php', { email, password });
+
+    if (createResponse.success && createResponse.user_id) {
+      const verification = await api.get('/ajax/users.php', { id: createResponse.user_id });
+      if (verification.success) {
+        showSuccess(`Nutzer erfolgreich angelegt (ID: ${parseInt(createResponse.user_id)}).`);
+        form.reset();
+      } else {
+        showError('Datensatz angelegt, aber Verifikation fehlgeschlagen.');
+      }
+    } else {
+      showError(createResponse.error ?? 'Unbekannter Fehler.');
     }
-
-    try {
-        const createResponse = await api.post('/ajax/users/create.php', { email, password });
-
-        if (createResponse.success && createResponse.user_id) {
-            const verification = await api.get('/ajax/users.php', { id: createResponse.user_id });
-
-            if (verification.success) {
-                showFeedback('success', `Nutzer erfolgreich angelegt (ID: ${parseInt(createResponse.user_id)}).`);
-                form.reset();
-            } else {
-                showFeedback('error', 'Datensatz angelegt, aber Verifikation fehlgeschlagen.');
-            }
-        } else {
-            showFeedback('error', createResponse.error ?? 'Unbekannter Fehler.');
-        }
-    } catch (e) {
-        showFeedback('error', 'API nicht erreichbar.');
-    }
+  } catch (e) {
+    showError('API nicht erreichbar.');
+  }
 });
-
-function showFeedback(type, message) {
-    feedback.innerHTML = `<div style="color: ${type === 'success' ? 'green' : 'red'};">${escHtml(message)}</div>`;
-}
-
-function escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
 </script>
 
 </body>

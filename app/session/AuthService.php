@@ -1,13 +1,18 @@
 <?php
 
+session_set_cookie_params([
+'secure' => true,
+'httponly' => true,
+'samesite' => 'Strict'
+]);
 session_start();
 
 // funktion zum überprüfen ob der nutzer eingeloggt ist und eine session hat, ansonsten weiterleitung zur login seite
 function isloggedin ()
 {
-if(!isset($_SESSION['user_name'] ) || $_SESSION['user_loggedin'] !== true) {
+if(!isset($_SESSION['user_name'])) {
     header("Location: /pacenote24/public/login.html?status=not_logged_in");
-    exit; 
+    exit;
 
 }
 }
@@ -17,8 +22,9 @@ function isinactive() {
 
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/UserService.php';
-
+    require_once __DIR__ . '/../services/UserService.php';
+    $config = require __DIR__ . '/../config/config.php';
+    $timeout = NOW() + $config['session']['timeout_seconds'];
     // E-Mail und Passwort aus dem Formular holen (mit Fallback)
     $email = $_POST['email'] ?? '';
     $password = $_POST['pass'] ?? '';
@@ -31,6 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // UserService instanziieren
     $userService = new UserService();
+    // SessionService instanzieren
+    $sessionService = new SessionService();
 
     // Benutzer-Daten anhand der E-Mail aus API holen
     $user = $userService->getUserByEmail($email);
@@ -45,9 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Session-Variablen deklarieren
             session_regenerate_id(true);
             $_SESSION['user_name'] = $user['email']; 
+            $_SESSION['account_id'] = $user['user_id'];
             
-            $_SESSION['account_id'] = $user['user_id']; 
-            
+            // Session Timeout initiieren
+            $sessionService->createSession($user['user_id']);
+
             // weiterleiten
             header("Location: /pacenote24/public/login.html?status=success");
             exit;

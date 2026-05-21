@@ -84,6 +84,8 @@ body {
   color: var(--muted);
   text-decoration: none;
   transition: color 0.2s;
+  border-bottom: 1px solid var(--muted);
+  padding-bottom: 1px;
 }
 
 .admin-header__breadcrumb a:hover {

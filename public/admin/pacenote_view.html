@@ -64,6 +64,8 @@ try {
     throw new Error(listResponse.error ?? 'Unknown error');
   }
 
+  listResponse.data.sort((a, b) => a.route_id - b.route_id);
+
   if (listResponse.data.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" class="muted">Keine Routen vorhanden.</td></tr>';
     stack.innerHTML = '<p class="muted">Keine Routen vorhanden.</p>';
@@ -113,6 +115,8 @@ try {
     const b = document.getElementById('banner-success');
     b.textContent = 'Route wurde erfolgreich gelöscht.';
     b.classList.add('visible');
+    history.replaceState(null, '', location.pathname);
+    setTimeout(() => b.classList.remove('visible'), 4000);
   }
 
 } catch (e) {

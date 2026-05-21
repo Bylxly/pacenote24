@@ -272,11 +272,6 @@ async function handleDelete(e) {
   clearMessages();
 
   try {
-    const sessions = await api.get('/ajax/sessions.php', { user_id: userId });
-    for (const session of sessions.data ?? []) {
-      await api.post('/ajax/sessions/delete.php', { id: session.session_id });
-    }
-
     for (const membership of memberships) {
       await api.post('/ajax/group-members/delete.php', {
         user_id: membership.user_id, group_id: membership.group_id,

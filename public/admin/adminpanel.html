@@ -70,6 +70,8 @@ try {
     throw new Error(usersRes.error ?? 'Unknown error');
   }
 
+  usersRes.data.sort((a, b) => a.user_id - b.user_id);
+
   const groups  = groupsRes.data  ?? [];
   const members = membersRes.data ?? [];
 
@@ -129,6 +131,8 @@ try {
     const b = document.getElementById('banner-success');
     b.textContent = 'Nutzer wurde erfolgreich gelöscht.';
     b.classList.add('visible');
+    history.replaceState(null, '', location.pathname);
+    setTimeout(() => b.classList.remove('visible'), 4000);
   }
 
 } catch (e) {

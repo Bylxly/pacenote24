@@ -99,6 +99,15 @@ class SessionService
         return $stmt->rowCount() > 0;
     }
 
+    public function isSessionValid(string $id): bool
+    {
+        $stmt = $this->db->prepare(
+            'SELECT 1 FROM sessions WHERE session_id = :id AND timeout >= NOW()'
+        );
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() !== false;
+    }
+
     public function deleteSession(string $id): bool
     {
         $stmt = $this->db->prepare(

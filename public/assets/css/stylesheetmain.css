@@ -1,0 +1,174 @@
+/* ── VARIABLEN ── */
+:root {
+  --navy: #0f1623;
+  --navy-mid: #1a2436;
+  --navy-light: #253047;
+  --accent: #3b82f6;
+  --accent-glow: rgba(59,130,246,0.18);
+  --accent-hover: #60a5fa;
+  --border: rgba(255,255,255,0.08);
+  --text: #e8edf5; /* Dein Weiß-Ton */
+  --muted: #7a8ba6;
+}
+
+/* ── BASIS ── */
+body {
+  background: var(--navy);
+  color: var(--text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+  background: var(--navy-mid) !important;
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+}
+
+.navbar-brand { 
+  font-weight: 700; 
+  color: var(--text) !important; 
+}
+
+.nav-link { 
+  color: var(--muted) !important; 
+  transition: color 0.2s;
+}
+
+.nav-link:hover, .nav-link.active { 
+  color: var(--accent-hover) !important; 
+}
+
+/* ── KARTEN & LAYOUT BLÖCKE ── */
+.card {
+  background: var(--navy-mid) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  color: var(--text) !important;
+}
+
+.card-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* ── TEXTFARBEN (REINWEISS) ── */
+h1, h2, h3, h4, h5, h6, 
+.card-title, 
+.fw-bold, 
+span, 
+p {
+  color: var(--text) !important;
+}
+
+/* Labels über den Eingabefeldern */
+.form-label {
+  color: var(--text) !important; 
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.9;
+}
+
+.text-muted, .small {
+  color: var(--muted) !important;
+}
+
+/* ── FORMULAR ELEMENTE ── */
+.form-control {
+  background: var(--navy-light) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  border-radius: 10px;
+  padding: 0.7rem;
+}
+
+.form-control::placeholder {
+  color: var(--muted) !important;
+  opacity: 0.5;
+}
+
+.form-control:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-glow) !important;
+  outline: none;
+}
+
+/* ── BUTTONS ── */
+.btn-primary {
+  background-color: var(--accent) !important;
+  border: none !important;
+  border-radius: 10px;
+  padding: 0.75rem;
+  font-weight: 600;
+  color: #ffffff !important;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover) !important;
+  transform: translateY(-1px);
+}
+
+.btn-outline-secondary {
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+.btn-outline-secondary:hover {
+  background: var(--navy-light) !important;
+}
+
+/* ── KARTE (IFRAME) ── */
+.ratio {
+  border-radius: 0 0 14px 14px;
+  overflow: hidden;
+  background-color: #f8f9fa; /* Heller Hintergrund, falls Karte lädt */
+}
+
+iframe {
+  border: none;
+  /* Filter entfernt -> Karte bleibt im originalen hellen Design */
+  filter: none !important; 
+}
+
+#kartenContainer {
+  background: var(--navy-mid);
+}
+
+/* Navbar Burger-Menu Fix */
+.navbar-toggler { border-color: var(--border) !important; }
+.navbar-toggler-icon { filter: invert(1); }
+
+
+
+/* Layout-Größen anpassen */
+@media (min-width: 1920px) { /* Nur für Desktop (Large Screens) */
+    
+    /* Linker Block (Eingabe) */
+    .col-lg-4 {
+        width: 30% !important; /* Hier die Breite für links wählen */
+    }
+
+    /* Rechter Block (Karte) */
+    .col-lg-8 {
+        width: 70% !important; /* Hier die Breite für rechts wählen */
+    }
+}
+
+/* Den Hauptcontainer auf 90% der Bildschirmbreite bringen */
+.container {
+    max-width: 90% !important;
+    width: 90% !important;
+}
+
+/* Falls du den Platz noch besser nutzen willst (weniger Rand oben/unten) */
+.py-4 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+}

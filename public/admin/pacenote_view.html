@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pacenote Management</title>
+  <link rel="stylesheet" href="../assets/css/stylesheetmain.css">
   <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
@@ -64,7 +65,7 @@ try {
     throw new Error(listResponse.error ?? 'Unknown error');
   }
 
-  listResponse.data.sort((a, b) => a.route_id - b.route_id);
+  listResponse.data.sort((a, b) => b.route_id - a.route_id);
 
   if (listResponse.data.length === 0) {
     tbody.innerHTML = '<tr><td colspan="5" class="muted">Keine Routen vorhanden.</td></tr>';

@@ -1,43 +1,19 @@
 <?php
-
-session_set_cookie_params([
-'secure' => true,
-'httponly' => true,
-'samesite' => 'Strict'
-]);
-session_start();
-
-// funktion zum überprüfen ob der nutzer eingeloggt ist und eine session hat, ansonsten weiterleitung zur login seite
-function isloggedin ()
-{
-if(!isset($_SESSION['user_name'])) {
-    header("Location: /pacenote24/public/login.html?status=not_logged_in");
-    exit;
-
-}
-}
-
-function isinactive() {
-
-
-}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/../services/UserService.php';
-    $config = require __DIR__ . '/../config/config.php';
-    $timeout = NOW() + $config['session']['timeout_seconds'];
+    require_once __DIR__ . '/../services/SessionService.php';
     // E-Mail und Passwort aus dem Formular holen (mit Fallback)
     $email = $_POST['email'] ?? '';
     $password = $_POST['pass'] ?? '';
 
     // Prüfung ob Daten gesendet wurden
     if (empty($email) || empty($password)) {
-        header("Location: login.html?status=error_empty");
+        header("Location: /pacenote24/public/login.html?status=error_empty");
         exit;
     }
 
-    // UserService instanziieren
+    // UserService und SessionService instanziieren
     $userService = new UserService();
-    // SessionService instanzieren
     $sessionService = new SessionService();
 
     // Benutzer-Daten anhand der E-Mail aus API holen
@@ -50,13 +26,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (password_verify($password, $user['pw_hash'])) {
             // Passwort ist korrekt!
             
-            // Session-Variablen deklarieren
-            session_regenerate_id(true);
+            // Session mit DB session ID neu aufbauen
+            session_destroy();
+            $dbSessionId = $sessionService->createSession($user['user_id']);
+            session_set_cookie_params([
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => 'Strict'
+                ]);
+            session_id($dbSessionId);
+            session_start();
             $_SESSION['user_name'] = $user['email']; 
             $_SESSION['account_id'] = $user['user_id'];
-            
-            // Session Timeout initiieren
-            $sessionService->createSession($user['user_id']);
+                    
 
             // weiterleiten
             header("Location: /pacenote24/public/login.html?status=success");

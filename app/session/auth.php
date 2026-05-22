@@ -3,6 +3,16 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../services/UserService.php';
 require_once __DIR__ . '/../services/GroupMemberService.php';
+require_once __DIR__ . '/../services/SessionService.php';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_set_cookie_params([
+        'secure'   => true,
+        'httponly' => true,
+        'samesite' => 'Strict'
+        ]);
+    session_start();
+}
 
 # Gibt zurück ob das session token noch aktuell ist
 function isAuthenticated(): bool

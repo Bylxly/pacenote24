@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../../app/services/GroupMemberService.php';
+require_once __DIR__ . '/../../../app/services/TrackVisibleUserService.php';
 require_once __DIR__ . '/../../../app/helpers/Request.php';
 
 
@@ -9,19 +9,19 @@ header('Content-Type: application/json');
 
 Request::requireMethod('POST');
 $body = Request::getBody();
-Request::requireFields($body, ['user_id', 'group_id']);
+Request::requireFields($body, ['user_id', 'route_id']);
 
 try {
-    $service = new GroupMemberService();
+    $service = new TrackVisibleUserService();
 
-    Request::requirePositiveInt($body, 'group_id');
     Request::requirePositiveInt($body, 'user_id');
+    Request::requirePositiveInt($body, 'route_id');
 
-    $deleted = $service->deleteGroupMember($body['user_id'], $body['group_id']);
+    $deleted = $service->deleteTrackVisibleUser($body['user_id'], $body['route_id']);
 
     if (!$deleted) {
         http_response_code(404);
-        echo json_encode(['success' => false, 'error' => 'Gruppenmitglied nicht gefunden']);
+        echo json_encode(['success' => false, 'error' => 'Gruppen-User-Verbindung nicht gefunden']);
         exit;
     }
 

@@ -1,8 +1,7 @@
 <?php
-
+require_once __DIR__ . '/../services/UserService.php';
+require_once __DIR__ . '/../services/SessionService.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/UserService.php';
-    require_once __DIR__ . '/SessionService.php';
     // E-Mail und Passwort aus dem Formular holen (mit Fallback)
     $email = $_POST['email'] ?? '';
     $password = $_POST['pass'] ?? '';

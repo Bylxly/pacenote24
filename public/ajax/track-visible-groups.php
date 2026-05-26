@@ -4,6 +4,9 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../app/services/TrackVisibleGroupService.php';
 require_once __DIR__ . '/../../app/helpers/Request.php';
 
+require_once __DIR__ . '/../../app/session/guard.php';
+requireAuth_API();
+
 header('Content-Type: application/json');
 
 try {
@@ -29,6 +32,7 @@ try {
             echo json_encode(['success' => false, 'error' => 'Keine Gruppen-Route-Verbindungen gefunden']);
             exit;
         }
+        echo json_encode(['success' => true, 'data' => $members]);
     } else {
         $group_members = $service->getAllTrackVisibleGroups();
         echo json_encode(['success' => true, 'data' => $group_members]);

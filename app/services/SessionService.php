@@ -54,6 +54,12 @@ class SessionService
      */
     public function createSession(int $userId): ?string
     {
+        // abgelaufene Sessions des Users löschen
+        $stmt = $this->db->prepare(
+            'DELETE FROM sessions WHERE user_id = :user_id AND timeout < NOW()'
+        );
+        $stmt->execute(['user_id' => $userId]);
+
         $sessionId = bin2hex(random_bytes(32));
         $stmt = $this->db->prepare(
             'INSERT INTO sessions (session_id, user_id, created_at, timeout)

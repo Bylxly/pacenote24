@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/auth.php';
-
+const ADMIN_ROLE_ID = 1;
 # Hilfsfunktion für nachfolgende funktionen
 function redirect(string $path): never
 {
@@ -27,7 +27,7 @@ function requireGuest(): void
 }
 
 # Für Seiten welche zugriffsbeschränkt auf eine Bestimmte Rolle sind
-function requireRole(string $role): void
+function requireRole(int $role): void
 {
     requireAuth();
 
@@ -39,7 +39,7 @@ function requireRole(string $role): void
 # Hilfsfunktion aus requireRole aber für Admin
 function requireAdmin(): void
 {
-    requireRole('Admins'); # Rolle wird wahrscheinlich umbenannt
+    requireRole(ADMIN_ROLE_ID); # Rolle wird wahrscheinlich umbenannt
 }
 
 # Prüft bei anfragen auf Athentifizierungsstatus
@@ -57,7 +57,7 @@ function requireAuth_API(): void
 function requireSelforAdmin(int $targetUserId): void
 {
     requireAuth_API();
-    if ($_SESSION['account_id'] !== $targetUserId && !hasRole('Admins')) {
+    if ($_SESSION['account_id'] !== $targetUserId && !hasRole(ADMIN_ROLE_ID)) {
         http_response_code(403);
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'error' => 'Fehlende Berechtigung', 'code' => 403]);

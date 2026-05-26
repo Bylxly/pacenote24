@@ -28,7 +28,7 @@ try {
     }
 
     // Prüfen ob eingeloggter User der Besitzer ist, oder Admin
-    if ($route['owner_user_id'] !== $_SESSION['account_id'] && !hasRole('Admins')) {
+    if ($route['owner_user_id'] !== $_SESSION['account_id'] && !hasRole(ADMIN_ROLE_ID)) {
         http_response_code(403);
         echo json_encode(['success' => false, 'error' => 'Keine Berechtigung']);
         exit;

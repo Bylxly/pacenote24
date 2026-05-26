@@ -284,18 +284,18 @@ async function handleDelete(e) {
       await api.post('/ajax/track-visible-users/delete.php', v);
     }
 
-    const ownedTracks = await api.get('/ajax/routes.php', { owner_user_id: userId });
-    for (const track of ownedTracks.data ?? []) {
-      const trackId = track.route_id;
-      const userVis = await api.get('/ajax/track-visible-users.php', { track_id: trackId });
+    const ownedRoutes = await api.get('/ajax/routes.php', { owner_user_id: userId });
+    for (const route of ownedRoutes.data ?? []) {
+      const routeId = route.route_id;
+      const userVis = await api.get('/ajax/track-visible-users.php', { route_id: routeId });
       for (const v of userVis.data ?? []) {
         await api.post('/ajax/track-visible-users/delete.php', v);
       }
-      const groupVis = await api.get('/ajax/track-visible-groups.php', { track_id: trackId });
+      const groupVis = await api.get('/ajax/track-visible-groups.php', { route_id: routeId });
       for (const v of groupVis.data ?? []) {
         await api.post('/ajax/track-visible-groups/delete.php', v);
       }
-      await api.post('/ajax/routes/delete.php', { id: trackId });
+      await api.post('/ajax/routes/delete.php', { id: routeId });
     }
 
     const deletion = await api.post('/ajax/users/delete.php', { id: userId });

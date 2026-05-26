@@ -50,7 +50,7 @@ function requireAuth_API(): void
     if (!isAuthenticated()) {
         http_response_code(401);
         header('Content-Type: application/json');
-        echo json_encode(['error' => 'Nicht authentisiert', 'code' => 401]);
+        echo json_encode(['success' => false, 'error' => 'Nicht authentisiert', 'code' => 401]);
         exit;
     }
 }
@@ -62,7 +62,7 @@ function requireSelforAdmin(int $targetUserId): void
     if ($_SESSION['account_id'] !== $targetUserId && !hasRole(ADMIN_ROLE_ID)) {
         http_response_code(403);
         header('Content-Type: application/json');
-        echo json_encode(['error' => 'Fehlende Berechtigung', 'code' => 403]);
+        echo json_encode(['success' => false, 'error' => 'Fehlende Berechtigung', 'code' => 403]);
         exit;
     }
 }

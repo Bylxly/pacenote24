@@ -19,9 +19,8 @@ function isAuthenticated(): bool
 {
     if (!isset($_SESSION['account_id']) || !isset($_SESSION['user_name'])) return FALSE;
     $sessionService = new SessionService();
-    $id = session_id();
-    if (!$sessionService->isSessionValid($id)) return FALSE;
-    $sessionService->extendSession($id);
+    if (!$sessionService->isSessionValid($_SESSION['token'])) return FALSE;
+    $sessionService->extendSession($_SESSION['token']);
     return TRUE;
 }
 

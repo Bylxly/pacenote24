@@ -12,6 +12,9 @@ $body = Request::getBody();
 Request::requireFields($body, ['id']);
 Request::requireAtLeastOneField($body, ['email', 'password']);
 
+require_once __DIR__ . '/../../../app/session/guard.php';
+requireSelforAdmin($body['id']);
+
 try {
     $service = new UserService();
 

@@ -5,11 +5,15 @@ require_once __DIR__ . '/../../../app/services/UserService.php';
 require_once __DIR__ . '/../../../app/helpers/Request.php';
 
 
+
 header('Content-Type: application/json');
 
 Request::requireMethod('POST');
 $body = Request::getBody();
 Request::requireFields($body, ['id']);
+
+require_once __DIR__ . '/../../../app/session/guard.php';
+requireSelforAdmin($body['id']);
 
 try {
     $service = new UserService();

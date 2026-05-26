@@ -4,6 +4,8 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../../app/services/RouteService.php';
 require_once __DIR__ . '/../../../app/helpers/Request.php';
 
+require_once __DIR__ . '/../../../app/session/guard.php';
+requireAuth_API();
 
 header('Content-Type: application/json');
 
@@ -16,6 +18,22 @@ try {
     $service = new RouteService();
 
     Request::requirePositiveInt($body, 'id');
+
+    // Route laden
+    $route = $service->getRouteById((int)$body['id']);
+
+    if ($route === null) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'error' => 'Route nicht gefunden']);
+        exit;
+    }
+
+    // Prüfen ob eingeloggter User der Besitzer ist, oder Admin
+    if ($route['owner_user_id'] !== $_SESSION['account_id'] && !hasRole('Admins')) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'error' => 'Keine Berechtigung']);
+        exit;
+    }
 
     $title = $body['title'] ?? null;
 

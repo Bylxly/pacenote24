@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Session mit DB session ID aufbauen
             $dbSessionId = $sessionService->createSession((int)$user['user_id']);
             session_set_cookie_params([
-                'secure' => false,
+                'secure' => true,
                 'httponly' => true,
                 'samesite' => 'Strict'
                 ]);

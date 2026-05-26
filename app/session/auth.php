@@ -7,7 +7,7 @@ require_once __DIR__ . '/../services/SessionService.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
-        'secure'   => false,
+        'secure'   => true,
         'httponly' => true,
         'samesite' => 'Strict'
         ]);

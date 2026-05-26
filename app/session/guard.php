@@ -14,7 +14,7 @@ function redirect(string $path): never
 function requireAuth(): void
 {
     if (!isAuthenticated()) {
-        redirect('/login.php');
+        redirect('/../../public/login.html?status=not_logged_in');
     }
 }
 
@@ -22,7 +22,7 @@ function requireAuth(): void
 function requireGuest(): void
 {
     if (isAuthenticated()) {
-        redirect('/index.php');
+        redirect('/../../public/index.php');
     }
 }
 
@@ -57,7 +57,7 @@ function requireAuth_API(): void
 function requireSelforAdmin(int $targetUserId): void
 {
     requireAuth_API();
-    if ($_SESSION['user_id'] !== $targetUserId && !hasRole('Admins')) {
+    if ($_SESSION['account_id'] !== $targetUserId && !hasRole('Admins')) {
         http_response_code(403);
         header('Content-Type: application/json');
         echo json_encode(['error' => 'Fehlende Berechtigung', 'code' => 403]);

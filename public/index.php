@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . '/../app/services/AuthService.php'; 
-isloggedin();
+
+require_once __DIR__ . '/../app/session/guard.php'; 
+requireAuth();
 
 ?>
 <!DOCTYPE html>

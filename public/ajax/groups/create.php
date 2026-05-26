@@ -4,6 +4,9 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../../app/services/GroupService.php';
 require_once __DIR__ . '/../../../app/helpers/Request.php';
 
+require_once __DIR__ . '/../../../app/session/guard.php';
+requireAdmin();
+
 header('Content-Type: application/json');
 
 Request::requireMethod('POST');

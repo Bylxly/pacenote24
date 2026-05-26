@@ -76,6 +76,7 @@ function validatePassword(password) {
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
+
   const email    = form.email.value.trim();
   const password = form.password.value;
 
@@ -91,13 +92,8 @@ form.addEventListener('submit', async (e) => {
     const createResponse = await api.post('/ajax/users/create.php', { email, password });
 
     if (createResponse.success && createResponse.user_id) {
-      const verification = await api.get('/ajax/users.php', { id: createResponse.user_id });
-      if (verification.success) {
-        showSuccess(`Nutzer erfolgreich angelegt (ID: ${parseInt(createResponse.user_id)}).`);
-        form.reset();
-      } else {
-        showError('Datensatz angelegt, aber Verifikation fehlgeschlagen.');
-      }
+      showSuccess(`Nutzer erfolgreich angelegt (ID: ${parseInt(createResponse.user_id)}).`);
+      form.reset();
     } else {
       showError(createResponse.error ?? 'Unbekannter Fehler.');
     }

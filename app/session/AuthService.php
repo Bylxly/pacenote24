@@ -26,31 +26,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (password_verify($password, $user['pw_hash'])) {
             // Passwort ist korrekt!
             
-            // Session mit DB session ID neu aufbauen
-            session_destroy();
+            // Session mit DB session ID aufbauen
             $dbSessionId = $sessionService->createSession($user['user_id']);
             session_set_cookie_params([
                 'secure' => true,
                 'httponly' => true,
                 'samesite' => 'Strict'
                 ]);
-            session_id($dbSessionId);
             session_start();
+            session_regenerate_id(true);
             $_SESSION['user_name'] = $user['email']; 
             $_SESSION['account_id'] = $user['user_id'];
-                    
+            $_SESSION['token'] = $dbSessionId;
+
 
             // weiterleiten
             header("Location: /pacenote24/public/login.html?status=success");
             exit;
         } else {
-            // Passwort inkorrekt
-            header("Location: /pacenote24/public/login.html?status=error_pw");
+            // Passwort inkorrekt (Geändert zu bad credentials da sich sonst rückschlüsse auf db einträge ziehen lassen)
+            header("Location: /pacenote24/public/login.html?status=error_bad_credentials");
             exit;
         }
     } else {
-        // Benutzer/Email existiert nicht in der Datenbank
-        header("Location: /pacenote24/public/login.html?status=error_username");
+        // Benutzer/Email existiert nicht in der Datenbank (Geändert zu bad credentials da sich sonst rückschlüsse auf db einträge ziehen lassen)
+        header("Location: /pacenote24/public/login.html?status=error_bad_credentials");
         exit;
     }
 }

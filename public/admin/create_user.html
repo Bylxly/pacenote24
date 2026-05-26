@@ -24,6 +24,12 @@ import { api } from '../assets/js/api.js';
 const form     = document.getElementById('create-form');
 const feedback = document.getElementById('feedback');
 
+function validatePassword(password) {
+    if (password.length < 8)             return 'Passwort muss mindestens 8 Zeichen lang sein.';
+    if (!/[^A-Za-z0-9]/.test(password))  return 'Passwort muss mindestens ein Sonderzeichen enthalten.';
+    return null;
+}
+
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     feedback.innerHTML = '';
@@ -33,6 +39,12 @@ form.addEventListener('submit', async (e) => {
 
     if (!email || !password) {
         showFeedback('error', 'E-Mail und Passwort sind erforderlich.');
+        return;
+    }
+
+    const pwError = validatePassword(password);
+    if (pwError) {
+        showFeedback('error', pwError);
         return;
     }
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/../services/UserService.php';
     require_once __DIR__ . '/../services/SessionService.php';

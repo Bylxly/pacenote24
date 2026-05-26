@@ -7,9 +7,11 @@ require_once __DIR__ . '/Database.php';
 class SessionService
 {
     private PDO $db;
+    private $config;
 
     public function __construct()
     {
+        $this->config = require __DIR__ . '/../config/config.php';
         $this->db = Database::getConnection();
     }
 
@@ -50,23 +52,27 @@ class SessionService
     /**
      * @throws RandomException
      */
-    public function createSession(int $userId, string $timeout): ?int
+    public function createSession(int $userId): ?string
     {
+        // abgelaufene Sessions des Users löschen
+        $stmt = $this->db->prepare(
+            'DELETE FROM sessions WHERE user_id = :user_id AND timeout < NOW()'
+        );
+        $stmt->execute(['user_id' => $userId]);
+
         $sessionId = bin2hex(random_bytes(32));
         $stmt = $this->db->prepare(
             'INSERT INTO sessions (session_id, user_id, created_at, timeout)
-             VALUES (:session_id, :user_id, CURRENT_TIMESTAMP, :timeout)'
+             VALUES (:session_id, :user_id, CURRENT_TIMESTAMP, DATE_ADD(NOW(), INTERVAL :timeout SECOND))'
         );
 
         $stmt->execute([
             'session_id' => $sessionId,
             'user_id' => $userId,
-            'timeout' => $timeout
+            'timeout' => $this->config['session']['timeout_seconds']
         ]);
 
-        $lastInsertId = $this->db->lastInsertId();
-
-        return $lastInsertId ? $lastInsertId : null;
+        return $stmt->rowCount() > 0 ? $sessionId : null;
     }
 
     public function updateSession(string $id, string $timeout): bool
@@ -83,6 +89,29 @@ class SessionService
         ]);
 
         return $stmt->rowCount() > 0;
+    }
+
+    public function extendSession(string $id): bool {
+        $seconds = $this->config['session']['timeout_seconds'];
+
+        $stmt = $this->db->prepare(
+            'UPDATE sessions
+         SET timeout = DATE_ADD(NOW(), INTERVAL :seconds SECOND)
+         WHERE session_id = :id
+         AND timeout >= NOW()'
+        );
+
+        $stmt->execute(['id' => $id, 'seconds' => $seconds]);
+        return $stmt->rowCount() > 0;
+    }
+
+    public function isSessionValid(string $id): bool
+    {
+        $stmt = $this->db->prepare(
+            'SELECT 1 FROM sessions WHERE session_id = :id AND timeout >= NOW()'
+        );
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() !== false;
     }
 
     public function deleteSession(string $id): bool

@@ -17,7 +17,7 @@ if (session_status() === PHP_SESSION_NONE) {
 # Gibt zurück ob das session token noch aktuell ist
 function isAuthenticated(): bool
 {
-    if (!isset($_SESSION['account_id']) || !isset($_SESSION['user_name']) || !isset($_SESSION['token'])) return FALSE;
+    if (!isset($_SESSION['account_id']) || !isset($_SESSION['user_name'])) return FALSE;
     $sessionService = new SessionService();
     if (!$sessionService->isSessionValid($_SESSION['token'])) return FALSE;
     $sessionService->extendSession($_SESSION['token']);
@@ -31,10 +31,10 @@ function currentUser(): ?array
         return null;
     }
 
-    $userService = new UserService();
-    $user = $userService->getUserById($_SESSION['account_id']);
+    $user = getUserById($_SESSION['account_id']);
 
     if(!$user) {
+        logoutUser();
         return null;
     }
 
@@ -42,8 +42,8 @@ function currentUser(): ?array
 }
 
 # Hilfsfunktion welche Prüft ob eine Rolle an angemeldeten Nutzer vergeben ist
-function hasRole(int $roleId): bool
+function hasRole(string $roleId): bool
 {
-    $groupMemberService = new GroupMemberService();
-    return $groupMemberService->getGroupMember($_SESSION['account_id'], $roleId) !== null;
+    if (!isAuthenticated()) return false;
+    return getGroupMember($_SESSION['account_id'], $roleId) !== false;
 }

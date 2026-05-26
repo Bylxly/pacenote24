@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<?php
+require_once __DIR__ . '/../app/session/guard.php';
+requireGuest();
+?>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
@@ -29,7 +33,7 @@
         </div>
 
         <!-- Formular -->
-        <form action="http://localhost/pacenote24/app/services/AuthService.php" method="post">
+        <form action="http://localhost/pacenote24/app/session/LoginHandler.php" method="post">
           <!-- Benutzer -->
           <div class="mb-3">
             <label for="login" class="form-label">Benutername</label>

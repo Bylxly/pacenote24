@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../app/services/GroupService.php';
+require_once __DIR__ . '/../../app/helpers/Request.php';
+
 
 header('Content-Type: application/json');
 
@@ -9,6 +11,9 @@ try {
     $service = new GroupService();
 
     if (isset($_GET['id'])) {
+
+        Request::requirePositiveInt($_GET, 'id');
+
         $group = $service->getGroupById((int)$_GET['id']);
 
         if ($group === null) {

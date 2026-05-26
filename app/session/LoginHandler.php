@@ -1,15 +1,15 @@
 <?php
-declare(strict_types=1);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/../services/UserService.php';
-    require_once __DIR__ . '/../services/SessionService.php';
+    require_once __DIR__ . '/UserService.php';
+    require_once __DIR__ . '/SessionService.php';
     // E-Mail und Passwort aus dem Formular holen (mit Fallback)
     $email = $_POST['email'] ?? '';
     $password = $_POST['pass'] ?? '';
 
     // Prüfung ob Daten gesendet wurden
     if (empty($email) || empty($password)) {
-        header("Location: /pacenote24/public/login.html?status=error_empty");
+        header("Location: /pacenote24/public/login.php?status=error_empty");
         exit;
     }
 
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Passwort ist korrekt!
             
             // Session mit DB session ID aufbauen
-            $dbSessionId = $sessionService->createSession($user['user_id']);
+            $dbSessionId = $sessionService->createSession((int)$user['user_id']);
             session_set_cookie_params([
                 'secure' => true,
                 'httponly' => true,
@@ -42,16 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
             // weiterleiten
-            header("Location: /pacenote24/public/login.html?status=success");
+            header("Location: /pacenote24/public/login.php?status=success");
             exit;
         } else {
             // Passwort inkorrekt (Geändert zu bad credentials da sich sonst rückschlüsse auf db einträge ziehen lassen)
-            header("Location: /pacenote24/public/login.html?status=error_bad_credentials");
+            header("Location: /pacenote24/public/login.php?status=error_bad_credentials");
             exit;
         }
     } else {
         // Benutzer/Email existiert nicht in der Datenbank (Geändert zu bad credentials da sich sonst rückschlüsse auf db einträge ziehen lassen)
-        header("Location: /pacenote24/public/login.html?status=error_bad_credentials");
+        header("Location: /pacenote24/public/login.php?status=error_bad_credentials");
         exit;
     }
 }

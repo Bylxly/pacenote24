@@ -17,7 +17,7 @@ CREATE TABLE sessions (
     user_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     timeout TIMESTAMP NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- tracks table
@@ -27,15 +27,15 @@ CREATE TABLE tracks (
     owner_user_id INT NOT NULL,
     compiled_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     json_data JSON NOT NULL,
-    FOREIGN KEY (owner_user_id) REFERENCES users(user_id)
+    FOREIGN KEY (owner_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- group_Member table
 CREATE TABLE group_member (
     user_id INT NOT NULL,
     group_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (group_id) REFERENCES groups(group_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES groups(group_id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, group_id)
 );
 
@@ -43,8 +43,8 @@ CREATE TABLE group_member (
 CREATE TABLE track_visible_user (
     user_id INT NOT NULL,
     route_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (route_id) REFERENCES tracks(route_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (route_id) REFERENCES tracks(route_id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, route_id)
 );
 
@@ -52,7 +52,7 @@ CREATE TABLE track_visible_user (
 CREATE TABLE track_visible_group (
     group_id INT NOT NULL,
     route_id INT NOT NULL,
-    FOREIGN KEY (group_id) REFERENCES groups(group_id),
-    FOREIGN KEY (route_id) REFERENCES tracks(route_id),
+    FOREIGN KEY (group_id) REFERENCES groups(group_id) ON DELETE CASCADE,
+    FOREIGN KEY (route_id) REFERENCES tracks(route_id) ON DELETE CASCADE,
     PRIMARY KEY (group_id, route_id)
 );

@@ -309,12 +309,6 @@ async function handleDelete(e) {
   if (!confirm('Bist du dir wirklich sicher, dass du diese Route unwiderruflich löschen möchtest?')) return;
   clearMessages();
   try {
-    for (const v of visibleUsers) {
-      await api.post('/ajax/track-visible-users/delete.php', { user_id: v.user_id, route_id: routeId });
-    }
-    for (const v of visibleGroups) {
-      await api.post('/ajax/track-visible-groups/delete.php', { group_id: v.group_id, route_id: routeId });
-    }
     const res = await api.post('/ajax/routes/delete.php', { id: routeId });
     if (res.success) {
       window.location.href = 'pacenote_view.html?msg=deleted';

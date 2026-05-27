@@ -57,7 +57,7 @@ function requireAuth_API(): void
 function requireSelforAdmin(int $targetUserId): void
 {
     requireAuth_API();
-    if ($_SESSION['account_id'] !== $targetUserId && !hasRole(ADMIN_ROLE_ID)) {
+    if ($_SESSION['account_id'] == $targetUserId || hasRole(ADMIN_ROLE_ID)) {
         http_response_code(403);
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'error' => 'Fehlende Berechtigung']);

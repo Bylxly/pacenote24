@@ -48,7 +48,7 @@ function requireAuth_API(): void
     if (!isAuthenticated()) {
         http_response_code(401);
         header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'error' => 'Nicht authentisiert', 'code' => 401]);
+        echo json_encode(['success' => false, 'error' => 'Benutzer nicht authentisiert']);
         exit;
     }
 }
@@ -60,7 +60,19 @@ function requireSelforAdmin(int $targetUserId): void
     if ($_SESSION['account_id'] !== $targetUserId && !hasRole(ADMIN_ROLE_ID)) {
         http_response_code(403);
         header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'error' => 'Fehlende Berechtigung', 'code' => 403]);
+        echo json_encode(['success' => false, 'error' => 'Fehlende Berechtigung']);
+        exit;
+    }
+}
+
+# Ticket #94: Funktion um API Endpunkte auf Admins zu beschränken
+function requireAdmin_API(): void
+{
+    requireAuth_API();
+    if (!hasRole(ADMIN_ROLE_ID)) {
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Fehlende Berechtigung']);
         exit;
     }
 }

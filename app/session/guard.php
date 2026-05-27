@@ -2,9 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/auth.php';
-
-const ADMIN_ROLE_ID = 1; # Rollen ID wird benötigt (nach schema.sql ist sie glaub 1)
-
+const ADMIN_ROLE_ID = 1;
 # Hilfsfunktion für nachfolgende funktionen
 function redirect(string $path): never
 {
@@ -16,7 +14,7 @@ function redirect(string $path): never
 function requireAuth(): void
 {
     if (!isAuthenticated()) {
-        redirect('/pacenote24/public/login.html?status=not_logged_in');
+        redirect('/pacenote24/public/login.php?status=not_logged_in');
     }
 }
 
@@ -29,11 +27,11 @@ function requireGuest(): void
 }
 
 # Für Seiten welche zugriffsbeschränkt auf eine Bestimmte Rolle sind
-function requireRole(int $roleId): void
+function requireRole(int $role): void
 {
     requireAuth();
 
-    if (!hasRole($roleId)) {
+    if (!hasRole($role)) {
         redirect('/pacenote24/public/index.php');
     }
 }
@@ -41,7 +39,7 @@ function requireRole(int $roleId): void
 # Hilfsfunktion aus requireRole aber für Admin
 function requireAdmin(): void
 {
-    requireRole(ADMIN_ROLE_ID);
+    requireRole(ADMIN_ROLE_ID); # Rolle wird wahrscheinlich umbenannt
 }
 
 # Prüft bei anfragen auf Athentifizierungsstatus

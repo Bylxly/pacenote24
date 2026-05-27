@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../../app/services/GroupService.php';
 require_once __DIR__ . '/../../../app/helpers/Request.php';
 
 require_once __DIR__ . '/../../../app/session/guard.php';
-requireAdmin();
+requireAdmin_API();
 
 header('Content-Type: application/json');
 

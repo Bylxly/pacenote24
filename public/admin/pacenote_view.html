@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pacenote Management</title>
+  <link rel="stylesheet" href="../assets/css/stylesheetmain.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+
+<header class="admin-header">
+  <span class="admin-header__badge">Admin</span>
+  <nav class="admin-header__breadcrumb">
+    <strong>Pacenotes</strong>
+  </nav>
+  <div class="page-toggle">
+    <a href="adminpanel.html" class="page-toggle__btn">Users</a>
+    <a href="pacenote_view.html" class="page-toggle__btn active">Pacenotes</a>
+  </div>
+</header>
+
+<main class="admin-main">
+
+  <div id="banner-success" class="banner banner--success"></div>
+  <div id="banner-error"   class="banner banner--error"></div>
+
+  <div class="card">
+    <div class="card__header">
+      <span class="card__title">Alle Routen</span>
+    </div>
+    <div class="card__body" style="padding:0;">
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Titel</th>
+            <th>Owner (User ID)</th>
+            <th>Zuletzt kompiliert</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="route-tbody"></tbody>
+      </table>
+
+      <div id="route-stack" class="card-stack" style="padding:1rem;"></div>
+
+    </div>
+  </div>
+
+</main>
+
+<script type="module">
+import { api } from '../assets/js/api.js';
+
+const tbody       = document.getElementById('route-tbody');
+const stack       = document.getElementById('route-stack');
+const bannerError = document.getElementById('banner-error');
+
+try {
+  const listResponse = await api.get('/ajax/routes.php');
+
+  if (!listResponse.success || !Array.isArray(listResponse.data)) {
+    throw new Error(listResponse.error ?? 'Unknown error');
+  }
+
+  listResponse.data.sort((a, b) => b.route_id - a.route_id);
+
+  if (listResponse.data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="muted">Keine Routen vorhanden.</td></tr>';
+    stack.innerHTML = '<p class="muted">Keine Routen vorhanden.</p>';
+  }
+
+  for (const route of listResponse.data) {
+    const detailUrl = `route_detail.html?id=${parseInt(route.route_id)}`;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="id-badge">${escHtml(String(route.route_id))}</span></td>
+      <td>${escHtml(route.title ?? '—')}</td>
+      <td>${escHtml(String(route.owner_user_id))}</td>
+      <td class="muted">${escHtml(route.compiled_time ?? '—')}</td>
+      <td><a href="${detailUrl}" class="btn btn-secondary btn-sm">Details</a></td>
+    `;
+    tbody.appendChild(tr);
+
+    const card = document.createElement('div');
+    card.className = 'stack-card';
+    card.innerHTML = `
+      <div class="stack-card__row">
+        <span class="stack-card__label">ID</span>
+        <span class="stack-card__value id-badge">${escHtml(String(route.route_id))}</span>
+      </div>
+      <div class="stack-card__row">
+        <span class="stack-card__label">Titel</span>
+        <span class="stack-card__value">${escHtml(route.title ?? '—')}</span>
+      </div>
+      <div class="stack-card__row">
+        <span class="stack-card__label">Owner</span>
+        <span class="stack-card__value">${escHtml(String(route.owner_user_id))}</span>
+      </div>
+      <div class="stack-card__row">
+        <span class="stack-card__label">Kompiliert</span>
+        <span class="stack-card__value muted">${escHtml(route.compiled_time ?? '—')}</span>
+      </div>
+      <div class="stack-card__actions">
+        <a href="${detailUrl}" class="btn btn-secondary btn-sm">Details anzeigen</a>
+      </div>
+    `;
+    stack.appendChild(card);
+  }
+
+  const msg = new URLSearchParams(location.search).get('msg');
+  if (msg === 'deleted') {
+    const b = document.getElementById('banner-success');
+    b.textContent = 'Route wurde erfolgreich gelöscht.';
+    b.classList.add('visible');
+    history.replaceState(null, '', location.pathname);
+    setTimeout(() => b.classList.remove('visible'), 4000);
+  }
+
+} catch (e) {
+  bannerError.textContent = 'Upstream service unavailable: ' + escHtml(e.message);
+  bannerError.classList.add('visible');
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+
+</body>
+</html>

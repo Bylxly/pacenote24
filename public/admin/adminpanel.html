@@ -1,60 +1,150 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Panel</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="../assets/css/stylesheetmain.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
 
-<h2>User Management</h2>
+<header class="admin-header">
+  <span class="admin-header__badge">Admin</span>
+  <nav class="admin-header__breadcrumb">
+    <strong>User Management</strong>
+  </nav>
+  <div class="page-toggle">
+    <a href="adminpanel.html" class="page-toggle__btn active">Users</a>
+    <a href="pacenote_view.html" class="page-toggle__btn">Pacenotes</a>
+  </div>
+</header>
 
-<div id="error"></div>
+<main class="admin-main">
 
-<table border="1" cellpadding="10" style="border-collapse: collapse; font-family: sans-serif;">
-    <thead style="background-color: #f2f2f2;">
-        <tr><th>ID</th><th>Email</th><th>Actions</th></tr>
-    </thead>
-    <tbody id="user-tbody"></tbody>
-</table>
+  <div id="banner-success" class="banner banner--success"></div>
+  <div id="banner-error"   class="banner banner--error"></div>
 
-<br>
-<a href="create_user.html"><button type="button">Create new User</button></a>
-<a href="pacenote_view.php"><button type="button">View Pacenotes</button></a>
+  <div class="card">
+    <div class="card__header">
+      <span class="card__title">Alle Nutzer</span>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <a href="create_user.html" class="btn btn-primary btn-sm">+ Nutzer anlegen</a>
+      </div>
+    </div>
+    <div class="card__body" style="padding:0;">
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>E-Mail</th>
+            <th>Gruppen</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="user-tbody"></tbody>
+      </table>
+
+      <div id="user-stack" class="card-stack" style="padding:1rem;"></div>
+
+    </div>
+  </div>
+
+</main>
 
 <script type="module">
 import { api } from '../assets/js/api.js';
 
-const tbody = document.getElementById('user-tbody');
-const error = document.getElementById('error');
+const tbody       = document.getElementById('user-tbody');
+const stack       = document.getElementById('user-stack');
+const bannerError = document.getElementById('banner-error');
 
 try {
-    const listResponse = await api.get('/ajax/users.php');
+  const [usersRes, groupsRes, membersRes] = await Promise.all([
+    api.get('/ajax/users.php'),
+    api.get('/ajax/groups.php'),
+    api.get('/ajax/group-members.php'),
+  ]);
 
-    if (!listResponse.success || !Array.isArray(listResponse.data)) {
-        throw new Error(listResponse.error ?? 'Unknown error');
-    }
+  if (!usersRes.success || !Array.isArray(usersRes.data)) {
+    throw new Error(usersRes.error ?? 'Unknown error');
+  }
 
-    for (const user of listResponse.data) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><strong>${escHtml(String(user.user_id))}</strong></td>
-            <td>${escHtml(user.email)}</td>
-            <td>
-                <a href="user_detail.html?id=${parseInt(user.user_id)}">
-                    <button type="button">View Profile</button>
-                </a>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    }
+  usersRes.data.sort((a, b) => b.user_id - a.user_id);
+
+  const groups  = groupsRes.data  ?? [];
+  const members = membersRes.data ?? [];
+
+  const groupMap  = Object.fromEntries(groups.map(g => [g.group_id, g.name]));
+  const memberMap = {};
+  for (const m of members) {
+    if (!memberMap[m.user_id]) memberMap[m.user_id] = [];
+    memberMap[m.user_id].push(groupMap[m.group_id] ?? `ID ${m.group_id}`);
+  }
+
+  if (usersRes.data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="muted">Keine Nutzer vorhanden.</td></tr>';
+  }
+
+  for (const user of usersRes.data) {
+    const groupNames = memberMap[user.user_id] ?? [];
+    const tagsHtml   = groupNames.length
+      ? groupNames.map(g => `<span class="tag">${escHtml(g)}</span>`).join('')
+      : '<span class="muted">—</span>';
+    const profileUrl = `user_detail.html?id=${parseInt(user.user_id)}`;
+
+    // Table row
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="id-badge">${escHtml(String(user.user_id))}</span></td>
+      <td>${escHtml(user.email)}</td>
+      <td><div class="tag-list">${tagsHtml}</div></td>
+      <td><a href="${profileUrl}" class="btn btn-secondary btn-sm">Profil</a></td>
+    `;
+    tbody.appendChild(tr);
+
+    // Stack card (mobile)
+    const card = document.createElement('div');
+    card.className = 'stack-card';
+    card.innerHTML = `
+      <div class="stack-card__row">
+        <span class="stack-card__label">ID</span>
+        <span class="stack-card__value id-badge">${escHtml(String(user.user_id))}</span>
+      </div>
+      <div class="stack-card__row">
+        <span class="stack-card__label">E-Mail</span>
+        <span class="stack-card__value">${escHtml(user.email)}</span>
+      </div>
+      <div class="stack-card__row">
+        <span class="stack-card__label">Gruppen</span>
+        <div class="tag-list" style="justify-content:flex-end;">${tagsHtml}</div>
+      </div>
+      <div class="stack-card__actions">
+        <a href="${profileUrl}" class="btn btn-secondary btn-sm">Profil anzeigen</a>
+      </div>
+    `;
+    stack.appendChild(card);
+  }
+
+  const msg = new URLSearchParams(location.search).get('msg');
+  if (msg === 'deleted') {
+    const b = document.getElementById('banner-success');
+    b.textContent = 'Nutzer wurde erfolgreich gelöscht.';
+    b.classList.add('visible');
+    history.replaceState(null, '', location.pathname);
+    setTimeout(() => b.classList.remove('visible'), 4000);
+  }
+
 } catch (e) {
-    error.innerHTML = `<div class='error'>Upstream service unavailable: ${escHtml(e.message)}</div>`;
+  bannerError.textContent = 'Upstream service unavailable: ' + escHtml(e.message);
+  bannerError.classList.add('visible');
 }
 
 function escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 </script>
 

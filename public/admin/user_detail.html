@@ -273,36 +273,11 @@ async function handleDelete(e) {
   clearMessages();
 
   try {
-    for (const membership of memberships) {
-      await api.post('/ajax/group-members/delete.php', {
-        user_id: membership.user_id, group_id: membership.group_id,
-      });
-    }
-
-    const grantedVisibilities = await api.get('/ajax/track-visible-users.php', { user_id: userId });
-    for (const v of grantedVisibilities.data ?? []) {
-      await api.post('/ajax/track-visible-users/delete.php', v);
-    }
-
-    const ownedRoutes = await api.get('/ajax/routes.php', { owner_user_id: userId });
-    for (const route of ownedRoutes.data ?? []) {
-      const routeId = route.route_id;
-      const userVis = await api.get('/ajax/track-visible-users.php', { route_id: routeId });
-      for (const v of userVis.data ?? []) {
-        await api.post('/ajax/track-visible-users/delete.php', v);
-      }
-      const groupVis = await api.get('/ajax/track-visible-groups.php', { route_id: routeId });
-      for (const v of groupVis.data ?? []) {
-        await api.post('/ajax/track-visible-groups/delete.php', v);
-      }
-      await api.post('/ajax/routes/delete.php', { id: routeId });
-    }
-
-    const deletion = await api.post('/ajax/users/delete.php', { id: userId });
-    if (deletion.success) {
+    const res = await api.post('/ajax/users/delete.php', { id: userId });
+    if (res.success) {
       window.location.href = 'adminpanel.html?msg=deleted';
     } else {
-      showError('Löschung fehlgeschlagen: ' + (deletion.error ?? 'Unbekannter Fehler.'));
+      showError('Löschung fehlgeschlagen: ' + (res.error ?? 'Unbekannter Fehler.'));
     }
   } catch (e) {
     showError('API-Kommunikationsfehler: ' + e.message);

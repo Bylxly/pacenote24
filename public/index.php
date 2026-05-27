@@ -38,7 +38,7 @@ requireAuth();
           <li class="nav-item"><a class="nav-link" href="routen.html">Routen</a></li>
           <li class="nav-item"><a class="nav-link" href="leaderboard.html">Leaderboard</a></li>
         </ul>
-        <a href="/pacenote24/app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
+        <a href="/app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
       </div>
     </div>
   </nav>

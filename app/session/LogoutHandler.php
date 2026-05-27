@@ -11,7 +11,7 @@ if (isset($_SESSION['token'])) {
     $_SESSION = array ();
 
     session_destroy();
-    header("Location: /pacenote24/public/login.php");
+    header("Location: /../../public/login.php");
 }
 
 

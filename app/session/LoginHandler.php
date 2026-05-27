@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Prüfung ob Daten gesendet wurden
     if (empty($email) || empty($password)) {
-        header("Location: /pacenote24/public/login.php?status=error_empty");
+        header("Location: /../../public/login.php?status=error_empty");
         exit;
     }
 
@@ -41,16 +41,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
             // weiterleiten
-            header("Location: /pacenote24/public/login.php?status=success");
+            header("Location: /../../public/login.php?status=success");
             exit;
         } else {
             // Passwort inkorrekt (Geändert zu bad credentials da sich sonst rückschlüsse auf db einträge ziehen lassen)
-            header("Location: /pacenote24/public/login.php?status=error_bad_credentials");
+            header("Location: /../../public/login.php?status=error_bad_credentials");
             exit;
         }
     } else {
         // Benutzer/Email existiert nicht in der Datenbank (Geändert zu bad credentials da sich sonst rückschlüsse auf db einträge ziehen lassen)
-        header("Location: /pacenote24/public/login.php?status=error_bad_credentials");
+        header("Location: /../../public/login.php?status=error_bad_credentials");
         exit;
     }
 }

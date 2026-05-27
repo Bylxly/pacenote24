@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+</head>
+<body>
+
+<h2>User Management</h2>
+
+<div id="error"></div>
+
+<table border="1" cellpadding="10" style="border-collapse: collapse; font-family: sans-serif;">
+    <thead style="background-color: #f2f2f2;">
+        <tr><th>ID</th><th>Email</th><th>Actions</th></tr>
+    </thead>
+    <tbody id="user-tbody"></tbody>
+</table>
+
+<br>
+<a href="create_user.html"><button type="button">Create new User</button></a>
+<a href="pacenote_view.php"><button type="button">View Pacenotes</button></a>
+
+<script type="module">
+import { api } from '../assets/js/api.js';
+
+const tbody = document.getElementById('user-tbody');
+const error = document.getElementById('error');
+
+try {
+    const listResponse = await api.get('/ajax/users.php');
+
+    if (!listResponse.success || !Array.isArray(listResponse.data)) {
+        throw new Error(listResponse.error ?? 'Unknown error');
+    }
+
+    for (const user of listResponse.data) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><strong>${escHtml(String(user.user_id))}</strong></td>
+            <td>${escHtml(user.email)}</td>
+            <td>
+                <a href="user_detail.html?id=${parseInt(user.user_id)}">
+                    <button type="button">View Profile</button>
+                </a>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    }
+} catch (e) {
+    error.innerHTML = `<div class='error'>Upstream service unavailable: ${escHtml(e.message)}</div>`;
+}
+
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+
+</body>
+</html>

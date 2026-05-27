@@ -1,0 +1,66 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/auth.php';
+
+# Hilfsfunktion für nachfolgende funktionen
+function redirect(string $path): never
+{
+        header('Location: ' . $path);
+        exit;
+}
+
+# Funktion um nicht eingeloggte Nutzer von index auf Login zu leiten
+function requireAuth(): void
+{
+    if (!isAuthenticated()) {
+        redirect('/../../public/login.html?status=not_logged_in');
+    }
+}
+
+# Funktion um Eingeloggte Nutzer von der Login Seite zu Index weiterzuleiten
+function requireGuest(): void
+{
+    if (isAuthenticated()) {
+        redirect('/../../public/index.php');
+    }
+}
+
+# Für Seiten welche zugriffsbeschränkt auf eine Bestimmte Rolle sind
+function requireRole(string $role): void
+{
+    requireAuth();
+
+    if (!hasRole($role)) {
+        redirect('/index.php');
+    }
+}
+
+# Hilfsfunktion aus requireRole aber für Admin
+function requireAdmin(): void
+{
+    requireRole('Admins'); # Rolle wird wahrscheinlich umbenannt
+}
+
+# Prüft bei anfragen auf Athentifizierungsstatus
+function requireAuth_API(): void
+{
+    if (!isAuthenticated()) {
+        http_response_code(401);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Nicht authentisiert', 'code' => 401]);
+        exit;
+    }
+}
+
+# Prüft bei anfragen auf berechtigung mittels adminprüfung und ob es der eigene nutzer ist
+function requireSelforAdmin(int $targetUserId): void
+{
+    requireAuth_API();
+    if ($_SESSION['account_id'] !== $targetUserId && !hasRole('Admins')) {
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Fehlende Berechtigung', 'code' => 403]);
+        exit;
+    }
+}

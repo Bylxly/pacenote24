@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>User Detail</title>
+</head>
+<body>
+
+<a href="adminpanel.html">← Zurück zur Übersicht</a>
+
+<div id="success-msg" style="color: green;"></div>
+<div id="error-msg" style="color: red;"></div>
+
+<div id="page-content"></div>
+
+<script type="module">
+import { api } from '../assets/js/api.js';
+
+const successMsg  = document.getElementById('success-msg');
+const errorMsg    = document.getElementById('error-msg');
+const pageContent = document.getElementById('page-content');
+
+const params = new URLSearchParams(location.search);
+const userId = parseInt(params.get('id'));
+
+if (!userId || isNaN(userId)) {
+    document.body.innerHTML = 'Ungültige User-ID.';
+    throw new Error('Invalid user ID');
+}
+
+let user;
+try {
+    const userResponse = await api.get('/ajax/users.php', { id: userId });
+    if (!userResponse.success) {
+        document.body.innerHTML = 'Nutzer nicht gefunden.';
+        throw new Error('User not found');
+    }
+    user = userResponse.data;
+} catch (e) {
+    document.body.innerHTML = 'API nicht erreichbar.';
+    throw e;
+}
+
+renderPage(user);
+
+function renderPage(user) {
+    pageContent.innerHTML = `
+        <h2>Profil verwalten</h2>
+        <form id="update-form">
+            <label>User ID:</label><br>
+            <input type="text" value="${escHtml(String(user.user_id))}" disabled><br>
+
+            <label>E-Mail Adresse:</label><br>
+            <input type="email" name="email" value="${escHtml(user.email)}" required><br><br>
+
+            <label>Passwort (leer lassen = unverändert):</label><br>
+            <input type="password" name="password"><br><br>
+
+            <button type="submit" name="update">Speichern</button>
+        </form>
+
+        <h3>Gefahrenbereich</h3>
+        <p>Das Löschen eines Nutzers kann nicht rückgängig gemacht werden.</p>
+        <form id="delete-form">
+            <button type="submit" name="delete_user">Nutzer unwiderruflich löschen</button>
+        </form>
+    `;
+
+    document.getElementById('update-form').addEventListener('submit', handleUpdate);
+    document.getElementById('delete-form').addEventListener('submit', handleDelete);
+}
+
+async function handleUpdate(e) {
+    e.preventDefault();
+    successMsg.textContent = '';
+    errorMsg.textContent   = '';
+
+    const email    = e.target.email.value.trim();
+    const password = e.target.password.value;
+
+    const payload = { id: userId, email };
+    if (password) payload.password = password;
+
+    try {
+        const update = await api.post('/ajax/users/update.php', payload);
+
+        if (update.success) {
+            successMsg.textContent = 'Profil erfolgreich aktualisiert.';
+            e.target.password.value = '';
+        } else {
+            errorMsg.textContent = update.error ?? 'Aktualisierung fehlgeschlagen.';
+        }
+    } catch (e) {
+        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
+    }
+}
+
+async function handleDelete(e) {
+    e.preventDefault();
+
+    if (!confirm('Bist du dir wirklich sicher, dass du diesen User unwiderruflich löschen möchtest?')) {
+        return;
+    }
+
+    successMsg.textContent = '';
+    errorMsg.textContent   = '';
+
+    try {
+        const sessions = await api.get('/ajax/sessions.php', { user_id: userId });
+        for (const session of sessions.data ?? []) {
+            await api.post('/ajax/sessions/delete.php', { id: session.session_id });
+        }
+
+        const memberships = await api.get('/ajax/group-members.php', { user_id: userId });
+        for (const membership of memberships.data ?? []) {
+            await api.post('/ajax/group-members/delete.php', {
+                user_id:  membership.user_id,
+                group_id: membership.group_id
+            });
+        }
+
+        const grantedVisibilities = await api.get('/ajax/track-visible-users.php', { user_id: userId });
+        for (const visibility of grantedVisibilities.data ?? []) {
+            await api.post('/ajax/track-visible-users/delete.php', visibility);
+        }
+
+        const ownedTracks = await api.get('/ajax/routes.php', { owner_user_id: userId });
+        for (const track of ownedTracks.data ?? []) {
+            const trackId = track.track_id;
+
+            const userVis = await api.get('/ajax/track-visible-users.php', { track_id: trackId });
+            for (const visibility of userVis.data ?? []) {
+                await api.post('/ajax/track-visible-users/delete.php', visibility);
+            }
+
+            const groupVis = await api.get('/ajax/track-visible-groups.php', { track_id: trackId });
+            for (const visibility of groupVis.data ?? []) {
+                await api.post('/ajax/track-visible-groups/delete.php', visibility);
+            }
+
+            await api.post('/ajax/routes/delete.php', { id: trackId });
+        }
+
+        const deletion = await api.post('/ajax/users/delete.php', { id: userId });
+
+        if (deletion.success) {
+            window.location.href = 'adminpanel.html?msg=deleted';
+        } else {
+            errorMsg.textContent = 'Löschung fehlgeschlagen: ' + (deletion.error ?? 'Unbekannter Fehler.');
+        }
+    } catch (e) {
+        errorMsg.textContent = 'API-Kommunikationsfehler: ' + e.message;
+    }
+}
+
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+
+</body>
+</html>

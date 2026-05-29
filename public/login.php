@@ -33,7 +33,7 @@ requireGuest();
         </div>
 
         <!-- Formular -->
-        <form action="http://localhost/app/session/LoginHandler.php" method="post">
+        <form action="../app/session/LoginHandler.php" method="post">
           <!-- Benutzer -->
           <div class="mb-3">
             <label for="login" class="form-label">Benutername</label>

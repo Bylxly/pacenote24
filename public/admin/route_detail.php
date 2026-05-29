@@ -1,3 +1,7 @@
+<?php
+require_once("../../app/session/guard.php");
+requireAdmin();
+?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -12,9 +16,9 @@
 <header class="admin-header">
   <span class="admin-header__badge">Admin</span>
   <nav class="admin-header__breadcrumb">
-    <a href="adminpanel.html">User Management</a>
+    <a href="adminpanel.php">User Management</a>
     <span>›</span>
-    <a href="pacenote_view.html">Pacenotes</a>
+    <a href="pacenote_view.php">Pacenotes</a>
     <span>›</span>
     <strong>Route Detail</strong>
   </nav>
@@ -311,7 +315,7 @@ async function handleDelete(e) {
   try {
     const res = await api.post('/ajax/routes/delete.php', { id: routeId });
     if (res.success) {
-      window.location.href = 'pacenote_view.html?msg=deleted';
+      window.location.href = 'pacenote_view.php?msg=deleted';
     } else {
       showError('Löschen fehlgeschlagen: ' + (res.error ?? 'Unbekannter Fehler.'));
     }

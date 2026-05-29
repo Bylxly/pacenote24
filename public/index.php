@@ -1,15 +1,13 @@
 <?php
-
 require_once __DIR__ . '/../app/session/guard.php'; 
 requireAuth();
-
 ?>
 <!DOCTYPE html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pacenotes24.de</title>
+    <title>Homepage</title>
     <!-- Bootstrap CSS -->
     <link
        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -17,12 +15,12 @@ requireAuth();
     />
     <!-- Custom CSS-->
     <link
-      href="assets/css/stylesheetmain.css"
+      href="./assets/css/stylesheetmain.css"
       rel="stylesheet"
     />
     <script src="assets/js/homepage.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/homepage.js" defer></script>
+    <script src="./assets/js/homepage.js" defer></script>
   </head>
 
   <body>
@@ -38,7 +36,7 @@ requireAuth();
           <li class="nav-item"><a class="nav-link" href="routen.html">Routen</a></li>
           <li class="nav-item"><a class="nav-link" href="leaderboard.html">Leaderboard</a></li>
         </ul>
-        <a href="/app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
+        <a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
       </div>
     </div>
   </nav>
@@ -85,5 +83,9 @@ requireAuth();
           </div>
         </div>
       </div>
-    </body>
+
+    </div> </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

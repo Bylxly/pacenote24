@@ -14,7 +14,7 @@ function redirect(string $path): never
 function requireAuth(): void
 {
     if (!isAuthenticated()) {
-        redirect('/../../public/login.php?status=not_logged_in');
+        redirect('../../public/login.php?status=not_logged_in');
     }
 }
 
@@ -22,7 +22,7 @@ function requireAuth(): void
 function requireGuest(): void
 {
     if (isAuthenticated()) {
-        redirect('/../../public/index.php');
+        redirect('../../public/index.php');
     }
 }
 
@@ -32,7 +32,7 @@ function requireRole(int $role): void
     requireAuth();
 
     if (!hasRole($role)) {
-        redirect('/../../public/index.php');
+        redirect('../../public/index.php');
     }
 }
 

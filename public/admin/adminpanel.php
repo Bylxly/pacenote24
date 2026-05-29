@@ -1,3 +1,7 @@
+<?php
+require_once("../../app/session/guard.php");
+requireAdmin();
+?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -15,8 +19,8 @@
     <strong>User Management</strong>
   </nav>
   <div class="page-toggle">
-    <a href="adminpanel.html" class="page-toggle__btn active">Users</a>
-    <a href="pacenote_view.html" class="page-toggle__btn">Pacenotes</a>
+    <a href="adminpanel.php" class="page-toggle__btn active">Users</a>
+    <a href="pacenote_view.php" class="page-toggle__btn">Pacenotes</a>
   </div>
 </header>
 
@@ -29,7 +33,7 @@
     <div class="card__header">
       <span class="card__title">Alle Nutzer</span>
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-        <a href="create_user.html" class="btn btn-primary btn-sm">+ Nutzer anlegen</a>
+        <a href="create_user.php" class="btn btn-primary btn-sm">+ Nutzer anlegen</a>
       </div>
     </div>
     <div class="card__body" style="padding:0;">
@@ -92,7 +96,7 @@ try {
     const tagsHtml   = groupNames.length
       ? groupNames.map(g => `<span class="tag">${escHtml(g)}</span>`).join('')
       : '<span class="muted">—</span>';
-    const profileUrl = `user_detail.html?id=${parseInt(user.user_id)}`;
+    const profileUrl = `user_detail.php?id=${parseInt(user.user_id)}`;
 
     // Table row
     const tr = document.createElement('tr');

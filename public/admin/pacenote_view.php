@@ -1,3 +1,7 @@
+<?php
+require_once("../../app/session/guard.php");
+requireAdmin();
+?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -15,8 +19,8 @@
     <strong>Pacenotes</strong>
   </nav>
   <div class="page-toggle">
-    <a href="adminpanel.html" class="page-toggle__btn">Users</a>
-    <a href="pacenote_view.html" class="page-toggle__btn active">Pacenotes</a>
+    <a href="adminpanel.php" class="page-toggle__btn">Users</a>
+    <a href="pacenote_view.php" class="page-toggle__btn active">Pacenotes</a>
   </div>
 </header>
 
@@ -73,7 +77,7 @@ try {
   }
 
   for (const route of listResponse.data) {
-    const detailUrl = `route_detail.html?id=${parseInt(route.route_id)}`;
+    const detailUrl = `route_detail.php?id=${parseInt(route.route_id)}`;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `

@@ -27,6 +27,7 @@ CREATE TABLE tracks (
     owner_user_id INT NOT NULL,
     compiled_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     json_data JSON NOT NULL,
+    pacenote_data JSON NULL,
     FOREIGN KEY (owner_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 

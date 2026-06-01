@@ -44,11 +44,15 @@ class RouteService
         return $stmt->fetchAll();
     }
 
-    public function createRoute(string $title, int $ownerUserId, string $jsonData): ?int
+    public function createRoute(?string $title, int $ownerUserId, string $jsonData): ?int
     {
+        if (json_decode($jsonData) === null) {
+            return null;
+        }
+
         $stmt = $this->db->prepare(
             'INSERT INTO tracks (title, owner_user_id, compiled_time, json_data)
-             VALUES (:title, :owner_user_id, CURRENT_TIMESTAMP, :json_data)'
+         VALUES (:title, :owner_user_id, CURRENT_TIMESTAMP, :json_data)'
         );
 
         $stmt->execute([
@@ -58,12 +62,15 @@ class RouteService
         ]);
 
         $lastInsertId = $this->db->lastInsertId();
-
         return $lastInsertId ? (int)$lastInsertId : null;
     }
 
     public function updateRoute(int $id, ?string $title = null, ?string $jsonData = null): bool
     {
+        if ($jsonData !== null && json_decode($jsonData) === null) {
+            return false;
+        }
+
         $fields = ['compiled_time = CURRENT_TIMESTAMP'];
         $params = ['id' => $id];
 
@@ -98,6 +105,10 @@ class RouteService
 
     public function updatePacenotes(int $routeId, string $jsonData): bool
     {
+        if (json_decode($jsonData) === null) {
+            return false;
+        }
+
         $stmt = $this->db->prepare(
             'UPDATE tracks SET pacenotes_data = :pacenotes_data WHERE route_id = :id'
         );

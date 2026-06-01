@@ -7,7 +7,7 @@ INSERT INTO users (email, pw_hash) VALUES
 ('user2@test.de', '$2y$10$abcdefghijklmnopqrstuv');
 
 -- groups
-INSERT INTO groups (name) VALUES
+INSERT INTO `groups` (name) VALUES
 ('Admins'),
 ('Testgruppe'),
 ('Freunde');

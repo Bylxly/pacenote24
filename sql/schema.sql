@@ -1,5 +1,5 @@
 -- group table
-CREATE TABLE groups (
+CREATE TABLE `groups` (
     group_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL
 );

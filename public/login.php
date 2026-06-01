@@ -16,7 +16,7 @@ requireGuest();
     />
     <!-- Custom CSS-->
     <link
-      href="assets/css/stylsheetmain.css"
+      href="./assets/css/stylesheetmain.css"
       rel="stylesheetmain"
     />
   </head>

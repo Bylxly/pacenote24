@@ -36,6 +36,8 @@ try {
     $_SESSION['user_name']  = $user['email'];
     $_SESSION['token']      = $token;
 
+    session_regenerate_id(true);
+
     http_response_code(200);
     echo json_encode(['success' => true, 'data' => ['token' => $token]]);
 

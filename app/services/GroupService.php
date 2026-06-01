@@ -12,7 +12,7 @@ class GroupService
 
     public function getAllGroups(): array {
         $stmt = $this->db->prepare(
-            'SELECT * FROM groups'
+            'SELECT * FROM `groups`'
         );
         $stmt->execute();
         return $stmt->fetchAll();
@@ -20,7 +20,7 @@ class GroupService
 
     public function getGroupById(int $id): ?array {
         $stmt = $this->db->prepare(
-            'SELECT * FROM groups WHERE group_id = :id'
+            'SELECT * FROM `groups` WHERE group_id = :id'
         );
 
         $stmt->execute(['id' => $id]);
@@ -32,7 +32,7 @@ class GroupService
 
     public function createGroup(string $name): ?int {
         $stmt = $this->db->prepare(
-            'INSERT INTO groups(name) VALUES (:name)'
+            'INSERT INTO `groups`(name) VALUES (:name)'
         );
         $stmt->execute(['name' => $name]);
         $result = $this->db->lastInsertId();
@@ -41,7 +41,7 @@ class GroupService
 
     public function updateGroup(int $id, string $name): bool {
         $stmt = $this->db->prepare(
-            'UPDATE groups SET name = :name WHERE group_id = :id'
+            'UPDATE `groups` SET name = :name WHERE group_id = :id'
         );
         $stmt->execute(['id' => $id, 'name' => $name]);
 
@@ -50,7 +50,7 @@ class GroupService
         }
 
         $existsStmt = $this->db->prepare(
-            'SELECT 1 FROM groups WHERE group_id = :id'
+            'SELECT 1 FROM `groups` WHERE group_id = :id'
         );
         $existsStmt->execute(['id' => $id]);
 
@@ -59,7 +59,7 @@ class GroupService
 
     public function deleteGroup(int $id): bool {
         $stmt = $this->db->prepare(
-            'DELETE FROM groups WHERE group_id = :id'
+            'DELETE FROM `groups` WHERE group_id = :id'
         );
         $stmt->execute(['id' => $id]);
         return $stmt->rowCount() > 0;

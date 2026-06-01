@@ -1,4 +1,3 @@
-
 <?php
 require_once __DIR__ . '/../app/session/guard.php'; 
 requireAuth();
@@ -37,28 +36,13 @@ requireAuth();
 <div class="container-xxl">
   <div class="page-header">
     <h1>Alle <span>Routen</span></h1>
-    <p>9 Pacenote-Dateien – JSON laden &amp; kommentieren</p>
+    <p id="routeCount">Wird geladen…</p>
   </div>
 
   <div class="routes-grid" id="routesGrid"></div>
 </div>
 
-
-
 <script>
- <!--Noch auslagern-->
-const ROUTES = [
-  { id: 1, file: 'data/route_01.json', label: 'Route 01' },
-  { id: 2, file: 'data/route_02.json', label: 'Route 02' },
-  { id: 3, file: 'data/route_03.json', label: 'Route 03' },
-  { id: 4, file: 'data/route_04.json', label: 'Route 04' },
-  { id: 5, file: 'data/route_05.json', label: 'Route 05' },
-  { id: 6, file: 'data/route_06.json', label: 'Route 06' },
-  { id: 7, file: 'data/route_07.json', label: 'Route 07' },
-  { id: 8, file: 'data/route_08.json', label: 'Route 08' },
-  { id: 9, file: 'data/route_09.json', label: 'Route 09' },
-];
-
 function sevColor(s) {
   const map = { 1:'#00d2d3', 2:'#198754', 3:'#ffc107', 4:'#fd7e14', 5:'#dc3545', 6:'#9b0000' };
   return map[Math.min(Math.max(parseInt(s)||2, 1), 6)] || '#3b82f6';
@@ -94,9 +78,8 @@ function renderComments(routeId, listEl) {
 }
 
 function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-
 
 function buildSevBar(notes) {
   const counts = {1:0,2:0,3:0,4:0,5:0,6:0};
@@ -161,7 +144,6 @@ function fillMeta(routeId, data) {
   const dist = data.route?.total_distance_m ? `${(data.route.total_distance_m / 1000).toFixed(2)} km` : '—';
   const noteCount = data.route?.total_notes ?? notes.length;
 
-  // Versuche einen sinnvollen Titel aus dem Dateinamen
   const route = ROUTES.find(r => r.id === routeId);
   titleEl.textContent = data.route?.name || route?.label || `Route ${routeId}`;
 
@@ -173,6 +155,7 @@ function fillMeta(routeId, data) {
     <div class="sev-bar">${buildSevBar(notes)}</div>
     <div class="notes-preview">${buildNoteChips(notes)}</div>`;
 }
+let ROUTES = [];
 const routeCache = {};
 
 async function fetchRoute(routeId) {
@@ -213,24 +196,52 @@ function submitComment(routeId) {
   renderComments(routeId, document.getElementById(`comment-list-${routeId}`));
 }
 function openInViewer(routeId) {
-  const route = ROUTES.find(r => r.id === routeId);
-  window.location.href = `index.php?route=${encodeURIComponent(route.file)}`;
+  window.location.href = `index.php?route_id=${routeId}`;
 }
 
 const grid = document.getElementById('routesGrid');
 
-ROUTES.forEach(route => {
-  const card = buildCard(route);
-  grid.appendChild(card);
+async function loadRoutes() {
+  const countEl = document.getElementById('routeCount');
+  try {
+    const resp = await fetch('/ajax/routes.php');
+    const result = await resp.json();
+    if (!result.success) throw new Error(result.error);
 
-  fetchRoute(route.id)
-    .then(data => fillMeta(route.id, data))
-    .catch(err => {
-      const metaEl = document.getElementById(`meta-${route.id}`);
-      metaEl.innerHTML = `<div class="card-error">⚠ Datei nicht gefunden:<br><code>${ROUTES.find(r=>r.id===route.id).file}</code></div>`;
-      document.getElementById(`btn-load-${route.id}`).disabled = true;
+    ROUTES = result.data.map((r, i) => ({
+      id:    r.route_id,
+      label: r.title || `Route ${String(i + 1).padStart(2, '0')}`,
+    }));
+
+    result.data.forEach(r => {
+      const jsonData = typeof r.json_data === 'string' ? JSON.parse(r.json_data) : r.json_data;
+      routeCache[r.route_id] = {
+        ...jsonData,
+        route: { ...(jsonData.route || {}), total_distance_m: r.distance_m ?? null },
+      };
     });
-});
+
+    countEl.textContent = `${ROUTES.length} Pacenote-Dateien – JSON laden & kommentieren`;
+
+    ROUTES.forEach(route => {
+      const card = buildCard(route);
+      grid.appendChild(card);
+
+      fetchRoute(route.id)
+        .then(data => fillMeta(route.id, data))
+        .catch(err => {
+          const metaEl = document.getElementById(`meta-${route.id}`);
+          metaEl.innerHTML = `<div class="card-error">⚠ ${escHtml(err.message)}</div>`;
+          document.getElementById(`btn-load-${route.id}`).disabled = true;
+        });
+    });
+  } catch (err) {
+    document.getElementById('routeCount').textContent = '';
+    grid.innerHTML = `<div class="card-error">⚠ ${escHtml(err.message)}</div>`;
+  }
+}
+
+loadRoutes();
 </script>
 </body>
 </html>

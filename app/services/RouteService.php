@@ -78,7 +78,7 @@ class RouteService
         }
 
         $stmt = $this->db->prepare(
-            'UPDATE tracks SET ' . implode(', ', $fields) . ' WHERE track_id = :id'
+            'UPDATE tracks SET ' . implode(', ', $fields) . ' WHERE route_id = :id'
         );
         $stmt->execute($params);
 
@@ -93,6 +93,15 @@ class RouteService
 
         $stmt->execute(['id' => $id]);
 
+        return $stmt->rowCount() > 0;
+    }
+
+    public function updatePacenotes(int $routeId, string $jsonData): bool
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE tracks SET pacenotes_data = :pacenotes_data WHERE route_id = :id'
+        );
+        $stmt->execute(['pacenotes_data' => $jsonData, 'id' => $routeId]);
         return $stmt->rowCount() > 0;
     }
 

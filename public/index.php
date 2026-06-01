@@ -1,8 +1,6 @@
 <?php
-
 require_once __DIR__ . '/../app/session/guard.php'; 
 requireAuth();
-
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -17,28 +15,27 @@ requireAuth();
     />
     <!-- Custom CSS-->
     <link
-      href="assets/css/stylesheetmain.css"
+      href="./assets/css/stylesheetmain.css"
       rel="stylesheet"
     />
-    <script src="assets/js/homepage.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/homepage.js" defer></script>
+    <script src="./assets/js/homepage.js" defer></script>
   </head>
 
   <body>
   <nav class="navbar navbar-expand-lg px-3">
     <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">Pastenotes24.de</a>
+      <a class="navbar-brand" href="index.php">Pastenotes24.de</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link active" href="index.html">Karte</a></li>
-          <li class="nav-item"><a class="nav-link" href="routen.html">Routen</a></li>
-          <li class="nav-item"><a class="nav-link" href="leaderboard.html">Leaderboard</a></li>
+          <li class="nav-item"><a class="nav-link active" href="index.php">Karte</a></li>
+          <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
+          <li class="nav-item"><a class="nav-link" href="leaderboard.php">Leaderboard</a></li>
         </ul>
-        <a href="logout.php" class="btn btn-outline-danger btn-sm">Logout</a>
+        <a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
       </div>
     </div>
   </nav>

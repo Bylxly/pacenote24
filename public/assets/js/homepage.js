@@ -1,14 +1,3 @@
-
-function vollbild() {
-  const container = document.getElementById("kartenContainer");
-
-  if (container.requestFullscreen) {
-    container.requestFullscreen();
-  } else if (container.webkitRequestFullscreen) {
-    container.webkitRequestFullscreen();
-  }
-}
-
 let notes = [];
 let currentIndex = 0;
 let map = null;

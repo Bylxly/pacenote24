@@ -116,6 +116,15 @@ class RouteService
         return $stmt->rowCount() > 0;
     }
 
+    public function getRoutePacenotes(int $routeId): ?string {
+        $stmt = $this->db->prepare(
+            'SELECT pacenotes_data FROM tracks WHERE route_id = :id'
+        );
+        $stmt->execute(['id' => $routeId]);
+        $result = $stmt->fetch();
+        return $result['pacenotes_data'] ?? null;
+    }
+
     // visible_for_user_id -> JOIN auf track_visible_user
     public function getRoutesByVisibleUserId(int $userId): array
     {

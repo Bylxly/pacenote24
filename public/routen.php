@@ -12,6 +12,7 @@ requireAuth();
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
   <link href="./assets/css/stylesheetmain.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./assets/js/auth.js"></script>
 </head>
 <body>
 
@@ -28,7 +29,7 @@ requireAuth();
         <li class="nav-item"><a class="nav-link active" href="routen.php">Routen</a></li>
         <li class="nav-item"><a class="nav-link" href="navigation.php">Navigation</a></li>
       </ul>
-<a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
+        <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
     </div>
   </div>
 </nav>

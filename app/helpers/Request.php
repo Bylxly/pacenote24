@@ -50,7 +50,7 @@ class Request
     public static function requireValidEmail(array $body, string $field): void {
         if (!filter_var($body[$field], FILTER_VALIDATE_EMAIL)) {
             http_response_code(400);
-            echo json_encode(['success' => false, 'error' => "$field ist keine gültige E-Mail-Adresse"]);
+            echo json_encode(['success' => false, 'error' => "Ungültige E-Mail-Adresse"]);
             exit;
         }
     }

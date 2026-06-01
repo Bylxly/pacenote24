@@ -30,6 +30,19 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /ajax/auth/logout.php:
+    post:
+      summary: Ausloggen
+      responses:
+        '200':
+          description: Erfolgreich ausgeloggt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
   /ajax/users.php:
     get:
       summary: Benutzer lesen (Admin)

@@ -15,7 +15,9 @@ requireAuth();
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/polyline/1.2.0/polyline.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/polyline/1.2.0/polyline.min.js"></script>
+    <script src="./assets/js/auth.js"></script>
+
   </head>
 
   <body>
@@ -32,8 +34,7 @@ requireAuth();
             <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
             <li class="nav-item"><a class="nav-link active" href="navigation.php">Navigation</a></li>
           </ul>
-<a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
-        </div>
+            <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>        </div>
       </div>
     </nav>
 

@@ -1,8 +1,8 @@
-<!DOCTYPE html>
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
 requireGuest();
 ?>
+<!DOCTYPE html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
@@ -19,6 +19,8 @@ requireGuest();
       href="./assets/css/stylesheetmain.css"
       rel="stylesheetmain"
     />
+    <script src="./assets/js/auth.js" defer></script>
+
   </head>
 
   <body>
@@ -33,14 +35,14 @@ requireGuest();
         </div>
 
         <!-- Formular -->
-        <form action="../app/session/LoginHandler.php" method="post">
+        <form id="loginFormular">
           <!-- Benutzer -->
           <div class="mb-3">
-            <label for="login" class="form-label">Benutername</label>
+            <label for="email" class="form-label">Benutername</label>
             <input
               type="text"
               class="form-control"
-              id="login"
+              id="email"
               name="email"
               placeholder="IchRaseNicht24"
               required
@@ -56,13 +58,13 @@ requireGuest();
             <input
               class="form-control"
               id="password"
-              name="pass"
+              name="password"
               type="password"
               placeholder="••••••••"
               required
             />
           </div>
-
+            <div id="loginError" class="alert alert-danger d-none"></div>
           <!-- Login Button -->
           <button type="submit" class="btn btn-primary login-btn w-100 mb-3">
             Anmelden
@@ -84,8 +86,8 @@ requireGuest();
             
       </div>
     </div>
-    
-      </div>
+
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>

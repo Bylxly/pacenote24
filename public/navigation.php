@@ -33,7 +33,7 @@ requireAuth();
             <li class="nav-item"><a class="nav-link" href="routen.html">Routen</a></li>
             <li class="nav-item"><a class="nav-link active" href="navigation.html">Navigation</a></li>
           </ul>
-          <button class="btn btn-outline-danger btn-sm">Logout</button>
+<a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
         </div>
       </div>
     </nav>

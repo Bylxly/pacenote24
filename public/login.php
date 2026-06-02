@@ -6,22 +6,7 @@ requireGuest();
 <!DOCTYPE html>
 <html lang="de">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mein Projekt</title>
-
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <!-- Custom CSS-->
-    <link
-      href="./assets/css/stylesheetmain.css"
-      rel="stylesheet"
-    />
-    <script src="./assets/js/auth.js" defer></script>
-
+  <?php include 'head.php'; ?>
   </head>
 
   <body>

@@ -21,6 +21,9 @@ requireAuth();
           <li class="nav-item"><a class="nav-link active" href="index.php">Karte</a></li>
           <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
         </ul>
+<?php if (hasRole(ADMIN_ROLE_ID)): ?>
+          <a href="admin/adminpanel.php" class="btn btn-outline-light btn-sm me-2">Adminpanel</a>
+<?php endif; ?>
           <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
       </div>
     </div>

@@ -1,7 +1,4 @@
-<?php
-require_once __DIR__ . '/../app/session/guard.php';
-requireAuth();
-?>
+
   <!DOCTYPE html>
 <html lang="de">
   <head>
@@ -28,11 +25,12 @@ requireAuth();
         </button>
         <div class="collapse navbar-collapse" id="navMenu">
           <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="landing_page.php">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="index.php">Karte</a></li>
             <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
             <li class="nav-item"><a class="nav-link active" href="navigation.php">Navigation</a></li>
           </ul>
-<a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
+          <a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
         </div>
       </div>
     </nav>
@@ -42,12 +40,30 @@ requireAuth();
         
         <div class="col-lg-5">
           <div class="card p-4 mb-4">
-            <h5 class="card-title mb-3">Eigene Route hochladen</h5>
-            <input type="file" id="fileInput" class="form-control" accept=".json">
-          </div>
+            <h5 class="card-title mb-3">Route auswählen</h5>
+            
+            <div class="mb-3">
+              <label for="fileInput" class="form-label small text-muted text-uppercase fw-bold">Option A: Lokale JSON hochladen</label>
+              <input type="file" id="fileInput" class="form-control" accept=".json">
+            </div>
+
+            <div class="text-center my-2 text-muted small">- ODER -</div>
+
+            <div class="mb-2">
+              <label class="form-label small text-muted text-uppercase fw-bold">Option B: Vom Server laden</label>
+              <div class="d-grid gap-2">
+                <button type="button" class="btn btn-primary" id="btnFetchRoutes">
+                  Routen vom Server abrufen
+                </button>
+              </div>
+              
+              <select class="form-select mt-3 d-none" id="serverRoutesSelect">
+                <option selected disabled>Wähle eine Server-Route...</option>
+              </select>
+            </div>
+            </div>
 
           <div class="card note-card-click p-4 shadow" id="noteCard" style="display: none;">
-            
             <div class="huge-arrow-container mb-4 shadow-sm">
               <svg id="turnArrow" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
                 <path id="arrowPath" d="M 50 85 Q 50 50 50 20" />
@@ -87,11 +103,11 @@ requireAuth();
 
         <div class="col-lg-7">
           <div id="map" class="shadow d-flex align-items-center justify-content-center text-muted">
-            <span id="mapPlaceholder">JSON hochladen</span>
+            <span id="mapPlaceholder">JSON hochladen oder vom Server laden</span>
           </div>
         </div>
 
       </div>
     </main>
-  </body>
+    </body>
 </html>

@@ -13,10 +13,9 @@ class RouteService
     public function getAllRoutes(): array
     {
         $stmt = $this->db->prepare(
-            'SELECT * FROM tracks'
+            'SELECT * FROM tracks ORDER BY compiled_time DESC'
         );
         $stmt->execute();
-
         return $stmt->fetchAll();
     }
 
@@ -44,21 +43,23 @@ class RouteService
         return $stmt->fetchAll();
     }
 
-    public function createRoute(?string $title, int $ownerUserId, string $jsonData): ?int
+    public function createRoute(?string $title, int $ownerUserId, string $jsonData, ?string $waypoints = null, ?int $distanceM = null): ?int
     {
         if (json_decode($jsonData) === null) {
             return null;
         }
 
         $stmt = $this->db->prepare(
-            'INSERT INTO tracks (title, owner_user_id, compiled_time, json_data)
-         VALUES (:title, :owner_user_id, CURRENT_TIMESTAMP, :json_data)'
+            'INSERT INTO tracks (title, owner_user_id, compiled_time, json_data, waypoints, distance_m)
+             VALUES (:title, :owner_user_id, CURRENT_TIMESTAMP, :json_data, :waypoints, :distance_m)'
         );
 
         $stmt->execute([
-            'title' => $title,
-            'owner_user_id' => $ownerUserId,
-            'json_data' => $jsonData
+            'title'        => $title,
+            'owner_user_id'=> $ownerUserId,
+            'json_data'    => $jsonData,
+            'waypoints'    => $waypoints,
+            'distance_m'   => $distanceM,
         ]);
 
         $lastInsertId = $this->db->lastInsertId();

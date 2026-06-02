@@ -23,7 +23,10 @@ try {
 
     Request::requirePositiveInt($body, 'owner_user_id');
 
-    $routeId = $service->createRoute($title, $body['owner_user_id'], json_encode($body['json_data']));
+    $waypoints  = isset($body['waypoints'])  ? json_encode($body['waypoints'])  : null;
+    $distanceM  = isset($body['distance_m']) ? (int)$body['distance_m']         : null;
+
+    $routeId = $service->createRoute($title, $body['owner_user_id'], json_encode($body['json_data']), $waypoints, $distanceM);
 
     if ($routeId === null) {
         http_response_code(409);

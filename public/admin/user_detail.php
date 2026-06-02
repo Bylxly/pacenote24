@@ -1,26 +1,11 @@
 <?php
-require_once("../../app/session/guard.php");
-requireAdmin();
+$adminTitle      = 'User Detail';
+$adminBreadcrumb = [
+  ['label' => 'User Management',  'href' => 'adminpanel.php'],
+  ['label' => 'Profil verwalten', 'href' => null],
+];
+require __DIR__ . '/_header.php';
 ?>
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Detail</title>
-  <link rel="stylesheet" href="../assets/css/stylesheetmain.css">
-  <link rel="stylesheet" href="../assets/css/admin.css">
-</head>
-<body>
-
-<header class="admin-header">
-  <span class="admin-header__badge">Admin</span>
-  <nav class="admin-header__breadcrumb">
-    <a href="adminpanel.php">User Management</a>
-    <span>›</span>
-    <strong>Profil verwalten</strong>
-  </nav>
-</header>
 
 <main class="admin-main">
 
@@ -33,6 +18,7 @@ requireAdmin();
 
 <script type="module">
 import { api } from '../assets/js/api.js';
+import { validatePassword } from '../assets/js/validation.js';
 
 const bannerSuccess = document.getElementById('banner-success');
 const bannerError   = document.getElementById('banner-error');
@@ -86,12 +72,6 @@ function showError(msg) {
 function clearMessages() {
   bannerSuccess.classList.remove('visible');
   bannerError.classList.remove('visible');
-}
-
-function validatePassword(password) {
-  if (password.length < 8)            return 'Passwort muss mindestens 8 Zeichen lang sein.';
-  if (!/[^A-Za-z0-9]/.test(password)) return 'Passwort muss mindestens ein Sonderzeichen enthalten.';
-  return null;
 }
 
 function renderPage() {

@@ -27,9 +27,10 @@ requireAuth();
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="landing_page.php">Home</a></li>
           <li class="nav-item"><a class="nav-link active" href="index.php">Karte</a></li>
           <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
-          <li class="nav-item"><a class="nav-link" href="leaderboard.php">Leaderboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="navigation.php">Navigation</a></li>
         </ul>
           <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
       </div>

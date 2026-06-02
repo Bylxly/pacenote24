@@ -268,3 +268,64 @@ if (noteCard) {
     });
 }
 
+//Funktion zu abrufen der json datei vom server
+
+      document.addEventListener('DOMContentLoaded', () => {
+          const btnFetchRoutes = document.getElementById('btnFetchRoutes');
+          const serverRoutesSelect = document.getElementById('serverRoutesSelect');
+          let serverTracks = []; 
+
+          // 1. Klick-Event für den API-Abruf
+          btnFetchRoutes.addEventListener('click', async () => {
+              btnFetchRoutes.disabled = true;
+              btnFetchRoutes.textContent = 'Lade Routen...';
+
+              try {
+                  const response = await fetch('/ajax/routes.php');
+                  if (!response.ok) throw new Error(`Status: ${response.status}`);
+
+                  const result = await response.json();
+
+                  if (result.success && Array.isArray(result.data)) {
+                      serverTracks = result.data;
+                      serverRoutesSelect.innerHTML = '<option selected disabled>Wähle eine Server-Route...</option>';
+                      
+                      serverTracks.forEach((track, index) => {
+                          const option = document.createElement('option');
+                          option.value = index; 
+                          option.textContent = track.title ? track.title : `Route #${track.track_id}`;
+                          serverRoutesSelect.appendChild(option);
+                      });
+
+                      serverRoutesSelect.classList.remove('d-none'); 
+                      btnFetchRoutes.textContent = 'Routenliste aktualisieren';
+                  } else {
+                      alert('Fehler: ' + (result.error || 'Ungültiges Format'));
+                  }
+              } catch (error) {
+                  console.error('API-Fehler:', error);
+                  alert('Fehler beim Laden vom Server.');
+              } finally {
+                  btnFetchRoutes.disabled = false;
+              }
+          });
+
+          // 2. Event bei Auswahl einer Route aus dem Dropdown
+          serverRoutesSelect.addEventListener('change', (e) => {
+              const selectedIndex = e.target.value;
+              const selectedTrack = serverTracks[selectedIndex];
+
+              if (selectedTrack && selectedTrack.json_data) {
+                  renderRouteOnMap(selectedTrack.json_data);
+              }
+          });
+      });
+
+      // 3. Übergabe-Funktion an deine Kartenlogik
+      function renderRouteOnMap(jsonData) {
+          const placeholder = document.getElementById('mapPlaceholder');
+          if (placeholder) placeholder.style.display = 'none';
+          
+          console.log("Daten bereit für Leaflet:", jsonData);
+          alert('Route geladen! Verknüpfe diese Funktion jetzt mit deinem Leaflet-Code.');
+      }

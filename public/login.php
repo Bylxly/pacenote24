@@ -17,7 +17,7 @@ requireGuest();
     <!-- Custom CSS-->
     <link
       href="./assets/css/stylesheetmain.css"
-      rel="stylesheetmain"
+      rel="stylesheet"
     />
     <script src="./assets/js/auth.js" defer></script>
 
@@ -53,7 +53,6 @@ requireGuest();
           <div class="mb-3">
             <label for="pass" class="form-label">
               Passwort
-              <a href="#" class="forgot-link float-end"> Vergessen?</a>
             </label>
             <input
               class="form-control"
@@ -80,7 +79,7 @@ requireGuest();
           <!-- Registrieren -->
           <p class="text-center mb-0 register-text">
             Noch kein Konto?
-            <a href="#" class="register-link">Jetzt registrieren</a>
+            <a href="http://localhost/dhbw/pacenote24/public/registrieren.php" class="register-link">Jetzt registrieren</a>
           </p>
         </form>
             
@@ -92,3 +91,4 @@ requireGuest();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+

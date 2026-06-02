@@ -21,7 +21,7 @@ requireAuth();
           <li class="nav-item"><a class="nav-link active" href="index.php">Karte</a></li>
           <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
         </ul>
-        <a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
+          <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
       </div>
     </div>
   </nav>
@@ -69,5 +69,8 @@ requireAuth();
         </div>
       </div>
 
+    </div> </div>
+  <script src="./assets/js/auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

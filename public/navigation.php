@@ -1,10 +1,8 @@
- 
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
 requireAuth();
 ?>
- 
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
   <head>
     <?php include 'head.php'; ?>

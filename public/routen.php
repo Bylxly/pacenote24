@@ -5,7 +5,7 @@ requireAuth();
 ?>
 <html lang="de">
 <head>
-  <?php include 'head.php'; ?>
+    <?php include 'head.php'; ?>
 </head>
 
 <body>
@@ -22,7 +22,7 @@ requireAuth();
         <li class="nav-item"><a class="nav-link" href="index.php">Karte</a></li>
         <li class="nav-item"><a class="nav-link active" href="routen.php">Routen</a></li>
       </ul>
-<a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
+        <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
     </div>
   </div>
 </nav>

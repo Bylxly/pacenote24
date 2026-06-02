@@ -30,6 +30,19 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /ajax/auth/logout.php:
+    post:
+      summary: Ausloggen
+      responses:
+        '200':
+          description: Erfolgreich ausgeloggt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
   /ajax/users.php:
     get:
       summary: Benutzer lesen (Admin)
@@ -486,6 +499,48 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /ajax/routes/pacenotes.php:
+    get:
+      summary: Pacenotes einer Route abrufen
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pacenotes erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PacenotesGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Pacenotes einer Route speichern (Owner oder Admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PacenotesUpdateRequest'
+      responses:
+        '200':
+          $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /ajax/group-members.php:
     get:
       summary: Gruppenmitgliedschaften lesen
@@ -869,11 +924,35 @@ components:
         json_data:
           type: object
           additionalProperties: true
+        pacenotes_data:
+          type: object
+          nullable: true
+          additionalProperties: true
+
+    PacenotesGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          nullable: true
+          additionalProperties: true
       required:
-        - route_id
-        - owner_user_id
-        - compiled_time
-        - json_data
+        - success
+        - data
+
+    PacenotesUpdateRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        pacenotes_data:
+          type: object
+          additionalProperties: true
+      required:
+        - id
+        - pacenotes_data
 
     GroupMember:
       type: object

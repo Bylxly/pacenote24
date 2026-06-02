@@ -1,4 +1,9 @@
-    <!DOCTYPE html>
+<?php
+require_once __DIR__ . '/../app/session/guard.php';
+requireGuest();
+?>  
+  
+  <!DOCTYPE html>
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
 requireGuest();
@@ -64,7 +69,7 @@ requireGuest();
 
           <!-- Login -->
           <p class="text-center mb-0 register-text">
-            <a href="http://localhost/dhbw/pacenote24/public/login.php" class="register-link">Schon Registriert?</a>
+            <a href="login.php" class="register-link">Schon Registriert?</a>
           </p>
         </form>
             

@@ -25,15 +25,16 @@ requireAuth();
   <body>
   <nav class="navbar navbar-expand-lg px-3">
     <div class="container-fluid">
-      <a class="navbar-brand" href="index.php">Pastenotes24.de</a>
+      <a class="navbar-brand" href="index.php">Pacenotes24.de</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="landing_page.php">Home</a></li>
           <li class="nav-item"><a class="nav-link active" href="index.php">Karte</a></li>
           <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
-          <li class="nav-item"><a class="nav-link" href="leaderboard.php">Leaderboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="navigation.php">Navigation</a></li>
         </ul>
         <a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
       </div>
@@ -83,8 +84,5 @@ requireAuth();
         </div>
       </div>
 
-    </div> </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

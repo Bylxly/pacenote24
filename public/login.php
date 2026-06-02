@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
 requireGuest();
 ?>
+<!DOCTYPE html>
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
@@ -77,7 +78,7 @@ requireGuest();
           <!-- Registrieren -->
           <p class="text-center mb-0 register-text">
             Noch kein Konto?
-            <a href="http://localhost/dhbw/pacenote24/public/registrieren.php" class="register-link">Jetzt registrieren</a>
+            <a href="registrieren.php" class="register-link">Jetzt registrieren</a>
           </p>
         </form>
             

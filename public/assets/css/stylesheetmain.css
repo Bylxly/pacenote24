@@ -11,12 +11,12 @@
   --muted: #7a8ba6;
   
   /* Severity-Farben */
-  --sev1: #38bdf8;
-  --sev2: #10b981;
-  --sev3: #f59e0b;
-  --sev4: #f97316;
-  --sev5: #ef4444;
-  --sev6: #b91c1c;
+  --sev6: #38bdf8;
+  --sev5: #10b981;
+  --sev4: #f59e0b;
+  --sev3: #f97316;
+  --sev2: #ef4444;
+  --sev1: #b91c1c;
 }
 
 /* ── BASIS ── */

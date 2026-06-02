@@ -27,7 +27,6 @@ requireAuth();
         <li class="nav-item"><a class="nav-link" href="landing_page.php">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="index.php">Karte</a></li>
         <li class="nav-item"><a class="nav-link active" href="routen.php">Routen</a></li>
-        <li class="nav-item"><a class="nav-link" href="navigation.php">Navigation</a></li>
       </ul>
         <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
     </div>

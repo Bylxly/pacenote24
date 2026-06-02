@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
 requireGuest();
@@ -31,41 +31,29 @@ requireGuest();
           <h1 class="login-title">Willkommen</h1>
           <p class="login-subtitle">Always drive save</p>
         </div>
+        
+        <div class="card">
+            <div class="card__header">
+            <span class="card__title">Neuen Nutzer erstellen</span>
+            </div>
+            <div class="card__body">
+            <form id="create-form">
 
-        <!-- Formular -->
-        <form action="../app/session/LoginHandler.php" method="post">
-          <!-- Benutzer -->
-          <div class="mb-3">
-            <label for="login" class="form-label">Benutername</label>
-            <input
-              type="text"
-              class="form-control"
-              id="login"
-              name="email"
-              placeholder="IchRaseNicht24"
-              required
-            />
-          </div>
+                <div class="form-group">
+                <label for="email">Benutzername</label>
+                <input type="email" id="email" name="email" placeholder="nutzer@beispiel.de" required>
+                </div>
 
-          <!-- Passwort -->
-          <div class="mb-3">
-            <label for="pass" class="form-label">
-              Passwort
-            </label>
-            <input
-              class="form-control"
-              id="password"
-              name="pass"
-              type="password"
-              placeholder="••••••••"
-              required
-            />
-          </div>
+                <div class="form-group">
+                <label for="password">Passwort</label>
+                <input type="password" id="password" name="password" placeholder="Mindestens 8 Zeichen + Sonderzeichen" required>
+                </div>
 
-          <!-- Login Button -->
-          <button type="submit" class="btn btn-primary login-btn w-100 mb-3">
-            Anmelden
-          </button>
+                <button type="submit" class="btn btn-primary">Nutzer anlegen</button>
+
+            </form>
+            </div>
+        </div>
 
           <!-- Trennlinie -->
           <div class="divider d-flex align-items-center my-3">
@@ -74,15 +62,15 @@ requireGuest();
             <span></span>
           </div>
 
-          <!-- Registrieren -->
+          <!-- Login -->
           <p class="text-center mb-0 register-text">
-            Noch kein Konto?
-            <a href="http://localhost/dhbw/pacenote24/public/registrieren.php" class="register-link">Jetzt registrieren</a>
+            <a href="http://localhost/dhbw/pacenote24/public/login.php" class="register-link">Schon Registriert?</a>
           </p>
         </form>
             
       </div>
     </div>
+  
   </body>
 </html>
 

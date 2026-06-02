@@ -4,7 +4,7 @@ async function logout() {
     });
 
     if (res.ok) {
-        window.location.href = './login.php';
+        window.location.href = './home.php';
     }
 }
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = await res.json();
 
         if (res.ok && data.success) {
-            window.location.href = './index.php';
+            window.location.href = './home.php';
         } else {
             errorEl.textContent = data.error ?? 'Login fehlgeschlagen';
             errorEl.classList.remove('d-none');

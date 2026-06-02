@@ -11,14 +11,14 @@ requireAuth();
   <body>
   <nav class="navbar navbar-expand-lg px-3">
     <div class="container-fluid">
-      <a class="navbar-brand" href="index.php">Pacenotes24.de</a>
+      <a class="navbar-brand" href="home.php">Pacenotes24.de</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link" href="landing_page.php">Home</a></li>
-          <li class="nav-item"><a class="nav-link active" href="index.php">Karte</a></li>
+          <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="karte.php">Karte</a></li>
           <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
         </ul>
 <?php if (hasRole(ADMIN_ROLE_ID)): ?>

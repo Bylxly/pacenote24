@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
+$authStatus = isAuthenticated();
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -21,10 +22,13 @@ require_once __DIR__ . '/../app/session/guard.php';
             <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
             <li class="nav-item"><a class="nav-link" href="navigation.php">Navigation</a></li>
           </ul>
-            <?php if (isAuthenticated()):?>
+            <?php if ($authStatus && hasRole(ADMIN_ROLE_ID)):?>
+                <a href="./admin/adminpanel.php" class="btn btn-outline-light btn-sm me-2">Adminpanel</a>
+            <?php endif;?>
+            <?php if ($authStatus):?>
                 <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
             <?php else:?>
-                <a href="login.php" class="btn btn-outline-success btn-sm">Login</a>
+                <a href="./login.php" class="btn btn-outline-success btn-sm">Login</a>
             <?php endif;?>
         </div>
       </div>

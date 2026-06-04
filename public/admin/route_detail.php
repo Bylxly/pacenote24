@@ -1,28 +1,12 @@
 <?php
-require_once("../../app/session/guard.php");
-requireAdmin();
+$adminTitle      = 'Route Detail';
+$adminBreadcrumb = [
+  ['label' => 'User Management', 'href' => 'adminpanel.php'],
+  ['label' => 'Pacenotes',       'href' => 'pacenote_view.php'],
+  ['label' => 'Route Detail',    'href' => null],
+];
+require __DIR__ . '/_header.php';
 ?>
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Route Detail</title>
-  <link rel="stylesheet" href="../assets/css/stylesheetmain.css">
-  <link rel="stylesheet" href="../assets/css/admin.css">
-</head>
-<body>
-
-<header class="admin-header">
-  <span class="admin-header__badge">Admin</span>
-  <nav class="admin-header__breadcrumb">
-    <a href="adminpanel.php">User Management</a>
-    <span>›</span>
-    <a href="pacenote_view.php">Pacenotes</a>
-    <span>›</span>
-    <strong>Route Detail</strong>
-  </nav>
-</header>
 
 <main class="admin-main">
 

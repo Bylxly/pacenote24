@@ -1,28 +1,9 @@
 <?php
-require_once("../../app/session/guard.php");
-requireAdmin();
+$adminTitle      = 'Admin Panel';
+$adminBreadcrumb = [['label' => 'User Management', 'href' => null]];
+$adminToggle     = 'users';
+require __DIR__ . '/_header.php';
 ?>
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel</title>
-  <link rel="stylesheet" href="../assets/css/stylesheetmain.css">
-  <link rel="stylesheet" href="../assets/css/admin.css">
-</head>
-<body>
-
-<header class="admin-header">
-  <span class="admin-header__badge">Admin</span>
-  <nav class="admin-header__breadcrumb">
-    <strong>User Management</strong>
-  </nav>
-  <div class="page-toggle">
-    <a href="adminpanel.php" class="page-toggle__btn active">Users</a>
-    <a href="pacenote_view.php" class="page-toggle__btn">Pacenotes</a>
-  </div>
-</header>
 
 <main class="admin-main">
 

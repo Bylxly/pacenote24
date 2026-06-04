@@ -1,38 +1,35 @@
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
-requireAuth();
+$authStatus = isAuthenticated();
 ?>
 <!DOCTYPE html>
 <html lang="de">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pacenotes24.de</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="./assets/css/stylesheetmain.css" rel="stylesheet" />
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/polyline/1.2.0/polyline.min.js"></script> 
+      <?php include 'head.php'; ?>
   </head>
 
   <body>
     <nav class="navbar navbar-expand-lg px-3">
       <div class="container-fluid">
-        <a class="navbar-brand" href="index.php">Pacenotes24<span>.de</span></a>
+        <a class="navbar-brand" href="home.php">Pacenotes24<span>.de</span></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMenu">
           <ul class="navbar-nav me-auto">
-            <li class="nav-item"><a class="nav-link active" href="landing_page.php">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="index.php">Karte</a></li>
+            <li class="nav-item"><a class="nav-link active" href="home.php">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="karte.php">Karte</a></li>
             <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
             <li class="nav-item"><a class="nav-link" href="navigation.php">Navigation</a></li>
           </ul>
-          <a href="../app/session/LogoutHandler.php" class="btn btn-outline-danger btn-sm">Logout</a>
+            <?php if ($authStatus && hasRole(ADMIN_ROLE_ID)):?>
+                <a href="./admin/adminpanel.php" class="btn btn-outline-light btn-sm me-2">Adminpanel</a>
+            <?php endif;?>
+            <?php if ($authStatus):?>
+                <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
+            <?php else:?>
+                <a href="./login.php" class="btn btn-outline-success btn-sm">Login</a>
+            <?php endif;?>
         </div>
       </div>
     </nav>
@@ -42,7 +39,7 @@ requireAuth();
         <h1 class="fw-bold tracking-wider"><span>PACENOTES24.de</span></h1>
         <p>Planen. Navigieren. Asphalt beherrschen.</p>
         <div class="d-flex justify-content-center gap-3 mt-4">
-          <a href="index.php" class="btn btn-primary px-4">ZUR KARTE</a>
+          <a href="karte.php" class="btn btn-primary px-4">ZUR KARTE</a>
         </div>
       </div>
     </header>

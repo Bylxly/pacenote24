@@ -1,20 +1,14 @@
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
 requireGuest();
-?>  
-  
-  <!DOCTYPE html>
-<?php
-require_once __DIR__ . '/../app/session/guard.php';
-requireGuest();
 ?>
+<!DOCTYPE html>
 <html lang="de">
   <head>
     <?php include 'head.php'; ?>
   </head>
 
   <body>
-
     <div class="login-wrapper d-flex align-items-center justify-content-center min-vh-100">
       <div class="login-card card shadow-sm p-4 p-md-5">
 

@@ -13,7 +13,7 @@ $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
   <div class="text-center">
     <h1>403</h1>
     <p>Nanu. Du hast keine Berechtigung, auf diese Seite zuzugreifen.</p>
-    <a href="../index.php" class="btn btn-primary">Zurück zur Startseite</a>
+    <a href="../home.php" class="btn btn-primary">Zurück zur Startseite</a>
   </div>
 </body>
 </html>

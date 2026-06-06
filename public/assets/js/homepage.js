@@ -37,12 +37,12 @@ function vollbild() {
 function getColorBySeverity(severity) {
     const sev = Math.min(Math.max(parseInt(severity) || 2, 1), 6);
     switch (sev) {
-        case 1: return '#00d2d3';
-        case 2: return '#198754';
-        case 3: return '#ffc107';
-        case 4: return '#fd7e14';
-        case 5: return '#dc3545';
-        case 6: return '#9b0000';
+        case 6: return '#00d2d3';
+        case 5: return '#198754';
+        case 4: return '#ffc107';
+        case 3: return '#fd7e14';
+        case 2: return '#dc3545';
+        case 1: return '#9b0000';
         default: return '#3b82f6';
     }
 }

@@ -56,14 +56,9 @@ requireAuth();
   </div>
 </div>
 
-<script>
-/* ── API Config ─────────────────────────────────────────────────────────────
-   Passe BASE_URL und ENDPOINT auf deine API an.
-   Erwartet GET /api/routes?page=1&limit=9
-   Response: { total: number, routes: [ { id, name, file, created_at, ... } ] }
-   Alternativ: /api/routes liefert alle, dann lokal paginieren.
-   ─────────────────────────────────────────────────────────────────────────── */
-const API_BASE  = '/api';           // ← anpassen
+<script type="module">
+import { api } from './assets/js/api.js';
+
 const PER_PAGE  = 9;
 
 let allRoutes    = [];   // vom Server geladene Metadaten
@@ -315,11 +310,16 @@ async function hydrateCard(route) {
 
 /* ── API: load route list ────────────────────────────────────────────────── */
 async function fetchRouteList() {
-  const res = await fetch(`${API_BASE}/routes`);
-  if (!res.ok) throw new Error(`API error ${res.status}`);
-  const data = await res.json();
-  // Supports { routes: [...] } or plain array
-  return Array.isArray(data) ? data : (data.routes || []);
+  const data = await api.get('/ajax/routes.php');
+  if (!data.success || !Array.isArray(data.data)) throw new Error(data.error || 'Ungültiges Format');
+  // DB-Felder auf die von den Karten erwartete Form mappen
+  return data.data.map(r => ({
+    id:             r.route_id,
+    name:           r.title,
+    created_at:     r.compiled_time,
+    distance_m:     r.distance_m,
+    pacenotes_data: r.pacenotes_data,
+  }));
 }
 
 /* ── Render next batch ──────────────────────────────────────────────────── */
@@ -478,6 +478,12 @@ function openImportedFile() {
 /* ── Keyboard close modal ────────────────────────────────────────────────── */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeImport();
+});
+
+/* ── onclick-Handler global verfügbar machen (nötig im Modul-Scope) ───────── */
+Object.assign(window, {
+  openImport, closeImport, handleOverlayClick, handleFileSelect,
+  openImportedFile, exportRoute, openInViewer, loadMoreRoutes,
 });
 
 /* ── Boot ────────────────────────────────────────────────────────────────── */

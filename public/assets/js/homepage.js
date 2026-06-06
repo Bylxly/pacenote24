@@ -1,3 +1,5 @@
+import { api } from './api.js';
+
 let notes = [];
 let currentIndex = 0;
 let map = null;
@@ -281,10 +283,7 @@ if (noteCard) {
               btnFetchRoutes.textContent = 'Lade Routen...';
 
               try {
-                  const response = await fetch('/ajax/routes.php');
-                  if (!response.ok) throw new Error(`Status: ${response.status}`);
-
-                  const result = await response.json();
+                  const result = await api.get('/ajax/routes.php');
 
                   if (result.success && Array.isArray(result.data)) {
                       serverTracks = result.data;

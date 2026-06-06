@@ -86,5 +86,6 @@ requireAuth();
 
       </div>
     </main>
+        <script type="module" src="./assets/js/homepage.js"></script>
   </body>
 </html>

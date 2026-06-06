@@ -1,7 +1,6 @@
 <?php
 $adminTitle      = 'Route Detail';
 $adminBreadcrumb = [
-  ['label' => 'User Management', 'href' => 'adminpanel.php'],
   ['label' => 'Pacenotes',       'href' => 'pacenote_view.php'],
   ['label' => 'Route Detail',    'href' => null],
 ];

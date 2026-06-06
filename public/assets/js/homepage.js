@@ -292,8 +292,8 @@ if (noteCard) {
                       
                       serverTracks.forEach((track, index) => {
                           const option = document.createElement('option');
-                          option.value = index; 
-                          option.textContent = track.title ? track.title : `Route #${track.track_id}`;
+                          option.value = index;
+                          option.textContent = track.title ? track.title : `Route #${track.route_id}`;
                           serverRoutesSelect.appendChild(option);
                       });
 
@@ -315,17 +315,42 @@ if (noteCard) {
               const selectedIndex = e.target.value;
               const selectedTrack = serverTracks[selectedIndex];
 
-              if (selectedTrack && selectedTrack.json_data) {
-                  renderRouteOnMap(selectedTrack.json_data);
+              if (selectedTrack && selectedTrack.pacenotes_data) {
+                  renderRouteOnMap(selectedTrack.pacenotes_data);
+              } else {
+                  alert('Für diese Route wurden noch keine Pacenotes generiert.');
               }
           });
       });
 
-      // 3. Übergabe-Funktion an deine Kartenlogik
-      function renderRouteOnMap(jsonData) {
-          const placeholder = document.getElementById('mapPlaceholder');
-          if (placeholder) placeholder.style.display = 'none';
-          
-          console.log("Daten bereit für Leaflet:", jsonData);
-          alert('Route geladen! Verknüpfe diese Funktion jetzt mit deinem Leaflet-Code.');
-      }
+      // 3. Übergabe-Funktion
+        function renderRouteOnMap(jsonData) {
+            // json_data kann als String oder Objekt kommen
+            const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
+            notes = data.notes || [];
+
+            if (notes.length === 0) {
+                alert('Diese Route enthält keine Pacenotes.');
+                return;
+            }
+
+            currentIndex = 0;
+
+            // alte Karte zurücksetzen
+            if (map) {
+                map.remove();
+                map = null;
+                routePolyline = null;
+                activeCurveMarker = null;
+                marker = null;
+            }
+
+            if (noteCard) noteCard.style.display = 'block';
+            showNote();
+
+            if (notes[0].lat && notes[0].lng) {
+                initMap(notes[0].lat, notes[0].lng).then(() => {
+                    if (map) map.invalidateSize();
+                });
+            }
+        }

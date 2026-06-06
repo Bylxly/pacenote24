@@ -77,7 +77,6 @@ requireAuth();
       </div>
     </div>
   </div>
-  <script src="./assets/js/auth.js"></script>
   <script type="module" src="./assets/js/map.js"></script>
 </body>
 </html>

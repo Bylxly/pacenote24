@@ -9,37 +9,14 @@ $authStatus = isAuthenticated();
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-lg px-3">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="home.php">Pacenotes24<span>.de</span></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navMenu">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item"><a class="nav-link active" href="home.php">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="karte.php">Karte</a></li>
-            <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
-            <li class="nav-item"><a class="nav-link" href="navigation.php">Navigation</a></li>
-          </ul>
-            <?php if ($authStatus && hasRole(ADMIN_ROLE_ID)):?>
-                <a href="./admin/adminpanel.php" class="btn btn-outline-light btn-sm me-2">Adminpanel</a>
-            <?php endif;?>
-            <?php if ($authStatus):?>
-                <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
-            <?php else:?>
-                <a href="./login.php" class="btn btn-outline-success btn-sm">Login</a>
-            <?php endif;?>
-        </div>
-      </div>
-    </nav>
+  <?php include 'navbar.php'; ?>
 
     <header class="page-header text-center">
       <div class="container py-4">
         <h1 class="fw-bold tracking-wider"><span>PACENOTES24.de</span></h1>
         <p>Planen. Navigieren. Asphalt beherrschen.</p>
         <div class="d-flex justify-content-center gap-3 mt-4">
-          <a href="karte.php" class="btn btn-primary px-4">ZUR KARTE</a>
+          <a href="index.php" class="btn btn-primary px-4">ZUR KARTE</a>
         </div>
       </div>
     </header>

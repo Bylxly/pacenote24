@@ -12,22 +12,7 @@ requireAuth();
 
   <body>
         <!-- Navbar-->
-    <nav class="navbar navbar-expand-lg px-3">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="index.php">Pacenotes24.de</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navMenu">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item"><a class="nav-link" href="landing_page.php">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="index.php">Karte</a></li>
-            <li class="nav-item"><a class="nav-link" href="routen.php">Routen</a></li>
-          </ul>
-            <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
-        </div>
-      </div>
-    </nav>
+        <?php include 'navbar.php'; ?>
 
 <main class="container my-5">
       <div class="row g-4">

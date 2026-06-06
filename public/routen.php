@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
-requireGuest();
+requireAuth();
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -11,22 +11,7 @@ requireGuest();
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg px-3">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="home.php">Pacenotes24.de</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navMenu">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="karte.php">Karte</a></li>
-        <li class="nav-item"><a class="nav-link active" href="routen.php">Routen</a></li>
-      </ul>
-      <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
-    </div>
-  </div>
-</nav>
+<?php include 'navbar.php'; ?>
 
 <div class="modal-overlay" id="importModal" onclick="handleOverlayClick(event)">
   <div class="modal-box">

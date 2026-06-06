@@ -4,7 +4,7 @@ requireAuth();
 ?>
 <html lang="de">
 <head>
-  <?php include 'head.php'; ?>
+    <?php include 'head.php'; ?>
 </head>
 
 <body>

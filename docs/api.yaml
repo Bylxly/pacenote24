@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Pacenote24 API
-  version: 0.5.0
+  version: 0.6.0
   description: API für Benutzer, Gruppen, Sessions, Tracks und Sichtbarkeiten
 
 servers:
@@ -42,6 +42,32 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
+
+  /ajax/auth/register.php:
+    post:
+      summary: Registrieren (öffentlich)
+      description: Legt einen neuen Benutzer an und meldet ihn direkt an (Session wird erstellt).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '201':
+          description: Benutzer erstellt und eingeloggt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: E-Mail ist bereits registriert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /ajax/users.php:
     get:
@@ -924,6 +950,19 @@ components:
         json_data:
           type: object
           additionalProperties: true
+        waypoints:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              lat:
+                type: number
+              lng:
+                type: number
+        distance_m:
+          type: integer
+          nullable: true
         pacenotes_data:
           type: object
           nullable: true
@@ -1249,11 +1288,16 @@ components:
       properties:
         success:
           type: boolean
-        session_id:
-          type: string
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+          required:
+            - token
       required:
         - success
-        - session_id
+        - data
 
     UserCreateRequest:
       type: object
@@ -1360,6 +1404,19 @@ components:
         json_data:
           type: object
           additionalProperties: true
+        waypoints:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              lat:
+                type: number
+              lng:
+                type: number
+        distance_m:
+          type: integer
+          nullable: true
       required:
         - owner_user_id
         - json_data

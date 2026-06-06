@@ -38,8 +38,12 @@ try {
         $routes = $service->getRoutesByVisibleGroupId((int)$_GET['visible_for_group_id']);
         echo json_encode(['success' => true, 'data' => $routes]);
     } else {
-        // alle Tracks
-        $routes = $service->getAllRoutes();
+        if (hasRole(ADMIN_ROLE_ID)) {
+            $routes = $service->getAllRoutes();
+        }
+        else {
+            $routes = $service->getAccessibleRoutes($_SESSION['account_id']);
+        }
         echo json_encode(['success' => true, 'data' => $routes]);
     }
 

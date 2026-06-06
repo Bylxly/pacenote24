@@ -45,6 +45,11 @@
   white-space: nowrap;
 }
 
+.admin-subbar {
+  background: var(--navy);
+  border-bottom: 1px solid var(--border);
+}
+
 .admin-header__breadcrumb {
   display: flex;
   align-items: center;
@@ -315,6 +320,32 @@ select {
 .btn-sm {
   padding: 0.35rem 0.75rem;
   font-size: 0.8rem;
+}
+
+/* ── NAVBAR-BUTTONS wie auf der Mainpage ── */
+.navbar .btn-outline-light,
+.navbar .btn-outline-danger {
+  background: transparent;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+.navbar .btn-outline-light {
+  border: 1px solid #f8f9fa;
+  color: #f8f9fa;
+}
+.navbar .btn-outline-light:hover:not(:disabled) {
+  background: #f8f9fa;
+  color: #000;
+}
+.navbar .btn-outline-danger {
+  border: 1px solid #dc3545;
+  color: #dc3545;
+}
+.navbar .btn-outline-danger:hover:not(:disabled) {
+  background: #dc3545;
+  color: #fff;
 }
 
 /* ── TABLE ── */

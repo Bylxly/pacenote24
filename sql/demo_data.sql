@@ -4,13 +4,13 @@
 --   user1@test.de  / User123!
 --   user2@test.de  / User123!
 
--- users (echte bcrypt-Hashes)
+-- users
 INSERT INTO users (email, pw_hash) VALUES
 ('admin@test.de', '$2y$10$eIAftJe69oENhRakztdDmu0I/2ZDj.NPHLUpUIup.6ysI.7Y6p4VO'),
 ('user1@test.de', '$2y$10$zUNioexc.ASL8e/3KctAX.J.AQh6ihcURdSV6NJ7qW67StoLuIUgO'),
 ('user2@test.de', '$2y$10$PCQCFewf5wJeKjIvlqN25OYwdiju0UmeWLN2sSEdz9ooXZW1tYGye');
 
--- groups (Admins MUSS group_id = 1 sein → zuerst einfügen)
+-- groups (Admins group_id = 1)
 INSERT INTO `groups` (name) VALUES
 ('Admins'),
 ('Testgruppe'),
@@ -18,7 +18,7 @@ INSERT INTO `groups` (name) VALUES
 
 -- group members
 INSERT INTO group_member (user_id, group_id) VALUES
-(1, 1), -- admin in Admins
+(1, 1),
 (2, 2),
 (3, 2),
 (2, 3);

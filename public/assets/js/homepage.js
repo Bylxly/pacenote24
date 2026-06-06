@@ -275,7 +275,18 @@ if (noteCard) {
       document.addEventListener('DOMContentLoaded', () => {
           const btnFetchRoutes = document.getElementById('btnFetchRoutes');
           const serverRoutesSelect = document.getElementById('serverRoutesSelect');
-          let serverTracks = []; 
+          let serverTracks = [];
+
+          // Importierte Route aus dem Routen-Import-Dialog (sessionStorage) anzeigen
+          const imported = sessionStorage.getItem('importedRoute');
+          if (imported) {
+              sessionStorage.removeItem('importedRoute');
+              try {
+                  renderRouteOnMap(imported);
+              } catch (e) {
+                  alert('Importierte Route konnte nicht angezeigt werden.');
+              }
+          }
 
           // 1. Klick-Event für den API-Abruf
           btnFetchRoutes.addEventListener('click', async () => {

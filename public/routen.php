@@ -86,46 +86,6 @@ function fmtDate(iso) {
   } catch { return null; }
 }
 
-/* ── localStorage comments ──────────────────────────────────────────────── */
-function loadComments(id) {
-  try { return JSON.parse(localStorage.getItem(`comments_route_${id}`)) || []; }
-  catch { return []; }
-}
-function saveComments(id, arr) {
-  localStorage.setItem(`comments_route_${id}`, JSON.stringify(arr));
-}
-function renderComments(id, listEl) {
-  const comments = loadComments(id);
-  listEl.innerHTML = '';
-  if (!comments.length) {
-    listEl.innerHTML = '<p class="no-comments">Noch keine Kommentare.</p>';
-    return;
-  }
-  comments.forEach(c => {
-    const item = document.createElement('div');
-    item.className = 'comment-item';
-    item.innerHTML = `
-      <div class="comment-meta">
-        <span class="comment-author">${escHtml(c.author)}</span>
-        <span class="comment-time">${c.time}</span>
-      </div>
-      <div class="comment-text">${escHtml(c.text)}</div>`;
-    listEl.appendChild(item);
-  });
-  listEl.scrollTop = listEl.scrollHeight;
-}
-
-/* ── Route JSON fetching ────────────────────────────────────────────────── */
-const routeCache = {};
-async function fetchRouteData(fileUrl) {
-  if (routeCache[fileUrl]) return routeCache[fileUrl];
-  const res = await fetch(fileUrl);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = await res.json();
-  routeCache[fileUrl] = data;
-  return data;
-}
-
 /* ── Canvas route preview ────────────────────────────────────────────────── */
 function drawRoutePreview(canvas, notes) {
   if (!notes || notes.length < 2) return;
@@ -227,65 +187,40 @@ function buildCard(route) {
       <div class="card-created" id="created-${route.id}">
         ${route.created_at ? fmtDate(route.created_at) : '—'}
       </div>
-      <button class="btn-open" id="btn-open-${route.id}" onclick="openInViewer('${escHtml(route.file)}')">
-        Öffnen →
-      </button>
-    </div>
-
-    <div class="comment-toggle-row">
-      <button class="btn-comment-toggle" id="btn-ct-${route.id}" onclick="toggleComments('${route.id}')">
-        <svg class="chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-        <span id="comment-label-${route.id}">Kommentare (${loadComments(route.id).length})</span>
-      </button>
-    </div>
-
-    <div class="comment-section" id="comments-${route.id}">
-      <div class="comment-list" id="comment-list-${route.id}"></div>
-      <div class="comment-form">
-        <div class="comment-input-row">
-          <input class="comment-name"     id="cname-${route.id}" type="text"  placeholder="Name" maxlength="30">
-          <textarea class="comment-textarea" id="ctext-${route.id}" placeholder="Kommentar schreiben…" maxlength="300" rows="2"></textarea>
-        </div>
-        <button class="btn-submit-comment" onclick="submitComment('${route.id}')">Senden</button>
+      <div class="card-actions">
+        <button class="btn-export" id="btn-export-${route.id}" onclick="exportRoute(${route.id})" title="Pacenotes als JSON exportieren">
+          ⤓ JSON
+        </button>
+        <button class="btn-open" id="btn-open-${route.id}" onclick="openInViewer(${route.id})">
+          Öffnen →
+        </button>
       </div>
     </div>`;
 
   return card;
 }
 
-/* Fill card with fetched route data */
+/* Fill card with data already loaded from the DB (pacenotes_data) */
 async function hydrateCard(route) {
+  const previewEl = document.getElementById(`preview-${route.id}`);
   try {
-    const data = await fetchRouteData(route.file);
-    const notes = data.notes || [];
-
-    // Title
-    const titleEl = document.getElementById(`title-${route.id}`);
-    if (titleEl && (data.route?.name || route.name)) {
-      titleEl.textContent = data.route?.name || route.name;
+    let notes = [];
+    if (route.pacenotes_data) {
+      const data = typeof route.pacenotes_data === 'string'
+        ? JSON.parse(route.pacenotes_data)
+        : route.pacenotes_data;
+      notes = data.notes || [];
     }
 
-    // Distance
+    // Distance (aus DB-Spalte distance_m)
     const distEl = document.getElementById(`dist-${route.id}`);
-    if (distEl) {
-      const d = fmtDist(data.route?.total_distance_m);
-      distEl.textContent = d || '—';
-    }
-
-    // Created at (prefer API field, fallback to JSON)
-    const createdEl = document.getElementById(`created-${route.id}`);
-    if (createdEl && !route.created_at && data.route?.created_at) {
-      createdEl.textContent = fmtDate(data.route.created_at) || '—';
-    }
+    if (distEl) distEl.textContent = fmtDist(route.distance_m) || '—';
 
     // Severity dots
     const sevEl = document.getElementById(`sev-${route.id}`);
     if (sevEl && notes.length) sevEl.innerHTML = buildSevDots(notes);
 
     // Canvas preview
-    const previewEl = document.getElementById(`preview-${route.id}`);
     if (previewEl && notes.length >= 2) {
       const canvas = document.createElement('canvas');
       canvas.width  = 320;
@@ -296,15 +231,11 @@ async function hydrateCard(route) {
     } else if (previewEl) {
       previewEl.innerHTML = `<div class="preview-loading">
         <span>📍</span>
-        <span>Keine Koordinaten</span>
+        <span>Noch keine Pacenotes</span>
       </div>`;
     }
-
   } catch (err) {
-    const previewEl = document.getElementById(`preview-${route.id}`);
-    if (previewEl) previewEl.innerHTML = `<div class="card-error">⚠ Nicht ladbar<br><code>${escHtml(route.file || '')}</code></div>`;
-    const btnEl = document.getElementById(`btn-open-${route.id}`);
-    if (btnEl) btnEl.disabled = true;
+    if (previewEl) previewEl.innerHTML = `<div class="card-error">⚠ Vorschau-Fehler</div>`;
   }
 }
 
@@ -371,7 +302,7 @@ async function init() {
       return;
     }
 
-    subtitle.textContent = `${allRoutes.length} Pacenote-Routen – JSON laden & kommentieren`;
+    subtitle.textContent = `${allRoutes.length} Pacenote-Routen`;
     grid.innerHTML = '';
     renderBatch();
 
@@ -384,41 +315,33 @@ async function init() {
   }
 }
 
-/* ── Comments ────────────────────────────────────────────────────────────── */
-function toggleComments(routeId) {
-  const section = document.getElementById(`comments-${routeId}`);
-  const btn     = document.getElementById(`btn-ct-${routeId}`);
-  const list    = document.getElementById(`comment-list-${routeId}`);
-  const isOpen  = section.classList.contains('open');
-  section.classList.toggle('open', !isOpen);
-  btn.classList.toggle('open', !isOpen);
-  if (!isOpen) renderComments(routeId, list);
-}
+/* ── JSON Export ─────────────────────────────────────────────────────────── */
+function exportRoute(routeId) {
+  const route = allRoutes.find(r => r.id === routeId);
+  if (!route || !route.pacenotes_data) {
+    alert('Für diese Route wurden noch keine Pacenotes generiert.');
+    return;
+  }
+  // pacenotes_data kommt aus der DB als JSON-String (oder bereits als Objekt)
+  const json = typeof route.pacenotes_data === 'string'
+    ? route.pacenotes_data
+    : JSON.stringify(route.pacenotes_data, null, 2);
 
-function submitComment(routeId) {
-  const nameEl = document.getElementById(`cname-${routeId}`);
-  const textEl = document.getElementById(`ctext-${routeId}`);
-  const author = nameEl.value.trim() || 'Anonym';
-  const text   = textEl.value.trim();
-  if (!text) { textEl.focus(); return; }
-
-  const comments = loadComments(routeId);
-  comments.push({
-    author, text,
-    time: new Date().toLocaleString('de-DE', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
-  });
-  saveComments(routeId, comments);
-  textEl.value = '';
-
-  const label = document.getElementById('comment-label-' + routeId);
-  if (label) label.textContent = `Kommentare (${comments.length})`;
-
-  renderComments(routeId, document.getElementById(`comment-list-${routeId}`));
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const safeName = (route.name || `route-${routeId}`).replace(/[^a-z0-9_-]+/gi, '_');
+  a.href = url;
+  a.download = `${safeName}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 /* ── Viewer navigation ───────────────────────────────────────────────────── */
-function openInViewer(fileUrl) {
-  window.location.href = `index.php?route=${encodeURIComponent(fileUrl)}`;
+function openInViewer(routeId) {
+  window.location.href = `index.php?route_id=${encodeURIComponent(routeId)}`;
 }
 
 /* ── Import modal ────────────────────────────────────────────────────────── */
@@ -465,9 +388,9 @@ function openImportedFile() {
   reader.onload = e => {
     try {
       const data = JSON.parse(e.target.result);
-      // Store in sessionStorage and open viewer with special flag
+      // Pacenote-JSON im Viewer (navigation.php) öffnen
       sessionStorage.setItem('importedRoute', JSON.stringify(data));
-      window.location.href = `index.php?route=__imported__`;
+      window.location.href = `navigation.php`;
     } catch {
       alert('Ungültige JSON-Datei. Bitte überprüfe das Format.');
     }

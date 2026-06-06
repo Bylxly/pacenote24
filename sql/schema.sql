@@ -29,7 +29,7 @@ CREATE TABLE tracks (
     json_data JSON NOT NULL,
     waypoints JSON NULL,
     distance_m INT NULL,
-    pacenote_data JSON NULL,
+    pacenotes_data JSON NULL,
     FOREIGN KEY (owner_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 

@@ -893,6 +893,26 @@ iframe {
   transform: none !important;
 }
 
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.btn-export {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text, #cbd5e1);
+    border-radius: 6px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+.btn-export:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: #3b82f6;
+}
+
 /* Route Canvas Preview Container */
 .card-preview {
   background: rgba(15, 22, 35, 0.4);

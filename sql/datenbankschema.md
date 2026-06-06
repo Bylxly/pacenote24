@@ -26,11 +26,14 @@ Sessions(
 )
 
 Tracks(
-  route_id PK,
-  title,
-  json_data,
-  compiled_time,
-  owner_user_id FK -> Users(user_id)
+  route_id PK AUTO_INCREMENT,
+  title VARCHAR(100) NULL,
+  owner_user_id FK -> users(user_id),
+  compiled_time TIMESTAMP,
+  json_data JSON NOT NULL,       -- GeoJSON von BRouter
+  waypoints JSON NULL,           -- [{lat, lng}, ...]
+  distance_m INT NULL,           -- Streckenlänge in Metern
+  pacenote_data JSON NULL
 )
 
 group_Member(

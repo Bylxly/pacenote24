@@ -1,5 +1,5 @@
 -- group table
-CREATE TABLE groups (
+CREATE TABLE `groups` (
     group_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL
 );
@@ -27,6 +27,8 @@ CREATE TABLE tracks (
     owner_user_id INT NOT NULL,
     compiled_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     json_data JSON NOT NULL,
+    waypoints JSON NULL,
+    distance_m INT NULL,
     pacenote_data JSON NULL,
     FOREIGN KEY (owner_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );

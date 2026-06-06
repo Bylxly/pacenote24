@@ -19,12 +19,12 @@ try {
     Request::requireValidEmail($body, 'email');
     Request::requireMaxLength($body, 'email', 100);
 
-    $passwordRegex = '/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d:])([^\s]){8,}$/';
+    $passwordRegex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\S]{8,128}$/';
 
     if (!preg_match($passwordRegex, $body['password'])) {
         http_response_code(400);
         echo json_encode(['success' => false, 'error' =>
-            'Passwort muss mindestens 8 Zeichen, einen Großbuchstaben, einen Kleinbuchstaben, eine Zahl und ein Sonderzeichen enthalten']);
+            'Das Passwort muss zwischen 8 und 128 Zeichen lang sein und jeweils mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Ziffer sowie ein Sonderzeichen enthalten.']);
         exit;
     }
 

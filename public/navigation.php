@@ -1,8 +1,10 @@
+
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
 requireAuth();
 ?>
-<!DOCTYPE html>
+
+ <!DOCTYPE html>
 <html lang="de">
   <head>
     <?php include 'head.php'; ?>
@@ -36,8 +38,24 @@ requireAuth();
             <input type="file" id="fileInput" class="form-control" accept=".json">
           </div>
 
+            <div class="text-center my-2 text-muted small">- ODER -</div>
+
+            <div class="mb-2">
+              <label class="form-label small text-muted text-uppercase fw-bold">Option B: Vom Server laden</label>
+              <div class="d-grid gap-2">
+                <button type="button" class="btn btn-primary" id="btnFetchRoutes">
+                  Routen vom Server abrufen
+                </button>
+              </div>
+
+              <select class="form-select mt-3 d-none" id="serverRoutesSelect">
+                <option selected disabled>Wähle eine Server-Route...</option>
+              </select>
+            </div>
+            </div>
+
           <div class="card note-card-click p-4 shadow" id="noteCard" style="display: none;">
-            
+
             <div class="huge-arrow-container mb-4 shadow-sm">
               <svg id="turnArrow" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
                 <path id="arrowPath" d="M 50 85 Q 50 50 50 20" />

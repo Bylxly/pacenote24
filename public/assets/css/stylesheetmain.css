@@ -11,12 +11,12 @@
   --muted: #7a8ba6;
   
   /* Severity-Farben */
-  --sev1: #38bdf8;
-  --sev2: #10b981;
-  --sev3: #f59e0b;
-  --sev4: #f97316;
-  --sev5: #ef4444;
-  --sev6: #b91c1c;
+  --sev6: #38bdf8;
+  --sev5: #10b981;
+  --sev4: #f59e0b;
+  --sev3: #f97316;
+  --sev2: #ef4444;
+  --sev1: #b91c1c;
 }
 
 /* ── BASIS ── */
@@ -289,7 +289,7 @@ p {
 .sev-dot.s5 { background: var(--sev5); }
 .sev-dot.s6 { background: var(--sev6); }
 
-/* ── CHIPS & PRVIEWS ── */
+/* ── CHIPS & PREVIEWS ── */
 .notes-preview {
   display: flex;
   flex-wrap: wrap;
@@ -305,8 +305,15 @@ p {
   border: 1px solid transparent;
 }
 
-/* ── FORMULAR ELEMENTE ── */
-.form-label {
+/* ── FORMULAR ELEMENTE (GLOBAL & GRUPPEN) ── */
+.form-group {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-label, .form-group label {
   color: var(--text) !important; 
   font-size: 0.75rem;
   font-weight: 700;
@@ -315,23 +322,26 @@ p {
   opacity: 0.9;
 }
 
-.form-control {
+.form-control, .form-group input {
   background: var(--navy-light) !important;
   border: 1px solid var(--border) !important;
   color: var(--text) !important;
   border-radius: 10px;
   padding: 0.7rem;
+  font-size: 0.9rem;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
 }
 
-.form-control::placeholder {
+.form-control::placeholder, .form-group input::placeholder {
   color: var(--muted) !important;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
-.form-control:focus {
+.form-control:focus, .form-group input:focus {
   border-color: var(--accent) !important;
   box-shadow: 0 0 0 3px var(--accent-glow) !important;
-  outline: none;
 }
 
 /* ── BUTTONS ── */
@@ -658,4 +668,120 @@ iframe {
 
 @media (max-width: 600px) {
   .route-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── LOGIN- & REGISTRIERUNGS-COMPONENTS ── */
+.login-wrapper {
+  background: linear-gradient(135deg, var(--navy) 0%, #080c14 100%);
+  padding: 1.5rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  background: var(--navy-mid) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.login-card:hover {
+  transform: none !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--accent-glow) !important;
+  border-color: rgba(59, 130, 246, 0.25) !important;
+}
+
+.login-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--text) 30%, var(--muted) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.25rem;
+}
+
+.login-subtitle {
+  color: var(--accent) !important;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+
+/* Spezifisches inneres Card-Element (falls für Registrierungs-Form genutzt) */
+.login-card .card {
+  background: rgba(15, 22, 35, 0.6) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  margin-top: 1rem;
+  box-shadow: none !important;
+}
+
+.login-card .card:hover {
+  transform: none !important;
+  border-color: var(--border) !important;
+}
+
+.card__header {
+  padding: 1.25rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.card__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.5px;
+}
+
+.card__body {
+  padding: 1.25rem;
+}
+
+/* Links & Trenner */
+.forgot-link, .register-link {
+  color: var(--accent-hover) !important;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.forgot-link:hover, .register-link:hover {
+  color: #ffffff !important;
+  text-decoration: underline;
+}
+
+.register-text {
+  color: var(--muted) !important;
+  font-size: 0.9rem;
+}
+
+.divider {
+  color: var(--muted) !important;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.divider span {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Spezifische Form-Buttons */
+.login-btn, #create-form .btn-primary {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px var(--accent-glow);
+  margin-top: 0.5rem;
+}
+
+.login-btn:active {
+  transform: translateY(1px) !important;
 }

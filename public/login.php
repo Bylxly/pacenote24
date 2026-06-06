@@ -1,3 +1,4 @@
+
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
 requireGuest();
@@ -5,22 +6,7 @@ requireGuest();
 <!DOCTYPE html>
 <html lang="de">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mein Projekt</title>
-
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <!-- Custom CSS-->
-    <link
-      href="./assets/css/stylesheetmain.css"
-      rel="stylesheetmain"
-    />
-    <script src="./assets/js/auth.js" defer></script>
-
+  <?php include 'head.php'; ?>
   </head>
 
   <body>
@@ -53,7 +39,6 @@ requireGuest();
           <div class="mb-3">
             <label for="pass" class="form-label">
               Passwort
-              <a href="#" class="forgot-link float-end"> Vergessen?</a>
             </label>
             <input
               class="form-control"
@@ -80,15 +65,13 @@ requireGuest();
           <!-- Registrieren -->
           <p class="text-center mb-0 register-text">
             Noch kein Konto?
-            <a href="#" class="register-link">Jetzt registrieren</a>
+            <a href="registrieren.php" class="register-link">Jetzt registrieren</a>
           </p>
         </form>
-            
       </div>
     </div>
-
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+

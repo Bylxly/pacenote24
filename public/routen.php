@@ -4,17 +4,10 @@ requireAuth();
 ?>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Routen – Pacenotes24.de</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link href="./assets/css/stylesheetmain.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="./assets/js/auth.js"></script>
+    <?php include 'head.php'; ?>
 </head>
-<body>
 
+<body>
 <!--Navbar -->
 <nav class="navbar navbar-expand-lg px-3">
   <div class="container-fluid">
@@ -24,9 +17,9 @@ requireAuth();
     </button>
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="landing_page.php">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="index.php">Karte</a></li>
         <li class="nav-item"><a class="nav-link active" href="routen.php">Routen</a></li>
-        <li class="nav-item"><a class="nav-link" href="navigation.php">Navigation</a></li>
       </ul>
         <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
     </div>

@@ -39,7 +39,7 @@ $authStatus = isAuthenticated();
               </p>
 
                 <p class="mb-3">
-                    <b>Vertraut von den besten Fahrern der Welt: von Profis wie Lars Pfitzenmeyer bis hin zu ambitionierten Amateuren wie Max Verstappen.</b>
+                    <b>Vertraut von den besten Fahrern der Welt: von Profis wie Lars Pfizenmayer bis hin zu ambitionierten Amateuren wie Max Verstappen.</b>
                 </p>
               
               <p class="mb-3 text-muted">

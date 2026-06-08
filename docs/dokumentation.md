@@ -4,15 +4,15 @@
 
 ## Deckblatt
 
-| | |
-|---|---|
-| **App-Name** | Pacenote24 |
-| **Kurzbeschreibung** | Web-App zur Verwaltung und Freigabe von Rallye-Pacenotes und Strecken |
-| **Teamname** | Pacenote24 |
-| **Teammitglieder** | <!-- Namen ergänzen --> |
-| **Kurs** | MA-TINF25CS1 |
-| **Dozent** | Dipl.-Ing. Udo Erdmann |
-| **Datum** | 02.06.2026 |
+| |                                                                                                                  |
+|---|------------------------------------------------------------------------------------------------------------------|
+| **App-Name** | Pacenote24                                                                                                       |
+| **Kurzbeschreibung** | Web-App zur Verwaltung und Freigabe von Rallye-Pacenotes und Strecken                                            |
+| **Teamname** | Pacenote24                                                                                                       |
+| **Teammitglieder** | Tyler Hörnig, Peter Nübel, Lars Pfitzenmeyer, Jaron Kemper, Leon Theuer, Moritz Creyaufmüller, Tim Burke-Lehmann |
+| **Kurs** | MA-TINF25CS1                                                                                                     |
+| **Dozent** | Dipl.-Ing. Udo Erdmann                                                                                           |
+| **Datum** | 02.06.2026                                                                                                       |
 
 ---
 
@@ -40,7 +40,7 @@ Die App bietet folgende Kernfunktionen:
 | | |
 |---|---|
 | **Typ** | Web-App (kein Framework) |
-| **Client** | HTML5, CSS3, JavaScript, Bootstrap, jQuery |
+| **Client** | HTML5, CSS3, JavaScript (ES-Module), Bootstrap 5, Leaflet |
 | **Server** | PHP 8.2+, Apache |
 | **Datenbank** | MariaDB |
 | **Laufzeitumgebung** | XAMPP (PHP 8.2.4, MariaDB 10.4.28) |
@@ -49,7 +49,7 @@ Die App bietet folgende Kernfunktionen:
 
 Die Anwendung folgt einer klassischen Drei-Schichten-Architektur:
 
-- **Frontend** (`public/`): HTML-Seiten mit Bootstrap und jQuery, AJAX-Kommunikation über `api.js`
+- **Frontend** (`public/`): PHP/HTML-Seiten mit Bootstrap 5 und Vanilla-JavaScript (ES-Module), Leaflet für die Karte, AJAX-Kommunikation über `api.js`
 - **API-Schicht** (`public/ajax/`): PHP-Endpunkte, die JSON entgegennehmen und zurückgeben
 - **Backend** (`app/`): Services für Datenbankzugriffe, Session- und Rechteverwaltung
 
@@ -57,42 +57,21 @@ Die API ist vollständig in `docs/api.yaml` (OpenAPI 3.0.3) dokumentiert. Alle E
 
 ### 1.5 Aufgaben und Zuständigkeiten
 
-| Bereich | Zuständig |
-|---|---|
-| Datenbankschema & Services | <!-- Name --> |
-| API-Endpunkte | <!-- Name --> |
-| Authentifizierung & Sessions | <!-- Name --> |
-| Frontend / UI | <!-- Name --> |
-| Dokumentation | <!-- Name --> |
+| Bereich                      | Zuständig                          |
+|------------------------------|------------------------------------|
+| Datenbankschema & Services   | Tim Burke-Lehmann                  |
+| API-Endpunkte                | Tim Burke-Lehmann                  |
+| Authentifizierung & Sessions | Tyler Hörnig, Lars Pfitzenmeyer    |
+| Frontend / UI                | Jaron Kemper, Moritz Creyaufmüller |
+| Dokumentation                | Alle                               |
+| Routengenerierung & Karte    | Leon Theuer                        |
+| Pacenotegenerierung          | Peter Nübel                        |
 
 ---
 
 ## 2. Product Backlog
 
-| ID | User Story | Priorität | Status |
-|---|---|---|---|
-| PB-01 | Als Benutzer möchte ich mich einloggen können | Hoch | ✅ Done |
-| PB-02 | Als Benutzer möchte ich mich ausloggen können | Hoch | ✅ Done |
-| PB-03 | Als Benutzer werde ich nach Inaktivität automatisch ausgeloggt | Hoch | ✅ Done |
-| PB-04 | Als Admin möchte ich alle Benutzer sehen | Hoch | ✅ Done |
-| PB-05 | Als Admin möchte ich Benutzer erstellen | Hoch | ✅ Done |
-| PB-06 | Als Admin möchte ich Benutzer löschen | Hoch | ✅ Done |
-| PB-07 | Als Benutzer möchte ich mein Passwort ändern | Hoch | ✅ Done |
-| PB-08 | Als Benutzer möchte ich eine Route anlegen | Hoch | ✅ Done |
-| PB-09 | Als Benutzer möchte ich meine Routen abrufen | Hoch | ✅ Done |
-| PB-10 | Als Benutzer möchte ich eine Route bearbeiten | Hoch | ✅ Done |
-| PB-11 | Als Benutzer möchte ich eine Route löschen | Hoch | ✅ Done |
-| PB-12 | Als Benutzer möchte ich Pacenotes zu einer Route speichern | Hoch | ✅ Done |
-| PB-13 | Als Benutzer möchte ich Pacenotes einer Route abrufen | Hoch | ✅ Done |
-| PB-14 | Als Admin möchte ich eine Route für Benutzer freigeben | Mittel | ✅ Done |
-| PB-15 | Als Admin möchte ich eine Route für Gruppen freigeben | Mittel | ✅ Done |
-| PB-16 | Als Admin möchte ich Gruppen verwalten | Mittel | ✅ Done |
-| PB-17 | Als Admin möchte ich Benutzer zu Gruppen hinzufügen | Mittel | ✅ Done |
-| PB-18 | Als Benutzer sehe ich nur freigegebene Routen | Hoch | ✅ Done |
-| PB-19 | Als Benutzer erhalte ich Fehlermeldungen bei ungültiger Eingabe | Hoch | ✅ Done |
-| PB-20 | Als Benutzer kann ich Routen/Pacenotes als JSON exportieren | Mittel | 🔄 Offen |
-| PB-21 | Als Benutzer sehe ich eine responsive Oberfläche | Mittel | 🔄 Offen |
-| PB-22 | Als Benutzer erhalte ich Bestätigungsdialoge vor dem Löschen | Mittel | 🔄 Offen |
+Siehe Github Projekt
 
 ---
 
@@ -102,24 +81,29 @@ Die API ist vollständig in `docs/api.yaml` (OpenAPI 3.0.3) dokumentiert. Alle E
 
 | Seite | Pfad | Zugriff | Beschreibung |
 |---|---|---|---|
-| Login | `/public/login.html` | Öffentlich | Anmeldeformular |
-| Startseite | `/public/index.php` | Eingeloggt | Übersicht der eigenen Routen |
-| Admin-Bereich | `/public/admin.php` | Admin | Benutzerverwaltung, Gruppen |
+| Startseite | `/public/home.php` | Öffentlich | Landing-Page |
+| Login | `/public/login.php` | Gast | Anmeldeformular |
+| Registrierung | `/public/registrieren.php` | Gast | Neues Konto erstellen |
+| Karte | `/public/index.php` | Eingeloggt | Route bauen (Leaflet/BRouter) + speichern |
+| Routen | `/public/routen.php` | Eingeloggt | Liste eigener/freigegebener Routen, JSON-Export |
+| Viewer | `/public/navigation.php` | Eingeloggt | Pacenotes Kurve für Kurve, JSON-Import |
+| Admin-Bereich | `/public/admin/adminpanel.php` | Admin | Benutzer-, Gruppen- und Sichtbarkeitsverwaltung |
 
 ### 3.2 Technologien
 
-- **Bootstrap** für Layout, Navigation und UI-Komponenten
-- **jQuery** für DOM-Manipulation und AJAX
-- **api.js** als zentrales Modul für alle API-Anfragen
+- **Bootstrap 5** für Layout, Navigation, Modals und UI-Komponenten
+- **Leaflet** für die interaktive Karte, **BRouter** fürs Routing
+- **Vanilla JavaScript (ES-Module)** für Logik und AJAX (kein Framework)
+- **api.js** als zentrales Modul für alle API-Anfragen (inkl. 401-Auto-Logout)
 
 ### 3.3 Bedienung
 
-1. Benutzer öffnet die App und wird auf `/login.html` weitergeleitet (falls nicht eingeloggt)
-2. Nach erfolgreichem Login wird auf `/index.php` weitergeleitet
-3. Routen werden per AJAX geladen und dynamisch in die Seite eingebettet
+1. Nicht eingeloggte Nutzer werden serverseitig (`requireAuth`) auf `login.php` geleitet
+2. Nach erfolgreichem Login folgt die Weiterleitung in die App
+3. Routen und Daten werden per AJAX geladen und dynamisch dargestellt (kein Seitenreload)
 4. Aktionen (Erstellen, Bearbeiten, Löschen) lösen AJAX-Requests aus
-5. Bestätigungsdialoge werden vor destruktiven Aktionen angezeigt
-6. Fehlermeldungen werden direkt im UI dargestellt (kein Seitenreload)
+5. Bestätigungen vor dem Löschen erfolgen über Bootstrap-Modals
+6. Fehlermeldungen werden direkt im UI angezeigt
 
 ---
 
@@ -128,46 +112,47 @@ Die API ist vollständig in `docs/api.yaml` (OpenAPI 3.0.3) dokumentiert. Alle E
 ```
 pacenote24/
 ├── public/                        # Öffentlich erreichbarer Webroot
-│   ├── index.php                  # Startseite (eingeloggt)
-│   ├── login.html                 # Login-Seite
+│   ├── home.php                   # Startseite / Landing
+│   ├── index.php                  # Karte: Route bauen + speichern (Leaflet/BRouter)
+│   ├── routen.php                 # Routenübersicht (Liste, JSON-Export)
+│   ├── navigation.php             # Pacenote-Viewer (JSON-Import)
+│   ├── login.php                  # Login-Seite
+│   ├── registrieren.php           # Registrierung
+│   ├── navbar.php / head.php      # geteilte Layout-Partials
+│   ├── admin/                     # Admin-Bereich (requireAdmin)
+│   │   ├── _header.php            # Admin-Layout (Navbar, Breadcrumb)
+│   │   ├── adminpanel.php         # Benutzerübersicht
+│   │   ├── user_detail.php        # Benutzer bearbeiten/löschen
+│   │   ├── pacenote_view.php      # Routenübersicht (Admin)
+│   │   └── route_detail.php       # Route + Sichtbarkeiten
+│   ├── errors/                    # 403.php, 404.php
 │   ├── assets/
-│   │   ├── css/                   # Stylesheets
-│   │   ├── js/
-│   │   │   └── api.js             # Zentrales API-Modul (fetch-Wrapper)
-│   │   └── img/
-│   └── ajax/                      # API-Endpunkte
+│   │   ├── css/                   # stylesheetmain.css, admin.css
+│   │   └── js/                    # api.js, auth.js, map.js, homepage.js, validation.js
+│   └── ajax/                      # API-Endpunkte (JSON)
 │       ├── auth/
 │       │   ├── login.php          # POST – Login
-│       │   └── logout.php         # POST – Logout
+│       │   ├── logout.php         # POST – Logout
+│       │   └── register.php       # POST – Registrierung (öffentlich)
 │       ├── users.php              # GET – Benutzer lesen (Admin)
 │       ├── users/
 │       │   ├── create.php         # POST – Benutzer erstellen (Admin)
 │       │   ├── update.php         # POST – Benutzer bearbeiten (Self/Admin)
 │       │   └── delete.php         # POST – Benutzer löschen (Self/Admin)
 │       ├── groups.php             # GET – Gruppen lesen
-│       ├── groups/
-│       │   ├── create.php         # POST – Gruppe erstellen (Admin)
-│       │   ├── update.php         # POST – Gruppe bearbeiten (Admin)
-│       │   └── delete.php         # POST – Gruppe löschen (Admin)
-│       ├── routes.php             # GET – Routen lesen
+│       ├── groups/                # create / update / delete (Admin)
+│       ├── routes.php             # GET – Routen lesen (zugriffsgefiltert)
 │       ├── routes/
-│       │   ├── create.php         # POST – Route erstellen
+│       │   ├── create.php         # POST – Route erstellen (+ Pacenote-Generierung)
 │       │   ├── update.php         # POST – Route bearbeiten (Owner/Admin)
 │       │   ├── delete.php         # POST – Route löschen (Owner/Admin)
 │       │   └── pacenotes.php      # GET/POST – Pacenotes lesen/speichern
-│       ├── sessions.php           # GET – Sessions lesen (Admin)
 │       ├── group-members.php      # GET – Gruppenmitgliedschaften lesen
-│       ├── group-members/
-│       │   ├── create.php         # POST – Mitglied hinzufügen (Admin)
-│       │   └── delete.php         # POST – Mitglied entfernen (Admin)
+│       ├── group-members/         # create / delete (Admin)
 │       ├── track-visible-users.php
-│       ├── track-visible-users/
-│       │   ├── create.php         # POST – Freigabe für User (Admin)
-│       │   └── delete.php         # POST – Freigabe entfernen (Admin)
+│       ├── track-visible-users/   # create / delete (Admin)
 │       ├── track-visible-groups.php
-│       └── track-visible-groups/
-│           ├── create.php         # POST – Freigabe für Gruppe (Admin)
-│           └── delete.php         # POST – Freigabe entfernen (Admin)
+│       └── track-visible-groups/  # create / delete (Admin)
 │
 ├── app/                           # Anwendungslogik (nicht öffentlich)
 │   ├── config/
@@ -179,13 +164,14 @@ pacenote24/
 │   │   ├── UserService.php        # CRUD Benutzer
 │   │   ├── GroupService.php       # CRUD Gruppen
 │   │   ├── SessionService.php     # Session erstellen, prüfen, verlängern, löschen
-│   │   ├── RouteService.php       # CRUD Routen + Pacenotes
+│   │   ├── RouteService.php       # CRUD Routen + Pacenotes + Zugriffsfilter
+│   │   ├── PaceNoteService.php    # Pacenote-Generierung aus GeoJSON (Kurvenanalyse)
 │   │   ├── GroupMemberService.php # Gruppenmitgliedschaften
 │   │   ├── TrackVisibleUserService.php
 │   │   └── TrackVisibleGroupService.php
 │   └── session/
 │       ├── auth.php               # isAuthenticated(), currentUser(), hasRole()
-│       └── guard.php              # requireAuth_API(), requireAdmin(), requireSelforAdmin()
+│       └── guard.php              # requireAuth(_API), requireAdmin(_API), requireSelforAdmin()
 │
 ├── sql/
 │   ├── schema.sql                 # Datenbankschema
@@ -254,8 +240,10 @@ Strecken mit zugehörigen Routen- und Pacenote-Daten.
 | `title` | VARCHAR(100) NULL | Optionaler Titel der Strecke |
 | `owner_user_id` | INT NOT NULL FK | Ersteller der Route |
 | `compiled_time` | TIMESTAMP | Zeitpunkt der letzten Änderung |
-| `json_data` | JSON NOT NULL | Routendaten (GPS, Wegpunkte, etc.) |
-| `pacenote_data` | JSON NULL | Pacenotes zur Route (optional) |
+| `json_data` | JSON NOT NULL | Routengeometrie (BRouter-GeoJSON) |
+| `waypoints` | JSON NULL | Vom Nutzer gesetzte Wegpunkte (lat/lng) |
+| `distance_m` | INT NULL | Streckenlänge in Metern |
+| `pacenotes_data` | JSON NULL | Generierte Pacenotes (`{ notes: [...] }`), optional |
 
 ---
 

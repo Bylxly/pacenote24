@@ -65,7 +65,7 @@ requireGuest();
           <!-- Registrieren -->
           <p class="text-center mb-0 register-text">
             Noch kein Konto?
-            <a href="registrieren.php" class="register-link">Jetzt registrieren</a>
+            <a href="./registrieren.php" class="register-link">Jetzt registrieren</a>
           </p>
         </form>
       </div>

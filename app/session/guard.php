@@ -22,7 +22,7 @@ function requireAuth(): void
 function requireGuest(): void
 {
     if (isAuthenticated()) {
-        redirect('../../public/index.php');
+        redirect('../../public/home.php');
     }
 }
 
@@ -32,7 +32,7 @@ function requireRole(int $role): void
     requireAuth();
 
     if (!hasRole($role)) {
-        redirect('../../public/index.php');
+        redirect('../../public/home.php');
     }
 }
 

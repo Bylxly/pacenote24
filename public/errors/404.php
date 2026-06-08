@@ -13,7 +13,7 @@ $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
   <div class="text-center">
     <h1>404</h1>
     <p>Ups. Diese Seite existiert nicht.</p>
-    <a href="/public/index.php" class="btn btn-primary">Zurück zur Startseite</a>
+    <a href="../home.php" class="btn btn-primary">Zurück zur Startseite</a>
   </div>
 </body>
 </html>

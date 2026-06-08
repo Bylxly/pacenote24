@@ -1,3 +1,5 @@
+import { api } from './api.js';
+
 (function () {
     const PROFILE = 'trekking';
 
@@ -153,13 +155,8 @@
         };
 
         try {
-            const resp = await fetch('/ajax/routes/create.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-            const data = await resp.json();
-            if (!resp.ok || !data.success) throw new Error(data.error || 'Fehler');
+            const data = await api.post('/ajax/routes/create.php', payload);
+            if (!data.success) throw new Error(data.error || 'Fehler');
             statusEl.textContent = 'Route gespeichert!';
             statusEl.className = 'mt-2 small text-success';
             setTimeout(() => bootstrap.Modal.getInstance(document.getElementById('saveModal'))?.hide(), 1200);
@@ -173,8 +170,7 @@
 
     async function loadRouteById(routeId) {
         try {
-            const resp = await fetch(`/ajax/routes.php?id=${routeId}`);
-            const result = await resp.json();
+            const result = await api.get('/ajax/routes.php', { id: routeId });
             if (!result.success) return;
 
             const route = result.data;

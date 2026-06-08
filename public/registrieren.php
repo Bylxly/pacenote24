@@ -1,20 +1,14 @@
 <?php
 require_once __DIR__ . '/../app/session/guard.php';
 requireGuest();
-?>  
-  
-  <!DOCTYPE html>
-<?php
-require_once __DIR__ . '/../app/session/guard.php';
-requireGuest();
 ?>
+<!DOCTYPE html>
 <html lang="de">
   <head>
     <?php include 'head.php'; ?>
   </head>
 
   <body>
-
     <div class="login-wrapper d-flex align-items-center justify-content-center min-vh-100">
       <div class="login-card card shadow-sm p-4 p-md-5">
 
@@ -41,6 +35,8 @@ requireGuest();
                 <input type="password" id="password" name="password" placeholder="Mindestens 8 Zeichen + Sonderzeichen" required>
                 </div>
 
+                <div id="registerError" class="alert alert-danger d-none"></div>
+
                 <button type="submit" class="btn btn-primary">Nutzer anlegen</button>
 
             </form>
@@ -58,11 +54,14 @@ requireGuest();
           <p class="text-center mb-0 register-text">
             <a href="login.php" class="register-link">Schon Registriert?</a>
           </p>
-        </form>
             
       </div>
     </div>
-  
+    <script type="module">
+        import { api } from './assets/js/api.js';
+        import { validatePassword } from './assets/js/validation.js';
+
+    </script>
   </body>
 </html>
 

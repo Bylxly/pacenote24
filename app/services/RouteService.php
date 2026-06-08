@@ -19,6 +19,31 @@ class RouteService
         return $stmt->fetchAll();
     }
 
+    public function getAccessibleRoutes(int $userId): ?array
+    {
+        $stmt = $this->db->prepare(
+    'SELECT * FROM tracks
+            WHERE owner_user_id = :uid1
+            
+            UNION
+            
+            SELECT t.* FROM tracks t
+            JOIN track_visible_user tvu ON t.route_id = tvu.route_id
+            WHERE tvu.user_id = :uid2
+            
+            UNION
+            
+            SELECT t.* FROM tracks t
+            JOIN track_visible_group tvg ON t.route_id = tvg.route_id
+            JOIN group_member gm        ON gm.group_id = tvg.group_id
+            WHERE gm.user_id = :uid3'
+        );
+
+        $stmt->execute(['uid1' => $userId, 'uid2' => $userId, 'uid3' => $userId]);
+
+        return $stmt->fetchAll() ?: null;
+    }
+
     public function getRouteById(int $id): ?array
     {
         $stmt = $this->db->prepare(

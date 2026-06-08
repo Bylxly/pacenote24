@@ -44,7 +44,14 @@ class UserService
             'INSERT INTO users(email, pw_hash) VALUES (:email, :pw_hash)'
         );
 
-        $stmt->execute(['email' => $email, 'pw_hash' => $pwHash]);
+        try {
+            $stmt->execute(['email' => $email, 'pw_hash' => $pwHash]);
+        } catch (PDOException $e) {
+            if ($e->getCode() === '23000') {
+                return null; // E-Mail existiert bereits
+            }
+            throw $e; // andere DB-Fehler weiterreichen
+        }
 
         $result = $this->db->lastInsertId();
 

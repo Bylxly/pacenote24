@@ -1,3 +1,5 @@
+import { api } from './api.js';
+
 let notes = [];
 let currentIndex = 0;
 let map = null;
@@ -35,12 +37,12 @@ function vollbild() {
 function getColorBySeverity(severity) {
     const sev = Math.min(Math.max(parseInt(severity) || 2, 1), 6);
     switch (sev) {
-        case 1: return '#00d2d3';
-        case 2: return '#198754';
-        case 3: return '#ffc107';
-        case 4: return '#fd7e14';
-        case 5: return '#dc3545';
-        case 6: return '#9b0000';
+        case 6: return '#00d2d3';
+        case 5: return '#198754';
+        case 4: return '#ffc107';
+        case 3: return '#fd7e14';
+        case 2: return '#dc3545';
+        case 1: return '#9b0000';
         default: return '#3b82f6';
     }
 }
@@ -273,7 +275,18 @@ if (noteCard) {
       document.addEventListener('DOMContentLoaded', () => {
           const btnFetchRoutes = document.getElementById('btnFetchRoutes');
           const serverRoutesSelect = document.getElementById('serverRoutesSelect');
-          let serverTracks = []; 
+          let serverTracks = [];
+
+          // Importierte Route aus dem Routen-Import-Dialog (sessionStorage) anzeigen
+          const imported = sessionStorage.getItem('importedRoute');
+          if (imported) {
+              sessionStorage.removeItem('importedRoute');
+              try {
+                  renderRouteOnMap(imported);
+              } catch (e) {
+                  alert('Importierte Route konnte nicht angezeigt werden.');
+              }
+          }
 
           // 1. Klick-Event für den API-Abruf
           btnFetchRoutes.addEventListener('click', async () => {
@@ -281,10 +294,7 @@ if (noteCard) {
               btnFetchRoutes.textContent = 'Lade Routen...';
 
               try {
-                  const response = await fetch('/ajax/routes.php');
-                  if (!response.ok) throw new Error(`Status: ${response.status}`);
-
-                  const result = await response.json();
+                  const result = await api.get('/ajax/routes.php');
 
                   if (result.success && Array.isArray(result.data)) {
                       serverTracks = result.data;
@@ -292,8 +302,8 @@ if (noteCard) {
                       
                       serverTracks.forEach((track, index) => {
                           const option = document.createElement('option');
-                          option.value = index; 
-                          option.textContent = track.title ? track.title : `Route #${track.track_id}`;
+                          option.value = index;
+                          option.textContent = track.title ? track.title : `Route #${track.route_id}`;
                           serverRoutesSelect.appendChild(option);
                       });
 
@@ -315,17 +325,42 @@ if (noteCard) {
               const selectedIndex = e.target.value;
               const selectedTrack = serverTracks[selectedIndex];
 
-              if (selectedTrack && selectedTrack.json_data) {
-                  renderRouteOnMap(selectedTrack.json_data);
+              if (selectedTrack && selectedTrack.pacenotes_data) {
+                  renderRouteOnMap(selectedTrack.pacenotes_data);
+              } else {
+                  alert('Für diese Route wurden noch keine Pacenotes generiert.');
               }
           });
       });
 
-      // 3. Übergabe-Funktion an deine Kartenlogik
-      function renderRouteOnMap(jsonData) {
-          const placeholder = document.getElementById('mapPlaceholder');
-          if (placeholder) placeholder.style.display = 'none';
-          
-          console.log("Daten bereit für Leaflet:", jsonData);
-          alert('Route geladen! Verknüpfe diese Funktion jetzt mit deinem Leaflet-Code.');
-      }
+      // 3. Übergabe-Funktion
+        function renderRouteOnMap(jsonData) {
+            // json_data kann als String oder Objekt kommen
+            const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
+            notes = data.notes || [];
+
+            if (notes.length === 0) {
+                alert('Diese Route enthält keine Pacenotes.');
+                return;
+            }
+
+            currentIndex = 0;
+
+            // alte Karte zurücksetzen
+            if (map) {
+                map.remove();
+                map = null;
+                routePolyline = null;
+                activeCurveMarker = null;
+                marker = null;
+            }
+
+            if (noteCard) noteCard.style.display = 'block';
+            showNote();
+
+            if (notes[0].lat && notes[0].lng) {
+                initMap(notes[0].lat, notes[0].lng).then(() => {
+                    if (map) map.invalidateSize();
+                });
+            }
+        }

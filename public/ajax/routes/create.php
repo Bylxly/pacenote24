@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../../app/services/RouteService.php';
 require_once __DIR__ . '/../../../app/helpers/Request.php';
+require_once __DIR__ . '/../../../app/services/PaceNoteService.php';
 
 require_once __DIR__ . '/../../../app/session/guard.php';
 requireAuth_API();
@@ -32,6 +33,14 @@ try {
         http_response_code(409);
         echo json_encode(['success' => false, 'error' => 'Fehler beim Erstellen']);
         exit;
+    }
+
+    try {
+        $paceService = new PaceNoteService();
+        $pacenotes   = $paceService->generatePaceNotes(json_encode($body['json_data']));
+        $service->updatePacenotes($routeId, $pacenotes);
+    } catch (Throwable $e) {
+        // Generierung ist nur optional
     }
 
     http_response_code(201);

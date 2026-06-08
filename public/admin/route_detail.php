@@ -1,7 +1,6 @@
 <?php
 $adminTitle      = 'Route Detail';
 $adminBreadcrumb = [
-  ['label' => 'User Management', 'href' => 'adminpanel.php'],
   ['label' => 'Pacenotes',       'href' => 'pacenote_view.php'],
   ['label' => 'Route Detail',    'href' => null],
 ];
@@ -23,6 +22,10 @@ import { api } from '../assets/js/api.js';
 const bannerSuccess = document.getElementById('banner-success');
 const bannerError   = document.getElementById('banner-error');
 const pageContent   = document.getElementById('page-content');
+
+const deleteModalEl = document.getElementById('confirmDeleteModal');
+const deleteModal   = new bootstrap.Modal(deleteModalEl);
+let pendingDeleteId = null;
 
 const params  = new URLSearchParams(location.search);
 const routeId = parseInt(params.get('id'));
@@ -59,6 +62,21 @@ try {
 }
 
 renderPage();
+
+function askDelete(routeId) {
+    pendingDeleteId = routeId;
+    deleteModal.show();
+}
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    deleteModal.hide();
+    const res = await api.post('/ajax/routes/delete.php', { id: pendingDeleteId });
+    if (res.success) {
+        window.location.href = 'pacenote_view.php?msg=deleted';
+    } else {
+        showError(res.error ?? 'Löschen fehlgeschlagen.');
+    }
+});
 
 function showSuccess(msg) {
   bannerSuccess.textContent = msg;
@@ -294,18 +312,8 @@ async function handleUpdate(e) {
 
 async function handleDelete(e) {
   e.preventDefault();
-  if (!confirm('Bist du dir wirklich sicher, dass du diese Route unwiderruflich löschen möchtest?')) return;
+  askDelete(routeId);
   clearMessages();
-  try {
-    const res = await api.post('/ajax/routes/delete.php', { id: routeId });
-    if (res.success) {
-      window.location.href = 'pacenote_view.php?msg=deleted';
-    } else {
-      showError('Löschen fehlgeschlagen: ' + (res.error ?? 'Unbekannter Fehler.'));
-    }
-  } catch (e) {
-    showError('API-Kommunikationsfehler: ' + e.message);
-  }
 }
 
 function escHtml(str) {

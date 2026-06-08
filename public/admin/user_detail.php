@@ -24,6 +24,10 @@ const bannerSuccess = document.getElementById('banner-success');
 const bannerError   = document.getElementById('banner-error');
 const pageContent   = document.getElementById('page-content');
 
+const deleteModalEl = document.getElementById('confirmDeleteModal');
+const deleteModal   = new bootstrap.Modal(deleteModalEl);
+let pendingDeleteId = null;
+
 const params = new URLSearchParams(location.search);
 const userId = parseInt(params.get('id'));
 
@@ -54,6 +58,21 @@ try {
 }
 
 renderPage();
+
+function askDelete(userId) {
+    pendingDeleteId = userId;
+    deleteModal.show();
+}
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    deleteModal.hide();
+    const res = await api.post('/ajax/users/delete.php', { id: pendingDeleteId });
+    if (res.success) {
+        window.location.href = 'adminpanel.php?msg=deleted';
+    } else {
+        showError(res.error ?? 'Löschen fehlgeschlagen.');
+    }
+});
 
 function showSuccess(msg) {
   bannerSuccess.textContent = msg;
@@ -115,6 +134,7 @@ function renderPage() {
   }).join('');
 
   pageContent.innerHTML = `
+    <img id="easteregg" src="../assets/img/Comic.jpeg" alt="Profirallyefahrer Lars Pfitzenmeyer" style="display:none;">
     <div class="card">
       <div class="card__header"><span class="card__title">Profil</span></div>
       <div class="card__body">
@@ -181,6 +201,10 @@ function renderPage() {
     </div>
   `;
 
+
+    if (user.email.toLowerCase() === "lars@pfizenmayer.de") {
+        document.getElementById("easteregg").style.display = "block";
+    }
   document.getElementById('update-form').addEventListener('submit', handleUpdate);
   document.getElementById('add-group-form').addEventListener('submit', handleAddGroup);
   document.getElementById('delete-form').addEventListener('submit', handleDelete);
@@ -253,19 +277,8 @@ async function handleRemoveGroup(groupId) {
 
 async function handleDelete(e) {
   e.preventDefault();
-  if (!confirm('Bist du dir wirklich sicher, dass du diesen User unwiderruflich löschen möchtest?')) return;
+  askDelete(userId);
   clearMessages();
-
-  try {
-    const res = await api.post('/ajax/users/delete.php', { id: userId });
-    if (res.success) {
-      window.location.href = 'adminpanel.php?msg=deleted';
-    } else {
-      showError('Löschung fehlgeschlagen: ' + (res.error ?? 'Unbekannter Fehler.'));
-    }
-  } catch (e) {
-    showError('API-Kommunikationsfehler: ' + e.message);
-  }
 }
 
 function escHtml(str) {

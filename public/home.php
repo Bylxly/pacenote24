@@ -50,7 +50,7 @@ $authStatus = isAuthenticated();
 
             <ddiv class="col-lg-5">
               <div class="route-card__image shadow" style="border-radius: 12px; border: 1px solid var(--border); aspect-ratio: 4 / 3;">
-                <img src="./assets/img/Lars_Pfitzenmeyer.png" alt="Pacenotes24 Streckenplanung" class="img-fluid" />
+                <img src="./assets/img/Lars_Pfizenmayer.png" alt="Pacenotes24 Streckenplanung" class="img-fluid" />
               </div>
             </div> 
           </div>

@@ -1,20 +1,12 @@
+
+<?php
+require_once __DIR__ . '/../app/session/guard.php';
+requireGuest();
+?>
 <!DOCTYPE html>
 <html lang="de">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mein Projekt</title>
-
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <!-- Custom CSS-->
-    <link
-      href="assets/css/stylsheetmain.css"
-      rel="stylesheetmain"
-    />
+  <?php include 'head.php'; ?>
   </head>
 
   <body>
@@ -29,14 +21,14 @@
         </div>
 
         <!-- Formular -->
-        <form action="http://localhost/pacenote24/app/services/AuthService.php" method="post">
+        <form id="loginFormular">
           <!-- Benutzer -->
           <div class="mb-3">
-            <label for="login" class="form-label">Benutername</label>
+            <label for="email" class="form-label">Benutername</label>
             <input
               type="text"
               class="form-control"
-              id="login"
+              id="email"
               name="email"
               placeholder="IchRaseNicht24"
               required
@@ -47,18 +39,17 @@
           <div class="mb-3">
             <label for="pass" class="form-label">
               Passwort
-              <a href="#" class="forgot-link float-end"> Vergessen?</a>
             </label>
             <input
               class="form-control"
               id="password"
-              name="pass"
+              name="password"
               type="password"
               placeholder="••••••••"
               required
             />
           </div>
-
+            <div id="loginError" class="alert alert-danger d-none"></div>
           <!-- Login Button -->
           <button type="submit" class="btn btn-primary login-btn w-100 mb-3">
             Anmelden
@@ -74,15 +65,13 @@
           <!-- Registrieren -->
           <p class="text-center mb-0 register-text">
             Noch kein Konto?
-            <a href="#" class="register-link">Jetzt registrieren</a>
+            <a href="./registrieren.php" class="register-link">Jetzt registrieren</a>
           </p>
         </form>
-            
       </div>
     </div>
-    
-      </div>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+

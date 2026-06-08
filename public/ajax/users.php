@@ -2,6 +2,10 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../app/services/UserService.php';
+require_once __DIR__ . '/../../app/helpers/Request.php';
+
+require_once __DIR__ . '/../../app/session/guard.php';
+requireAdmin_API();
 
 header('Content-Type: application/json');
 
@@ -9,6 +13,9 @@ try {
     $service = new UserService();
 
     if (isset($_GET['id'])) {
+
+        Request::requirePositiveInt($_GET, 'id');
+
         $user = $service->getUserById((int)$_GET['id']);
 
         if ($user === null) {

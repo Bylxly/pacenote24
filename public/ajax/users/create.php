@@ -2,25 +2,31 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../../app/services/UserService.php';
+require_once __DIR__ . '/../../../app/helpers/Request.php';
+
+require_once __DIR__ . '/../../../app/session/guard.php';
+requireAdmin_API();
 
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'error' => 'Methode nicht erlaubt']);
-    exit;
-}
-
-$body = json_decode(file_get_contents('php://input'), true);
-
-if (!isset($body['email'], $body['password'])) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'email und password erforderlich']);
-    exit;
-}
+Request::requireMethod('POST');
+$body = Request::getBody();
+Request::requireFields($body, ['email', 'password']);
 
 try {
     $service = new UserService();
+
+    Request::requireValidEmail($body, 'email');
+    Request::requireMaxLength($body, 'email', 100);
+
+    $passwordRegex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\S]{8,128}$/';
+
+    if (!preg_match($passwordRegex, $body['password'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' =>
+            'Das Passwort muss zwischen 8 und 128 Zeichen lang sein und jeweils mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Ziffer sowie ein Sonderzeichen enthalten.']);
+        exit;
+    }
 
     $pwHash = password_hash($body['password'], PASSWORD_BCRYPT);
     $userId = $service->createUser($body['email'], $pwHash);

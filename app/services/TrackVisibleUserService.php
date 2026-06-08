@@ -25,12 +25,12 @@ class TrackVisibleUserService
         $stmt = $this->db->prepare(
             'SELECT * FROM track_visible_user
              WHERE user_id = :user_id
-             AND track_id = :track_id'
+             AND route_id = :route_id'
         );
 
         $stmt->execute([
             'user_id' => $userId,
-            'track_id' => $trackId
+            'route_id' => $trackId
         ]);
 
         $result = $stmt->fetch();
@@ -52,10 +52,10 @@ class TrackVisibleUserService
     public function getTrackVisibleUsersByTrackId(int $trackId): array
     {
         $stmt = $this->db->prepare(
-            'SELECT * FROM track_visible_user WHERE track_id = :track_id'
+            'SELECT * FROM track_visible_user WHERE route_id = :route_id'
         );
 
-        $stmt->execute(['track_id' => $trackId]);
+        $stmt->execute(['route_id' => $trackId]);
 
         return $stmt->fetchAll();
     }
@@ -63,13 +63,13 @@ class TrackVisibleUserService
     public function createTrackVisibleUser(int $userId, int $trackId): bool
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO track_visible_user (user_id, track_id)
-             VALUES (:user_id, :track_id)'
+            'INSERT INTO track_visible_user (user_id, route_id)
+             VALUES (:user_id, :route_id)'
         );
 
         $stmt->execute([
             'user_id' => $userId,
-            'track_id' => $trackId
+            'route_id' => $trackId
         ]);
 
         return $stmt->rowCount() > 0;
@@ -80,12 +80,12 @@ class TrackVisibleUserService
         $stmt = $this->db->prepare(
             'DELETE FROM track_visible_user
              WHERE user_id = :user_id
-             AND track_id = :track_id'
+             AND route_id = :route_id'
         );
 
         $stmt->execute([
             'user_id' => $userId,
-            'track_id' => $trackId
+            'route_id' => $trackId
         ]);
 
         return $stmt->rowCount() > 0;

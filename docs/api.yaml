@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Pacenote24 API
-  version: 0.4.1
+  version: 0.6.0
   description: API für Benutzer, Gruppen, Sessions, Tracks und Sichtbarkeiten
 
 servers:
@@ -9,9 +9,69 @@ servers:
     description: Lokale Entwicklungsumgebung
 
 paths:
+  /ajax/auth/login.php:
+    post:
+      summary: Einloggen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Erfolgreich eingeloggt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /ajax/auth/logout.php:
+    post:
+      summary: Ausloggen
+      responses:
+        '200':
+          description: Erfolgreich ausgeloggt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /ajax/auth/register.php:
+    post:
+      summary: Registrieren (öffentlich)
+      description: Legt einen neuen Benutzer an und meldet ihn direkt an (Session wird erstellt).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '201':
+          description: Benutzer erstellt und eingeloggt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: E-Mail ist bereits registriert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /ajax/users.php:
     get:
-      summary: Benutzer lesen
+      summary: Benutzer lesen (Admin)
       description: Mit id wird ein einzelner Benutzer geladen, ohne id eine Liste.
       parameters:
         - in: query
@@ -30,12 +90,16 @@ paths:
                   - $ref: '#/components/schemas/UserListResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
 
   /ajax/users/create.php:
     post:
-      summary: Benutzer erstellen
+      summary: Benutzer erstellen (Admin)
       requestBody:
         required: true
         content:
@@ -51,6 +115,10 @@ paths:
                 $ref: '#/components/schemas/UserCreateResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '409':
           description: E-Mail existiert bereits
           content:
@@ -60,7 +128,7 @@ paths:
 
   /ajax/users/update.php:
     post:
-      summary: Benutzer aktualisieren
+      summary: Benutzer aktualisieren (Self oder Admin)
       requestBody:
         required: true
         content:
@@ -76,6 +144,10 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '409':
@@ -87,7 +159,7 @@ paths:
 
   /ajax/users/delete.php:
     post:
-      summary: Benutzer löschen
+      summary: Benutzer löschen (Self oder Admin)
       requestBody:
         required: true
         content:
@@ -103,14 +175,12 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
-        '409':
-          description: Benutzer kann wegen verknüpfter Datensätze nicht gelöscht werden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
 
   /ajax/groups.php:
     get:
@@ -133,12 +203,14 @@ paths:
                   - $ref: '#/components/schemas/GroupListResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
   /ajax/groups/create.php:
     post:
-      summary: Gruppe erstellen
+      summary: Gruppe erstellen (Admin)
       requestBody:
         required: true
         content:
@@ -154,6 +226,10 @@ paths:
                 $ref: '#/components/schemas/GroupCreateResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '409':
           description: Gruppenname existiert bereits
           content:
@@ -163,7 +239,7 @@ paths:
 
   /ajax/groups/update.php:
     post:
-      summary: Gruppe aktualisieren
+      summary: Gruppe aktualisieren (Admin)
       requestBody:
         required: true
         content:
@@ -179,6 +255,10 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '409':
@@ -190,7 +270,7 @@ paths:
 
   /ajax/groups/delete.php:
     post:
-      summary: Gruppe löschen
+      summary: Gruppe löschen (Admin)
       requestBody:
         required: true
         content:
@@ -206,6 +286,10 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '409':
@@ -241,12 +325,14 @@ paths:
                   - $ref: '#/components/schemas/SessionListResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
   /ajax/sessions/create.php:
     post:
-      summary: Session erstellen
+      summary: Session erstellen (Login)
       requestBody:
         required: true
         content:
@@ -287,12 +373,14 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
   /ajax/sessions/delete.php:
     post:
-      summary: Session löschen
+      summary: Session löschen (Logout)
       requestBody:
         required: true
         content:
@@ -308,6 +396,8 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -347,6 +437,8 @@ paths:
                   - $ref: '#/components/schemas/TrackListResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -368,6 +460,8 @@ paths:
                 $ref: '#/components/schemas/TrackCreateResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           description: Besitzer nicht gefunden
           content:
@@ -377,7 +471,7 @@ paths:
 
   /ajax/routes/update.php:
     post:
-      summary: Track aktualisieren
+      summary: Track aktualisieren (Owner oder Admin)
       requestBody:
         required: true
         content:
@@ -393,12 +487,16 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
 
   /ajax/routes/delete.php:
     post:
-      summary: Track löschen
+      summary: Track löschen (Owner oder Admin)
       requestBody:
         required: true
         content:
@@ -414,6 +512,10 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
         '409':
@@ -422,6 +524,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+
+  /ajax/routes/pacenotes.php:
+    get:
+      summary: Pacenotes einer Route abrufen
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pacenotes erfolgreich geladen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PacenotesGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      summary: Pacenotes einer Route speichern (Owner oder Admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PacenotesUpdateRequest'
+      responses:
+        '200':
+          $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /ajax/group-members.php:
     get:
@@ -449,12 +593,14 @@ paths:
                   - $ref: '#/components/schemas/GroupMemberListResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
   /ajax/group-members/create.php:
     post:
-      summary: Benutzer zu Gruppe hinzufügen
+      summary: Benutzer zu Gruppe hinzufügen (Admin)
       requestBody:
         required: true
         content:
@@ -470,6 +616,10 @@ paths:
                 $ref: '#/components/schemas/GroupMemberCreateResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           description: Benutzer oder Gruppe nicht gefunden
           content:
@@ -485,7 +635,7 @@ paths:
 
   /ajax/group-members/delete.php:
     post:
-      summary: Benutzer aus Gruppe entfernen
+      summary: Benutzer aus Gruppe entfernen (Admin)
       requestBody:
         required: true
         content:
@@ -501,13 +651,17 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
 
   /ajax/track-visible-users.php:
     get:
       summary: Benutzer-Sichtbarkeiten für Tracks lesen
-      description: Mit user_id und track_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
+      description: Mit user_id und route_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
       parameters:
         - in: query
           name: user_id
@@ -515,7 +669,7 @@ paths:
           schema:
             type: integer
         - in: query
-          name: track_id
+          name: route_id
           required: false
           schema:
             type: integer
@@ -530,12 +684,14 @@ paths:
                   - $ref: '#/components/schemas/TrackVisibleUserListResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
   /ajax/track-visible-users/create.php:
     post:
-      summary: Track für Benutzer freigeben
+      summary: Track für Benutzer freigeben (Admin)
       requestBody:
         required: true
         content:
@@ -551,6 +707,10 @@ paths:
                 $ref: '#/components/schemas/TrackVisibleUserCreateResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           description: Benutzer oder Track nicht gefunden
           content:
@@ -566,7 +726,7 @@ paths:
 
   /ajax/track-visible-users/delete.php:
     post:
-      summary: Track-Freigabe für Benutzer entfernen
+      summary: Track-Freigabe für Benutzer entfernen (Admin)
       requestBody:
         required: true
         content:
@@ -582,13 +742,17 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
 
   /ajax/track-visible-groups.php:
     get:
       summary: Gruppen-Sichtbarkeiten für Tracks lesen
-      description: Mit group_id und track_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
+      description: Mit group_id und route_id wird ein einzelner Eintrag geladen, sonst eine Liste. Optional filterbar.
       parameters:
         - in: query
           name: group_id
@@ -596,7 +760,7 @@ paths:
           schema:
             type: integer
         - in: query
-          name: track_id
+          name: route_id
           required: false
           schema:
             type: integer
@@ -611,12 +775,14 @@ paths:
                   - $ref: '#/components/schemas/TrackVisibleGroupListResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
   /ajax/track-visible-groups/create.php:
     post:
-      summary: Track für Gruppe freigeben
+      summary: Track für Gruppe freigeben (Admin)
       requestBody:
         required: true
         content:
@@ -632,6 +798,10 @@ paths:
                 $ref: '#/components/schemas/TrackVisibleGroupCreateResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           description: Gruppe oder Track nicht gefunden
           content:
@@ -647,7 +817,7 @@ paths:
 
   /ajax/track-visible-groups/delete.php:
     post:
-      summary: Track-Freigabe für Gruppe entfernen
+      summary: Track-Freigabe für Gruppe entfernen (Admin)
       requestBody:
         required: true
         content:
@@ -663,6 +833,10 @@ paths:
                 $ref: '#/components/schemas/SuccessResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -676,6 +850,18 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     NotFound:
       description: Ressource nicht gefunden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Nicht authentifiziert
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Keine Berechtigung
       content:
         application/json:
           schema:
@@ -750,7 +936,7 @@ components:
     Track:
       type: object
       properties:
-        track_id:
+        route_id:
           type: integer
         title:
           type: string
@@ -764,11 +950,48 @@ components:
         json_data:
           type: object
           additionalProperties: true
+        waypoints:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              lat:
+                type: number
+              lng:
+                type: number
+        distance_m:
+          type: integer
+          nullable: true
+        pacenotes_data:
+          type: object
+          nullable: true
+          additionalProperties: true
+
+    PacenotesGetResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          nullable: true
+          additionalProperties: true
       required:
-        - track_id
-        - owner_user_id
-        - compiled_time
-        - json_data
+        - success
+        - data
+
+    PacenotesUpdateRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        pacenotes_data:
+          type: object
+          additionalProperties: true
+      required:
+        - id
+        - pacenotes_data
 
     GroupMember:
       type: object
@@ -786,22 +1009,22 @@ components:
       properties:
         user_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - user_id
-        - track_id
+        - route_id
 
     TrackVisibleGroup:
       type: object
       properties:
         group_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - group_id
-        - track_id
+        - route_id
 
     UserGetResponse:
       type: object
@@ -937,11 +1160,11 @@ components:
       properties:
         success:
           type: boolean
-        track_id:
+        route_id:
           type: integer
       required:
         - success
-        - track_id
+        - route_id
 
     GroupMemberGetResponse:
       type: object
@@ -1048,6 +1271,34 @@ components:
         - success
         - data
 
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            token:
+              type: string
+          required:
+            - token
+      required:
+        - success
+        - data
+
     UserCreateRequest:
       type: object
       properties:
@@ -1074,8 +1325,7 @@ components:
           type: string
       required:
         - id
-        - email
-        - password
+      minProperties: 2
 
     UserDeleteRequest:
       type: object
@@ -1119,12 +1369,8 @@ components:
       properties:
         user_id:
           type: integer
-        timeout:
-          type: string
-          format: date-time
       required:
         - user_id
-        - timeout
 
     SessionUpdateRequest:
       type: object
@@ -1158,6 +1404,19 @@ components:
         json_data:
           type: object
           additionalProperties: true
+        waypoints:
+          type: array
+          nullable: true
+          items:
+            type: object
+            properties:
+              lat:
+                type: number
+              lng:
+                type: number
+        distance_m:
+          type: integer
+          nullable: true
       required:
         - owner_user_id
         - json_data
@@ -1176,7 +1435,7 @@ components:
           additionalProperties: true
       required:
         - id
-        - json_data
+      minProperties: 2
 
     TrackDeleteRequest:
       type: object
@@ -1213,41 +1472,41 @@ components:
       properties:
         user_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - user_id
-        - track_id
+        - route_id
 
     TrackVisibleUserDeleteRequest:
       type: object
       properties:
         user_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - user_id
-        - track_id
+        - route_id
 
     TrackVisibleGroupCreateRequest:
       type: object
       properties:
         group_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - group_id
-        - track_id
+        - route_id
 
     TrackVisibleGroupDeleteRequest:
       type: object
       properties:
         group_id:
           type: integer
-        track_id:
+        route_id:
           type: integer
       required:
         - group_id
-        - track_id
+        - route_id

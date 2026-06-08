@@ -44,18 +44,42 @@ class UserService
             'INSERT INTO users(email, pw_hash) VALUES (:email, :pw_hash)'
         );
 
-        $stmt->execute(['email' => $email, 'pw_hash' => $pwHash]);
+        try {
+            $stmt->execute(['email' => $email, 'pw_hash' => $pwHash]);
+        } catch (PDOException $e) {
+            if ($e->getCode() === '23000') {
+                return null; // E-Mail existiert bereits
+            }
+            throw $e; // andere DB-Fehler weiterreichen
+        }
 
         $result = $this->db->lastInsertId();
 
         return $result === '' ? null : (int) $result;
     }
 
-    public function updateUser(int $id, string $email, string $pwHash): bool {
+    public function updateUser(int $id, ?string $email = null, ?string $pwHash = null): bool {
+        $fields = [];
+        $params = ['id' => $id];
+
+        if ($email !== null) {
+            $fields[] = 'email = :email';
+            $params['email'] = $email;
+        }
+
+        if ($pwHash !== null) {
+            $fields[] = 'pw_hash = :pw_hash';
+            $params['pw_hash'] = $pwHash;
+        }
+
+        if (empty($fields)) {
+            return false;
+        }
+
         $stmt = $this->db->prepare(
-            'UPDATE users SET email = :email, pw_hash = :pw_hash WHERE user_id = :id'
+            'UPDATE users SET ' . implode(', ', $fields) . ' WHERE user_id = :id'
         );
-        $stmt->execute(['id' => $id, 'email' => $email, 'pw_hash' => $pwHash]);
+        $stmt->execute($params);
 
         if ($stmt->rowCount() > 0) {
             return true;

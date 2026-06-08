@@ -1,10 +1,10 @@
 Groups(GROUP_ID, name)
 Users(USER_ID, email, pw_hash, salt)
 Sessions(SESSION_ID, created_at, timeout, user_id#)
-Tracks(TRACK_ID, title, json_data, compiled_time, user_id#)
+Tracks(route_id, title, json_data, compiled_time, user_id#)
 group_member(USER_ID#, GROUP_ID#)
-track_visible_group(GROUP_ID#, TRACK_ID#)
-track_visible_user(USER_ID#, TRACK_ID#)
+track_visible_group(GROUP_ID#, route_id#)
+track_visible_user(USER_ID#, route_id#)
 
 
 Groups(
@@ -26,11 +26,14 @@ Sessions(
 )
 
 Tracks(
-  track_id PK,
-  title,
-  json_data,
-  compiled_time,
-  owner_user_id FK -> Users(user_id)
+  route_id PK AUTO_INCREMENT,
+  title VARCHAR(100) NULL,
+  owner_user_id FK -> users(user_id),
+  compiled_time TIMESTAMP,
+  json_data JSON NOT NULL,       -- GeoJSON von BRouter
+  waypoints JSON NULL,           -- [{lat, lng}, ...]
+  distance_m INT NULL,           -- Streckenlänge in Metern
+  pacenote_data JSON NULL
 )
 
 group_Member(
@@ -40,13 +43,13 @@ group_Member(
 )
 
 track_visible_user(
-  track_id FK -> Tracks(track_id),
+  route_id FK -> Tracks(route_id),
   user_id FK -> Users(user_id),
-  PRIMARY KEY (track_id, user_id)
+  PRIMARY KEY (route_id, user_id)
 )
 
 track_visible_group(
-  track_id FK -> Tracks(track_id),
+  route_id FK -> Tracks(route_id),
   group_id FK -> Groups(group_id),
-  PRIMARY KEY (track_id, group_id)
+  PRIMARY KEY (route_id, group_id)
 )

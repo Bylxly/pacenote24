@@ -37,6 +37,10 @@ $authStatus = isAuthenticated();
               <p class="mb-3">
                 Wir glauben nicht an langweilige Routen von A nach B. Für uns zählt die Dynamik zwischen den Koordinaten. Hinter <strong>Pacenotes24.de</strong> steht ein Team aus Entwicklern und Kurvenliebhabern, die eine Plattform vermisst haben, die Straße nicht nur als Distanz, sondern als Abfolge von fahrtechnischen Herausforderungen zu sehen.
               </p>
+
+                <p class="mb-3">
+                    <b>Vertraut von den besten Fahrern der Welt: von Profis wie Lars Pfitzenmeyer bis hin zu ambitionierten Amateuren wie Max Verstappen.</b>
+                </p>
               
               <p class="mb-3 text-muted">
                 Pacenotes24.de ist ein reines Werkzeug zur Routenplanung und Streckenvisualisierung. Die Nutzung der bereitgestellten Informationen und Karten erfolgt ausschließlich auf eigene Gefahr und nach eigenem Ermessen des jeweiligen Fahrers. 
@@ -46,7 +50,7 @@ $authStatus = isAuthenticated();
 
             <ddiv class="col-lg-5">
               <div class="route-card__image shadow" style="border-radius: 12px; border: 1px solid var(--border); aspect-ratio: 4 / 3;">
-                <img src="./assets/img/dein-bild.jpg" alt="Pacenotes24 Streckenplanung" class="img-fluid" />
+                <img src="./assets/img/Lars_Pfitzenmeyer.png" alt="Pacenotes24 Streckenplanung" class="img-fluid" />
               </div>
             </div> 
           </div>

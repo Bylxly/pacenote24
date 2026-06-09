@@ -335,8 +335,13 @@ function exportRoute(routeId) {
   a.download = `${safeName}.json`;
   document.body.appendChild(a);
   a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
+
+  // Aufräumen erst nach kurzer Verzögerung – sonst bricht Firefox den
+  // Download ab, weil die Blob-URL revoked wird, bevor er startet.
+  setTimeout(() => {
+    a.remove();
+    URL.revokeObjectURL(url);
+  }, 100);
 }
 
 /* ── Viewer navigation ───────────────────────────────────────────────────── */

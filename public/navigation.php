@@ -53,7 +53,7 @@ requireAuth();
               <span class="badge text-uppercase badge-direction bg-primary" id="noteDirection">LEFT</span>
             </div>
 
-            <div class="row g-3 text-start">
+            <div class="row g-3 text-start" style="color: var(--text) !important;">
               <div class="col-6">
                 <small class="text-muted d-block">Vom Start</small>
                 <strong class="fs-5" id="distStart">0 m</strong>

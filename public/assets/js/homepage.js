@@ -7,7 +7,7 @@ let marker = null;
 let routePolyline = null;
 let activeCurveMarker = null;
 
-// ── DOM Elemente 
+//  DOM Elemente 
 const fileInput      = document.getElementById('fileInput');
 const noteCard       = document.getElementById('noteCard');
 const noteName       = document.getElementById('noteName');
@@ -22,7 +22,7 @@ const turnArrow      = document.getElementById('turnArrow');
 const arrowPath      = document.getElementById('arrowPath');
 const arrowHead      = document.getElementById('arrowHead');
 
-// ── Vollbild 
+//  Vollbild 
 function vollbild() {
     const container = document.getElementById('kartenContainer') || document.getElementById('map');
     if (!container) return;
@@ -33,7 +33,7 @@ function vollbild() {
     }
 }
 
-// ── Farbe nach Severity (1–6) 
+//  Farbe nach Severity (1–6) 
 function getColorBySeverity(severity) {
     const sev = Math.min(Math.max(parseInt(severity) || 2, 1), 6);
     switch (sev) {
@@ -47,7 +47,7 @@ function getColorBySeverity(severity) {
     }
 }
 
-// ── BRouter:
+//  BRouter:
 async function fetchRouteSegment(from, to) {
     const url = `https://brouter.de/brouter?lonlats=${from.lng},${from.lat}|${to.lng},${to.lat}&profile=trekking&alternativeidx=0&format=geojson`;
     try {
@@ -63,7 +63,7 @@ async function fetchRouteSegment(from, to) {
     return [[from.lat, from.lng], [to.lat, to.lng]];
 }
 
-// ── Karte initialisieren + Route Segment für Segment 
+//  Karte initialisieren + Route Segment für Segment 
 async function initMap(lat, lng) {
     if (!mapPlaceholder || !document.getElementById('map')) return;
 
@@ -111,7 +111,7 @@ async function initMap(lat, lng) {
     updateMapAndCurveHighlight(notes[currentIndex]);
 }
 
-// ── Karten-Marker aktualisieren 
+//  Karten-Marker aktualisieren 
 function updateMapAndCurveHighlight(currentNote) {
     if (!map || !marker || !currentNote || !currentNote.lat || !currentNote.lng) return;
 
@@ -134,7 +134,7 @@ function updateMapAndCurveHighlight(currentNote) {
     map.setView([currentNote.lat, currentNote.lng], 16);
 }
 
-// ── Pfeil-Visualisierung 
+//  Pfeil-Visualisierung 
 function updateArrowVisual(direction, severity) {
     if (!turnArrow || !arrowPath || !arrowHead) return;
 
@@ -164,7 +164,7 @@ function updateArrowVisual(direction, severity) {
     turnArrow.style.color = getColorBySeverity(sev);
 }
 
-// ── Notes anzeigen 
+//  Notes anzeigen 
 function showNote() {
     if (notes.length === 0) return;
     const current = notes[currentIndex];
@@ -217,7 +217,7 @@ function showNote() {
     }
 }
 
-// ── File-Input 
+//  File-Input 
 if (fileInput) {
     fileInput.addEventListener('change', function (e) {
         const file = e.target.files[0];
@@ -261,7 +261,7 @@ if (fileInput) {
     });
 }
 
-// ── Klick auf Karte → nächste Note 
+//  Klick auf Karte → nächste Note 
 if (noteCard) {
     noteCard.addEventListener('click', function () {
         if (notes.length === 0) return;

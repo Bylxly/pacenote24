@@ -210,7 +210,7 @@ import { api } from './api.js';
         }
     }
 
-    // ── Init
+    //  Init
     document.addEventListener('DOMContentLoaded', function () {
         initMap();
 

@@ -5,13 +5,13 @@ requireAuth();
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <?php include 'head.php'; ?>
+  <?php include './include/head.php'; ?>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
-<?php include 'navbar.php'; ?>
+<?php include './include/navbar.php'; ?>
 
 <div class="modal-overlay" id="importModal" onclick="handleOverlayClick(event)">
   <div class="modal-box">
@@ -65,7 +65,7 @@ let allRoutes    = [];   // vom Server geladene Metadaten
 let visibleCount = 0;    // wie viele Karten gerade im DOM sind
 let importedFile = null; // für Import-Modal
 
-/* ── Utilities ──────────────────────────────────────────────────────────── */
+/*  Utilities  */
 function escHtml(str) {
   return String(str)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -86,7 +86,7 @@ function fmtDate(iso) {
   } catch { return null; }
 }
 
-/* ── Canvas route preview ────────────────────────────────────────────────── */
+/*  Canvas route preview  */
 function drawRoutePreview(canvas, notes) {
   if (!notes || notes.length < 2) return;
 
@@ -151,7 +151,7 @@ function drawRoutePreview(canvas, notes) {
   }
 }
 
-/* ── Severity dots row ───────────────────────────────────────────────────── */
+/*  Severity dots row  */
 function buildSevDots(notes) {
   const counts = {1:0,2:0,3:0,4:0,5:0,6:0};
   notes.forEach(n => { const s = Math.min(Math.max(parseInt(n.severity)||2,1),6); counts[s]++; });
@@ -160,7 +160,7 @@ function buildSevDots(notes) {
   ).join('');
 }
 
-/* ── Build card DOM ─────────────────────────────────────────────────────── */
+/*  Build card DOM  */
 function buildCard(route) {
   const card = document.createElement('div');
   card.className = 'route-card';
@@ -239,7 +239,7 @@ async function hydrateCard(route) {
   }
 }
 
-/* ── API: load route list ────────────────────────────────────────────────── */
+/*  API: load route list  */
 async function fetchRouteList() {
   const data = await api.get('/ajax/routes.php');
   if (!data.success || !Array.isArray(data.data)) throw new Error(data.error || 'Ungültiges Format');
@@ -253,7 +253,7 @@ async function fetchRouteList() {
   }));
 }
 
-/* ── Render next batch ──────────────────────────────────────────────────── */
+/*  Render next batch  */
 function renderBatch() {
   const grid = document.getElementById('routesGrid');
   const batch = allRoutes.slice(visibleCount, visibleCount + PER_PAGE);
@@ -279,7 +279,7 @@ function loadMoreRoutes() {
   renderBatch();
 }
 
-/* ── Initialise ─────────────────────────────────────────────────────────── */
+/*  Initialise  */
 async function init() {
   const grid = document.getElementById('routesGrid');
   const subtitle = document.getElementById('routeSubtitle');
@@ -315,7 +315,7 @@ async function init() {
   }
 }
 
-/* ── JSON Export ─────────────────────────────────────────────────────────── */
+/*  JSON Export  */
 function exportRoute(routeId) {
   const route = allRoutes.find(r => r.id === routeId);
   if (!route || !route.pacenotes_data) {
@@ -339,12 +339,12 @@ function exportRoute(routeId) {
   URL.revokeObjectURL(url);
 }
 
-/* ── Viewer navigation ───────────────────────────────────────────────────── */
+/*  Viewer navigation  */
 function openInViewer(routeId) {
   window.location.href = `index.php?route_id=${encodeURIComponent(routeId)}`;
 }
 
-/* ── Import modal ────────────────────────────────────────────────────────── */
+/*  Import modal  */
 function openImport() {
   document.getElementById('importModal').classList.add('open');
 }
@@ -398,19 +398,20 @@ function openImportedFile() {
   reader.readAsText(importedFile);
 }
 
-/* ── Keyboard close modal ────────────────────────────────────────────────── */
+/*  Keyboard close modal  */
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeImport();
 });
 
-/* ── onclick-Handler global verfügbar machen (nötig im Modul-Scope) ───────── */
+/*  onclick-Handler global verfügbar machen (nötig im Modul-Scope)  */
 Object.assign(window, {
   openImport, closeImport, handleOverlayClick, handleFileSelect,
   openImportedFile, exportRoute, openInViewer, loadMoreRoutes,
 });
 
-/* ── Boot ────────────────────────────────────────────────────────────────── */
+/*  Boot  */
 init();
 </script>
+<?php include './include/footer.php'; ?>
 </body>
 </html>

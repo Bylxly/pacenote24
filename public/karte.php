@@ -4,12 +4,12 @@ requireAuth();
 ?>
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <?php include 'head.php'; ?>
-  </head>
+<head>
+    <?php include './include/head.php'; ?>
+</head>
 
-  <body>
-  <?php include 'navbar.php'; ?>
+<body>
+<?php include './include/navbar.php'; ?>
 
   <div class="container py-4">
     <div class="row g-4"> <div class="col-lg-4">
@@ -78,5 +78,6 @@ requireAuth();
     </div>
   </div>
   <script type="module" src="./assets/js/map.js"></script>
+<?php include './include/footer.php'; ?>
 </body>
 </html>

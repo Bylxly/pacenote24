@@ -266,9 +266,9 @@ class PaceNoteService {
 
                 if (abs($divisor) > 0.0001) {
                     $xc = ((($localPrev['x'] * $localPrev['x']) + ($localPrev['z'] * $localPrev['z'])) * $localNext['z']
-                        - (($localNext['x'] * $localNext['x']) + ($localNext['z'] * $localNext['z'])) * $localPrev['z']) / $divisor;
+                            - (($localNext['x'] * $localNext['x']) + ($localNext['z'] * $localNext['z'])) * $localPrev['z']) / $divisor;
                     $yc = ((($localPrev['x'] * $localPrev['x']) + ($localPrev['z'] * $localPrev['z'])) * $localNext['x']
-                        - (($localNext['x'] * $localNext['x']) + ($localNext['z'] * $localNext['z'])) * $localPrev['x']) / (-$divisor);
+                            - (($localNext['x'] * $localNext['x']) + ($localNext['z'] * $localNext['z'])) * $localPrev['x']) / (-$divisor);
                     $radius = sqrt(($xc * $xc) + ($yc * $yc));
 
                     if ($radius > 0) {
@@ -415,11 +415,11 @@ class PaceNoteService {
 
         for ($i = 1; $i < count($points); $i++) {
             $distances[$i] = $distances[$i - 1] + $this->calculateDistanceMeters(
-                $points[$i - 1]['lat'],
-                $points[$i - 1]['lng'],
-                $points[$i]['lat'],
-                $points[$i]['lng']
-            );
+                    $points[$i - 1]['lat'],
+                    $points[$i - 1]['lng'],
+                    $points[$i]['lat'],
+                    $points[$i]['lng']
+                );
         }
 
         return $distances;

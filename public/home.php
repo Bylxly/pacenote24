@@ -32,11 +32,11 @@ $authStatus = isAuthenticated();
               <h2 class="fw-bold mb-4" style="font-size: 2rem;">ÜBER <span>PACENOTES24</span></h2>
               
               <p class="mb-3">
-                Wir glauben nicht an langweilige Routen von A nach B. Für uns zählt die Dynamik zwischen den Koordinaten. Hinter <strong>Pacenotes24.de</strong> steht ein Team aus Entwicklern und Kurvenliebhabern, die eine Plattform vermisst haben, die Straße nicht nur als Distanz, sondern als Abfolge von fahrtechnischen Herausforderungen zu sehen.
+                Wir glauben nicht an langweilige Routen von A nach B. Für uns zählt die Dynamik zwischen den Koordinaten. Hinter <strong>PACENOTES24.de</strong> steht ein Team aus Entwicklern und Kurvenliebhabern, die eine Plattform vermisst haben, die Straße nicht nur als Distanz, sondern als Abfolge von fahrtechnischen Herausforderungen zu sehen.
               </p>
 
                 <p class="mb-3">
-                    <b>Vertraut von den besten Fahrern der Welt: von Profis wie Lars Pfitzenmeyer bis hin zu ambitionierten Amateuren wie Max Verstappen.</b>
+                    <b>Vertraut von den besten Fahrern der Welt: von Profis wie Lars Pfizenmayer bis hin zu ambitionierten Amateuren wie Max Verstappen.</b>
                 </p>
               
               <p class="mb-3 text-muted">
@@ -47,7 +47,7 @@ $authStatus = isAuthenticated();
 
             <div class="col-lg-5">
               <div class="route-card__image shadow" style="border-radius: 12px; border: 1px solid var(--border); aspect-ratio: 4 / 3;">
-                <img src="./assets/img/Lars_Pfitzenmeyer.png" alt="Pacenotes24 Streckenplanung" class="img-fluid" />
+                <img src="./assets/img/Lars_Pfizenmayer.png" alt="Pacenotes24 Streckenplanung" class="img-fluid" />
               </div>
             </div>
           </div>

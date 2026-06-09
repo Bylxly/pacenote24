@@ -134,6 +134,7 @@ function renderPage() {
   }).join('');
 
   pageContent.innerHTML = `
+    <img id="easteregg" src="../assets/img/Comic.jpeg" alt="Profirallyefahrer Lars Pfitzenmeyer" style="display:none;">
     <div class="card">
       <div class="card__header"><span class="card__title">Profil</span></div>
       <div class="card__body">
@@ -200,6 +201,10 @@ function renderPage() {
     </div>
   `;
 
+
+    if (user.email.toLowerCase() === "lars@pfizenmayer.de") {
+        document.getElementById("easteregg").style.display = "block";
+    }
   document.getElementById('update-form').addEventListener('submit', handleUpdate);
   document.getElementById('add-group-form').addEventListener('submit', handleAddGroup);
   document.getElementById('delete-form').addEventListener('submit', handleDelete);

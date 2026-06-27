@@ -33,6 +33,7 @@ $h = static fn (string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
     <div class="collapse navbar-collapse" id="adminNav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item"><a class="nav-link<?= $adminToggle === 'users'     ? ' active' : '' ?>" href="adminpanel.php">Users</a></li>
+        <li class="nav-item"><a class="nav-link<?= $adminToggle === 'groups'    ? ' active' : '' ?>" href="groups.php">Gruppen</a></li>
         <li class="nav-item"><a class="nav-link<?= $adminToggle === 'pacenotes' ? ' active' : '' ?>" href="pacenote_view.php">Pacenotes</a></li>
       </ul>
       <a href="../index.php" class="btn btn-outline-light btn-sm me-2">Zur App</a>

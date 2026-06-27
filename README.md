@@ -51,6 +51,7 @@ pacenote24/
 │   │   ├── _header.php         # Admin-Layout (Navbar, Breadcrumb)
 │   │   ├── adminpanel.php      # Benutzerübersicht
 │   │   ├── user_detail.php     # Benutzer bearbeiten/löschen
+│   │   ├── groups.php          # Gruppenverwaltung
 │   │   ├── pacenote_view.php   # Routenübersicht (Admin)
 │   │   └── route_detail.php    # Route + Sichtbarkeiten
 │   ├── ajax/                   # JSON-API-Endpunkte

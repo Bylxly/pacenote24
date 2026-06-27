@@ -15,7 +15,7 @@ $h = static fn (string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= $h($adminTitle) ?></title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/stylesheetmain.css">
   <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
@@ -76,7 +76,7 @@ $h = static fn (string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+<script src="../assets/vendor/bootstrap/bootstrap.bundle.min.js" defer></script>
 <script>
     function adminLogout() {
         fetch('../ajax/auth/logout.php', { method: 'POST' })

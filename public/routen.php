@@ -6,8 +6,7 @@ requireAuth();
 <html lang="de">
 <head>
   <?php include 'head.php'; ?>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="./assets/vendor/fonts/fonts.css" rel="stylesheet">
 </head>
 
 <body>

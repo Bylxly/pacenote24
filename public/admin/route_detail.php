@@ -201,7 +201,7 @@ function renderPage() {
     </div>
 
     ${buildVisibilitySection({
-      sectionTitle:   'Sichtbarkeit – Benutzer',
+      sectionTitle:   'Sichtbarkeit - Benutzer',
       items:          visibleUsers,
       allItems:       allUsers,
       idKey:          'user_id',
@@ -213,7 +213,7 @@ function renderPage() {
     })}
 
     ${buildVisibilitySection({
-      sectionTitle:   'Sichtbarkeit – Gruppen',
+      sectionTitle:   'Sichtbarkeit - Gruppen',
       items:          visibleGroups,
       allItems:       allGroups,
       idKey:          'group_id',

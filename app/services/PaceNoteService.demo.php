@@ -1,7 +1,7 @@
 <?php
 /**
  * Standalone-Demo / Beispiel für PaceNoteService.
- * Wird NICHT von der App eingebunden – nur zur manuellen Ausführung:
+ * Wird NICHT von der App eingebunden - nur zur manuellen Ausführung:
  *   php app/services/PaceNoteService.demo.php
  */
 

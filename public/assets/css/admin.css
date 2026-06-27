@@ -1,9 +1,9 @@
-/* ── ADMIN OVERRIDES ────────────────────────────────────────
+/* ADMIN OVERRIDES 
    Loaded AFTER stylesheetmain.css.
    Only overrides accent + defines admin-specific components.
-──────────────────────────────────────────────────────────── */
+ */
 
-/* ── ACCENT OVERRIDE: Blue → Amber ── */
+/* ACCENT OVERRIDE: Blue -> Amber */
 :root {
   --accent:        #f59e0b;
   --accent-glow:   rgba(245, 158, 11, 0.15);
@@ -20,7 +20,7 @@
   --radius-lg:     14px;
 }
 
-/* ── HEADER ── */
+/* HEADER */
 .admin-header {
   background: var(--navy-mid);
   border-bottom: 2px solid var(--accent);
@@ -80,7 +80,7 @@
   color: var(--text);
 }
 
-/* ── PAGE TOGGLE ── */
+/* PAGE TOGGLE */
 .page-toggle {
   display: flex;
   align-items: center;
@@ -116,7 +116,7 @@
   color: #000;
 }
 
-/* ── MAIN CONTAINER ── */
+/* MAIN CONTAINER */
 .admin-main,
 #page-content {
   max-width: 960px;
@@ -127,7 +127,7 @@
   gap: 2rem;
 }
 
-/* ── CARDS (BEM — distinct from Bootstrap .card) ── */
+/* CARDS (BEM - distinct from Bootstrap .card) */
 .card {
   background: var(--navy-mid) !important;
   border: 1px solid var(--border) !important;
@@ -174,7 +174,7 @@
   color: var(--danger);
 }
 
-/* ── FEEDBACK BANNERS ── */
+/* FEEDBACK BANNERS */
 .banner {
   padding: 0.75rem 1rem;
   border-radius: var(--radius);
@@ -198,7 +198,7 @@
   border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
-/* ── FORMS ── */
+/* FORMS */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -260,7 +260,7 @@ select {
   background-color: var(--navy-light);
 }
 
-/* ── BUTTONS ── */
+/* BUTTONS */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -322,7 +322,7 @@ select {
   font-size: 0.8rem;
 }
 
-/* ── NAVBAR-BUTTONS wie auf der Mainpage ── */
+/* NAVBAR-BUTTONS wie auf der Mainpage */
 .navbar .btn-outline-light,
 .navbar .btn-outline-danger {
   background: transparent;
@@ -348,7 +348,7 @@ select {
   color: #fff;
 }
 
-/* ── TABLE ── */
+/* TABLE */
 .admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -411,7 +411,7 @@ select {
   border-radius: 20px;
 }
 
-/* ── CARD-STACK (Mobile) ── */
+/* CARD-STACK (Mobile) */
 .card-stack {
   display: none;
   flex-direction: column;
@@ -462,7 +462,7 @@ select {
   flex: 1;
 }
 
-/* ── INLINE ADD ROW ── */
+/* INLINE ADD ROW */
 .inline-add {
   display: flex;
   gap: 0.75rem;
@@ -476,7 +476,7 @@ select {
   margin-bottom: 0;
 }
 
-/* ── RESPONSIVE ── */
+/* RESPONSIVE */
 @media (max-width: 640px) {
   .admin-main {
     padding: 1rem;

@@ -1,4 +1,4 @@
-/* ── VARIABLEN & DESIGN SYSTEM ── */
+/* VARIABLEN & DESIGN SYSTEM */
 :root {
   --navy: #0f1623;
   --navy-mid: #1a2436;
@@ -19,7 +19,7 @@
   --sev1: #b91c1c;
 }
 
-/* ── BASIS ── */
+/* BASIS */
 *, *::before, *::after { 
   box-sizing: border-box; 
   margin: 0; 
@@ -33,7 +33,7 @@ body {
   min-height: 100vh;
 }
 
-/* ── NAVBAR ── */
+/* NAVBAR */
 .navbar {
   background: var(--navy-mid) !important;
   border-bottom: 1px solid var(--border);
@@ -69,7 +69,7 @@ body {
   filter: invert(1); 
 }
 
-/* ── TYPOGRAFIE & TEXTFARBEN ── */
+/* TYPOGRAFIE & TEXTFARBEN */
 h1, h2, h3, h4, h5, h6, 
 .card-title, 
 .fw-bold, 
@@ -86,7 +86,7 @@ p {
   letter-spacing: 1px;
 }
 
-/* ── PAGE HEADER ── */
+/* PAGE HEADER */
 .page-header {
   padding: 3.5rem 0 2rem;
   border-bottom: 1px solid var(--border);
@@ -111,7 +111,7 @@ p {
   margin-top: .5rem; 
 }
 
-/* ── KARTEN & LAYOUT BLÖCKE ── */
+/* KARTEN & LAYOUT BLÖCKE */
 .card, .route-card {
   background: var(--navy-mid) !important;
   border: 1px solid var(--border) !important;
@@ -163,7 +163,7 @@ p {
   min-height: 1.8rem;
 }
 
-/* ── KLICK-FEATURE KARTEN ── */
+/* KLICK-FEATURE KARTEN */
 .note-card-click {
   cursor: pointer;
   user-select: none;
@@ -182,7 +182,7 @@ p {
   line-height: 1;
 }
 
-/* ── META ELEMENTS & PILLS ── */
+/* META ELEMENTS & PILLS */
 .meta-row {
   display: flex;
   flex-wrap: wrap;
@@ -209,7 +209,7 @@ p {
   font-weight: bold;
 }
 
-/* ── ROUTE KARTEN DETAILS ── */
+/* ROUTE KARTEN DETAILS */
 .route-card__image {
   width: 100%;
   aspect-ratio: 4 / 3;
@@ -267,7 +267,7 @@ p {
   margin-top: 5px;
 }
 
-/* ── SEVERITY INDICATORS ── */
+/* SEVERITY INDICATORS */
 .sev-bar {
   display: flex;
   gap: 4px;
@@ -289,7 +289,7 @@ p {
 .sev-dot.s5 { background: var(--sev5); }
 .sev-dot.s6 { background: var(--sev6); }
 
-/* ── CHIPS & PREVIEWS ── */
+/* CHIPS & PREVIEWS */
 .notes-preview {
   display: flex;
   flex-wrap: wrap;
@@ -305,7 +305,7 @@ p {
   border: 1px solid transparent;
 }
 
-/* ── FORMULAR ELEMENTE (GLOBAL & GRUPPEN) ── */
+/* FORMULAR ELEMENTE (GLOBAL & GRUPPEN) */
 .form-group {
   margin-bottom: 1.25rem;
   display: flex;
@@ -344,7 +344,7 @@ p {
   box-shadow: 0 0 0 3px var(--accent-glow) !important;
 }
 
-/* ── BUTTONS ── */
+/* BUTTONS */
 .btn-primary, .btn-load {
   background: var(--accent) !important;
   color: #ffffff !important;
@@ -403,7 +403,7 @@ p {
   color: var(--accent-hover) !important; 
 }
 
-/* ── COMMENT SECTION ── */
+/* COMMENT SECTION */
 .comment-section {
   border-top: 1px solid var(--border);
   padding: 1.25rem 1.5rem 1.5rem;
@@ -531,7 +531,7 @@ p {
   color: #fff; 
 }
 
-/* ── KARTEN, IFRAMES & ICONS ── */
+/* KARTEN, IFRAMES & ICONS */
 .ratio {
   border-radius: 0 0 14px 14px;
   overflow: hidden;
@@ -580,7 +580,7 @@ iframe {
   transition: color 0.2s ease;
 }
 
-/* ── LAYOUT & GRIDS ── */
+/* LAYOUT & GRIDS */
 .container {
   max-width: 90% !important;
   width: 90% !important;
@@ -605,7 +605,7 @@ iframe {
   padding-bottom: 4rem;
 }
 
-/* ── LOADING STATES ── */
+/* LOADING STATES */
 .card-loading {
   display: flex;
   align-items: center;
@@ -629,7 +629,7 @@ iframe {
   padding: .75rem 0; 
 }
 
-/* ── ANIMATIONEN ── */
+/* ANIMATIONEN */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -652,7 +652,7 @@ iframe {
 .route-card:nth-child(5) { animation-delay: .25s }
 .route-card:nth-child(6) { animation-delay: .30s }
 
-/* ── RESPONSIVE DESIGN (MEDIA QUERIES) ── */
+/* RESPONSIVE DESIGN (MEDIA QUERIES) */
 @media (min-width: 1920px) {
   .col-lg-4 { width: 30% !important; }
   .col-lg-8 { width: 70% !important; }
@@ -670,7 +670,7 @@ iframe {
   .route-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ── LOGIN- & REGISTRIERUNGS-COMPONENTS ── */
+/* LOGIN- & REGISTRIERUNGS-COMPONENTS */
 .login-wrapper {
   background: linear-gradient(135deg, var(--navy) 0%, #080c14 100%);
   padding: 1.5rem;
@@ -786,7 +786,7 @@ iframe {
   transform: translateY(1px) !important;
 }
 
-/* ── ROUTEN PAGE EXTENSIONS ── */
+/* ROUTEN PAGE EXTENSIONS */
 
 /* Page Header Flex-Ausrichtung */
 .page-header {
@@ -827,7 +827,7 @@ iframe {
   transform: translateY(-1px);
 }
 
-/* ── ROUTE CARD INTERNALS ── */
+/* ROUTE CARD INTERNALS */
 .card-top, .card-bottom {
   display: flex;
   justify-content: space-between;
@@ -948,7 +948,7 @@ iframe {
   padding: 0.85rem 1.25rem 0.25rem;
 }
 
-/* ── COMMENTS ACCORDION TOGGLE ── */
+/* COMMENTS ACCORDION TOGGLE */
 .comment-toggle-row {
   padding: 0 1.25rem 1.25rem;
 }
@@ -981,7 +981,7 @@ iframe {
   color: var(--accent-hover);
 }
 
-/* ── LOAD MORE ROW ── */
+/* LOAD MORE ROW */
 .load-more-row {
   display: flex;
   justify-content: center;
@@ -1011,7 +1011,7 @@ iframe {
   cursor: not-allowed;
 }
 
-/* ── IMPORT MODAL OVERLAY & BOX ── */
+/* IMPORT MODAL OVERLAY & BOX */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -1157,7 +1157,7 @@ iframe {
   cursor: not-allowed;
 }
 
-/* ── EMPTY / LOADING STATE LIST ── */
+/* EMPTY / LOADING STATE LIST */
 .empty-state {
   grid-column: 1 / -1;
   text-align: center;

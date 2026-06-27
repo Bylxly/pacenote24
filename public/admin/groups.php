@@ -102,7 +102,7 @@ function render() {
     const memberCnt = counts[g.group_id] ?? 0;
     const editing   = editingId === g.group_id;
 
-    // ── Tabellenzeile
+    // Tabellenzeile
     const tr = document.createElement('tr');
     const nameCell = editing
       ? `<input type="text" class="edit-name" value="${escHtml(g.name)}" maxlength="50" style="max-width:220px;">`
@@ -121,7 +121,7 @@ function render() {
       <td>${actionCell}</td>`;
     tbody.appendChild(tr);
 
-    // ── Stack-Karte (mobil)
+    // Stack-Karte (mobil)
     const card = document.createElement('div');
     card.className = 'stack-card';
     card.innerHTML = `

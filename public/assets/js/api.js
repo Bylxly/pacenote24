@@ -2,7 +2,7 @@ const BASE_URL = 'http://localhost/public';
 const LOGIN_URL = BASE_URL + '/login.php?status=session_expired';
 
 // Bei abgelaufener/fehlender Session (HTTP 401) automatisch ausloggen.
-// Ausnahme: Auth-Endpunkte (Login/Register) – dort bedeutet 401 "falsche
+// Ausnahme: Auth-Endpunkte (Login/Register) - dort bedeutet 401 "falsche
 // Zugangsdaten" und muss als normale Fehlermeldung zurückkommen, nicht umleiten.
 function handleAuth(res, path) {
     if (res.status === 401 && !path.startsWith('/ajax/auth/')) {

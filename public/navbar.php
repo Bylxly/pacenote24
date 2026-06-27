@@ -16,6 +16,7 @@
                 <?php if (hasRole(ADMIN_ROLE_ID)): ?>
                     <a href="admin/adminpanel.php" class="btn btn-outline-light btn-sm me-2">Adminpanel</a>
                 <?php endif; ?>
+                <a href="profil.php" class="btn btn-outline-light btn-sm me-2">Profil</a>
                 <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
             <?php else: ?>
                 <a href="login.php" class="btn btn-outline-success btn-sm">Login</a>

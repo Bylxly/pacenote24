@@ -69,6 +69,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /ajax/auth/change-password.php:
+    post:
+      summary: Eigenes Passwort ändern (Self)
+      description: Ändert das Passwort des eingeloggten Benutzers nach Prüfung des aktuellen Passworts.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '200':
+          description: Passwort erfolgreich geändert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Nicht authentifiziert oder altes Passwort falsch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /ajax/users.php:
     get:
       summary: Benutzer lesen (Admin)
@@ -1282,6 +1308,17 @@ components:
       required:
         - email
         - password
+
+    ChangePasswordRequest:
+      type: object
+      properties:
+        old_password:
+          type: string
+        new_password:
+          type: string
+      required:
+        - old_password
+        - new_password
 
     LoginResponse:
       type: object

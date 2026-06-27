@@ -46,6 +46,7 @@ pacenote24/
 │   ├── home.php                # Startseite
 │   ├── login.php               # Login
 │   ├── registrieren.php        # Registrierung
+│   ├── profil.php              # Eigenes Profil (E-Mail/Passwort ändern, Account löschen)
 │   ├── navbar.php / head.php   # geteilte Partials
 │   ├── admin/                  # Admin-Bereich
 │   │   ├── _header.php         # Admin-Layout (Navbar, Breadcrumb)
@@ -55,7 +56,7 @@ pacenote24/
 │   │   ├── pacenote_view.php   # Routenübersicht (Admin)
 │   │   └── route_detail.php    # Route + Sichtbarkeiten
 │   ├── ajax/                   # JSON-API-Endpunkte
-│   │   ├── auth/               # login, logout, register
+│   │   ├── auth/               # login, logout, register, change-password
 │   │   ├── users(.php)         # CRUD Benutzer
 │   │   ├── groups(.php)        # CRUD Gruppen
 │   │   ├── routes(.php)        # CRUD Routen + pacenotes.php

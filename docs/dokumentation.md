@@ -84,6 +84,7 @@ Siehe Github Projekt
 | Startseite | `/public/home.php` | Öffentlich | Landing-Page |
 | Login | `/public/login.php` | Gast | Anmeldeformular |
 | Registrierung | `/public/registrieren.php` | Gast | Neues Konto erstellen |
+| Profil | `/public/profil.php` | Eingeloggt | E-Mail/Passwort ändern, Account löschen |
 | Karte | `/public/index.php` | Eingeloggt | Route bauen (Leaflet/BRouter) + speichern |
 | Routen | `/public/routen.php` | Eingeloggt | Liste eigener/freigegebener Routen, JSON-Export |
 | Viewer | `/public/navigation.php` | Eingeloggt | Pacenotes Kurve für Kurve, JSON-Import |
@@ -118,6 +119,7 @@ pacenote24/
 │   ├── navigation.php             # Pacenote-Viewer (JSON-Import)
 │   ├── login.php                  # Login-Seite
 │   ├── registrieren.php           # Registrierung
+│   ├── profil.php                 # Eigenes Profil (E-Mail/Passwort/Account)
 │   ├── navbar.php / head.php      # geteilte Layout-Partials
 │   ├── admin/                     # Admin-Bereich (requireAdmin)
 │   │   ├── _header.php            # Admin-Layout (Navbar, Breadcrumb)
@@ -134,7 +136,8 @@ pacenote24/
 │       ├── auth/
 │       │   ├── login.php          # POST – Login
 │       │   ├── logout.php         # POST – Logout
-│       │   └── register.php       # POST – Registrierung (öffentlich)
+│       │   ├── register.php       # POST – Registrierung (öffentlich)
+│       │   └── change-password.php # POST – eigenes Passwort ändern (Self)
 │       ├── users.php              # GET – Benutzer lesen (Admin)
 │       ├── users/
 │       │   ├── create.php         # POST – Benutzer erstellen (Admin)

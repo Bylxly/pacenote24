@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../../app/helpers/Request.php';
 require_once __DIR__ . '/../../../app/services/UserService.php';
 require_once __DIR__ . '/../../../app/services/SessionService.php';
 require_once __DIR__ . '/../../../app/session/auth.php';
+require_once __DIR__ . '/../../../app/helpers/PasswordValidator.php';
 
 header('Content-Type: application/json');
 
@@ -17,9 +18,7 @@ Request::requireMaxLength($body, 'email', 100);
 
 try {
 
-    $passwordRegex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\S]{8,128}$/';
-
-    if (!preg_match($passwordRegex, $body['password'])) {
+    if (PasswordValidator::validate($body['password']) === false) {
         http_response_code(400);
         echo json_encode(['success' => false, 'error' =>
             'Das Passwort muss zwischen 8 und 128 Zeichen lang sein und jeweils mindestens einen Großbuchstaben, einen Kleinbuchstaben, eine Ziffer sowie ein Sonderzeichen enthalten.']);

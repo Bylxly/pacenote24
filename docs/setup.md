@@ -75,7 +75,7 @@ Die Datei `app/config/config.php` öffnen und die Datenbankzugangsdaten prüfen:
 return [
     // ...
     'database' => [
-        'host'     => '127.0.0.1',
+        'host'     => 'localhost',
         'port'     => 3306,
         'dbname'   => 'pacenote24',
         'charset'  => 'utf8mb4',

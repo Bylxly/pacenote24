@@ -1,13 +1,22 @@
-ErrorDocument 404 /public/errors/404.php
-ErrorDocument 403 /public/errors/403.php
-#Pfad muss wohl absolut sein. Wird bei richtiger config von webserver vermutlich angepasst werden müssen.
+# Keine Verzeichnis-Listings
+Options -Indexes
 
-#Issue 138 Pfade ohne .php
 RewriteEngine On
-RewriteBase /public/
 
-# /routen  ->  intern routen.php   (nur wenn die .php-Datei existiert)
+# Saubere URLs: /routen -> routen.php (nur wenn die .php-Datei existiert)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.+?)/?$ $1.php [L]
+
+# Eigene 404-Seite fuer nicht existierende Pfade.
+# Relativer Pfad -> funktioniert unabhaengig vom Installationsordner.
+# (errors/404.php setzt http_response_code(404) selbst)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ errors/404.php [L]
+
+# Eigene 403-Seite beim direkten Zugriff auf ein Verzeichnis (Root ausgenommen).
+# (errors/403.php setzt http_response_code(403) selbst)
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.+ errors/403.php [L]

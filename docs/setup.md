@@ -53,7 +53,7 @@ htdocs/
 2. Oben auf den Reiter **„Importieren"** klicken
 3. Auf **„Datei auswählen"** klicken
 4. Datei `sql/schema.sql` aus dem Projektordner auswählen
-5. **„OK"** klicken
+5. **„Importieren"** klicken
 
 ### 3.3 Testdaten importieren (optional)
 
@@ -73,14 +73,18 @@ Die Datei `app/config/config.php` öffnen und die Datenbankzugangsdaten prüfen:
 
 ```php
 return [
-    'db' => [
-        'host'     => 'localhost',
+    // ...
+    'database' => [
+        'host'     => '127.0.0.1',
+        'port'     => 3306,
         'dbname'   => 'pacenote24',
-        'user'     => 'root',
-        'password' => '',        // Standard-XAMPP: kein Passwort
+        'charset'  => 'utf8mb4',
+        'username' => 'root',
+        'password' => '',           // Standard-XAMPP: kein Passwort
     ],
     'session' => [
-        'timeout_seconds' => 3600,  // Auto-Logout nach 1 Stunde
+        'name'            => 'pacenote24_session',
+        'timeout_seconds' => 1800,  // Auto-Logout nach 30 Minuten
     ],
 ];
 ```
@@ -103,8 +107,9 @@ Die Anwendung leitet automatisch auf die Login-Seite weiter.
 
 | E-Mail | Passwort | Rolle |
 |---|---|---|
-| `admin@pacenote24.de` | `Admin1234!` | Admin |
-| `user@pacenote24.de` | `User1234!` | Benutzer |
+| `admin@test.de` | `Admin123!` | Admin |
+| `user1@test.de` | `User123!` | Benutzer |
+| `user2@test.de` | `User123!` | Benutzer |
 
 > Diese Zugangsdaten sind nur nach dem Import von `demo_data.sql` verfügbar.
 

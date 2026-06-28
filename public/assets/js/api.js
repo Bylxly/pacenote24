@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost/public';
+// Basis-Pfad relativ zur Lage dieser Datei ableiten (.../public/assets/js/api.js -> .../public),
+// damit es egal ist, in welchem Unterordner die App liegt.
+const BASE_URL = new URL('../..', import.meta.url).pathname.replace(/\/+$/, '');
 const LOGIN_URL = BASE_URL + '/login.php?status=session_expired';
 
 // Bei abgelaufener/fehlender Session (HTTP 401) automatisch ausloggen.

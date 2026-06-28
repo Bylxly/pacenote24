@@ -513,3 +513,18 @@ select {
     flex-wrap: wrap;
   }
 }
+/* Modals an das dunkle Theme anpassen (Bootstrap-Default ist hell) */
+.modal-content {
+  background: var(--navy-mid);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--border);
+}
+
+.modal-header .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}

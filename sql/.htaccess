@@ -1,0 +1,10 @@
+# Kein direkter Web-Zugriff auf dieses Verzeichnis (enthaelt Config / DB-Dumps)
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
+
+ErrorDocument 403 /public/errors/403.php

@@ -2,8 +2,8 @@
 
 Web-App zur Planung, Verwaltung und Freigabe von Rallye-**Pacenotes**. Nutzer
 zeichnen auf einer interaktiven Karte Routen, lassen daraus automatisch Pacenotes
-(Kurven mit Richtung, Schweregrad, Distanz) generieren, sehen sie Kurve für Kurve
-im Viewer und geben sie gezielt für andere Nutzer oder Gruppen frei.
+(Kurven mit Richtung, Schweregrad, Distanz) generieren und sehen sie Kurve für Kurve
+im Viewer.
 
 Projekt im Rahmen *Web-/App-Engineering* (Kurs MA-TINF25CS1).
 
@@ -47,7 +47,7 @@ pacenote24/
 │   ├── login.php               # Login
 │   ├── registrieren.php        # Registrierung
 │   ├── profil.php              # Eigenes Profil (E-Mail/Passwort ändern, Account löschen)
-│   ├── navbar.php / head.php   # geteilte Partials
+│   ├── navbar.php / navbar-guest.php / head.php  # geteilte Partials
 │   ├── admin/                  # Admin-Bereich
 │   │   ├── _header.php         # Admin-Layout (Navbar, Breadcrumb)
 │   │   ├── adminpanel.php      # Benutzerübersicht
@@ -119,6 +119,6 @@ Kurzfassung:
 
 ## Dokumentation
 
-- **[docs/setup.md](docs/setup.md)** – Installation & DB-Import
-- **[docs/api.yaml](docs/api.yaml)** – API-Endpunkte (OpenAPI)
-- **[docs/dokumentation.md](docs/dokumentation.md)** – Projektdokumentation
+- **[docs/setup.md](docs/setup.md)** - Installation & DB-Import
+- **[docs/api.yaml](docs/api.yaml)** - API-Endpunkte (OpenAPI)
+- **[docs/dokumentation.md](docs/dokumentation.md)** - Projektdokumentation

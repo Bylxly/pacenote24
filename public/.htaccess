@@ -6,7 +6,7 @@ ErrorDocument 403 /public/errors/403.php
 RewriteEngine On
 RewriteBase /public/
 
-# /routen  →  intern routen.php   (nur wenn die .php-Datei existiert)
+# /routen  ->  intern routen.php   (nur wenn die .php-Datei existiert)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f

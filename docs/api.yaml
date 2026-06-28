@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Pacenote24 API
   version: 0.6.0
-  description: API für Benutzer, Gruppen, Sessions, Tracks und Sichtbarkeiten
+  description: API für Benutzer, Gruppen, Tracks und Sichtbarkeiten
 
 servers:
   - url: http://localhost
@@ -324,108 +324,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-
-  /ajax/sessions.php:
-    get:
-      summary: Sessions lesen
-      description: Mit id wird eine einzelne Session geladen, ohne id eine Liste. Optional filterbar über user_id.
-      parameters:
-        - in: query
-          name: id
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: user_id
-          required: false
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Session oder Sessionliste erfolgreich geladen
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/SessionGetResponse'
-                  - $ref: '#/components/schemas/SessionListResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-
-  /ajax/sessions/create.php:
-    post:
-      summary: Session erstellen (Login)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SessionCreateRequest'
-      responses:
-        '201':
-          description: Session erfolgreich erstellt
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SessionCreateResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          description: Benutzer nicht gefunden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /ajax/sessions/update.php:
-    post:
-      summary: Session aktualisieren
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SessionUpdateRequest'
-      responses:
-        '200':
-          description: Session erfolgreich aktualisiert
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-
-  /ajax/sessions/delete.php:
-    post:
-      summary: Session löschen (Logout)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SessionDeleteRequest'
-      responses:
-        '200':
-          description: Session erfolgreich gelöscht
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
 
   /ajax/routes.php:
     get:
@@ -940,25 +838,6 @@ components:
         - group_id
         - name
 
-    Session:
-      type: object
-      properties:
-        session_id:
-          type: string
-        user_id:
-          type: integer
-        created_at:
-          type: string
-          format: date-time
-        timeout:
-          type: string
-          format: date-time
-      required:
-        - session_id
-        - user_id
-        - created_at
-        - timeout
-
     Track:
       type: object
       properties:
@@ -1121,41 +1000,6 @@ components:
       required:
         - success
         - group_id
-
-    SessionGetResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        data:
-          $ref: '#/components/schemas/Session'
-      required:
-        - success
-        - data
-
-    SessionListResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Session'
-      required:
-        - success
-        - data
-
-    SessionCreateResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        session_id:
-          type: string
-      required:
-        - success
-        - session_id
 
     TrackGetResponse:
       type: object
@@ -1398,34 +1242,6 @@ components:
       properties:
         id:
           type: integer
-      required:
-        - id
-
-    SessionCreateRequest:
-      type: object
-      properties:
-        user_id:
-          type: integer
-      required:
-        - user_id
-
-    SessionUpdateRequest:
-      type: object
-      properties:
-        id:
-          type: string
-        timeout:
-          type: string
-          format: date-time
-      required:
-        - id
-        - timeout
-
-    SessionDeleteRequest:
-      type: object
-      properties:
-        id:
-          type: string
       required:
         - id
 

@@ -1,4 +1,4 @@
-# Setup – Pacenote24
+# Setup - Pacenote24
 
 ## Voraussetzungen
 
@@ -7,7 +7,7 @@
 
 ---
 
-## Schritt 1 – Dateien entpacken
+## Schritt 1 - Dateien entpacken
 
 Das Archiv in das XAMPP-Webverzeichnis entpacken:
 
@@ -29,7 +29,7 @@ htdocs/
 
 ---
 
-## Schritt 2 – XAMPP starten
+## Schritt 2 - XAMPP starten
 
 1. XAMPP Control Panel öffnen
 2. **Apache** starten
@@ -37,7 +37,7 @@ htdocs/
 
 ---
 
-## Schritt 3 – Datenbank einrichten
+## Schritt 3 - Datenbank einrichten
 
 ### 3.1 Datenbank anlegen
 
@@ -67,7 +67,7 @@ Für Demo-Daten denselben Vorgang mit `sql/demo_data.sql` wiederholen.
 
 ---
 
-## Schritt 4 – Konfiguration anpassen
+## Schritt 4 - Konfiguration anpassen
 
 Die Datei `app/config/config.php` öffnen und die Datenbankzugangsdaten prüfen:
 
@@ -87,7 +87,7 @@ return [
 
 ---
 
-## Schritt 5 – Anwendung starten
+## Schritt 5 - Anwendung starten
 
 Im Browser öffnen:
 

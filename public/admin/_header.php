@@ -25,7 +25,7 @@ $h = static fn (string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
   <div class="container-fluid">
     <a class="navbar-brand" href="../karte.php">
       Pacenotes24<span>.de</span>
-      <span class="badge ms-2 align-middle" style="background:var(--accent);color:#000;font-size:.6rem;letter-spacing:1px;">ADMIN</span>
+      <span class="badge ms-2 align-middle" style="background:var(--accent);color:#000!important;font-size:.6rem;letter-spacing:1px;">ADMIN</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
       <span class="navbar-toggler-icon"></span>

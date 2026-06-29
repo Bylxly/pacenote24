@@ -40,14 +40,19 @@ Projekt im Rahmen *Web-/App-Engineering* (Kurs MA-TINF25CS1).
 ```
 pacenote24/
 ├── public/                     # Öffentlich erreichbarer Webroot
-│   ├── index.php               # Karte: Route bauen + speichern
+│   ├── karte.php               # Karte: Route bauen + speichern
 │   ├── routen.php              # Routenübersicht (Liste, Export)
 │   ├── navigation.php          # Pacenote-Viewer
 │   ├── home.php                # Startseite
 │   ├── login.php               # Login
 │   ├── registrieren.php        # Registrierung
 │   ├── profil.php              # Eigenes Profil (E-Mail/Passwort ändern, Account löschen)
-│   ├── navbar.php / navbar-guest.php / head.php  # geteilte Partials
+│   ├── legal.php               # Impressum / rechtliche Hinweise
+│   ├── include/                # geteilte Partials
+│   │   ├── head.php            # <head> (Meta, CSS/JS)
+│   │   ├── navbar.php          # Hauptnavigation (responsive)
+│   │   ├── navbar_small.php    # kompakte Navbar-Variante
+│   │   └── footer.php          # Footer
 │   ├── admin/                  # Admin-Bereich
 │   │   ├── _header.php         # Admin-Layout (Navbar, Breadcrumb)
 │   │   ├── adminpanel.php      # Benutzerübersicht

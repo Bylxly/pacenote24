@@ -6,6 +6,7 @@
 
 | |                                                                                                                  |
 |---|------------------------------------------------------------------------------------------------------------------|
+| **Datum** | 29. Juni 2026 |
 | **App-Name** | Pacenote24                                                                                                       |
 | **Kurzbeschreibung** | Web-App zur Verwaltung und Freigabe von Rallye-Pacenotes und Strecken                                            |
 | **Teamname** | Pacenote24                                                                                                       |
@@ -83,10 +84,11 @@ Siehe Github Projekt [Pacenote24](https://github.com/users/Bylxly/projects/2/vie
 | Login | `/public/login.php` | Gast | Anmeldeformular |
 | Registrierung | `/public/registrieren.php` | Gast | Neues Konto erstellen |
 | Profil | `/public/profil.php` | Eingeloggt | E-Mail/Passwort ändern, Account löschen |
-| Karte | `/public/index.php` | Eingeloggt | Route bauen (Leaflet/BRouter) + speichern |
+| Karte | `/public/karte.php` | Eingeloggt | Route bauen (Leaflet/BRouter) + speichern |
 | Routen | `/public/routen.php` | Eingeloggt | Liste eigener/freigegebener Routen, JSON-Export |
 | Viewer | `/public/navigation.php` | Eingeloggt | Pacenotes Kurve für Kurve, JSON-Import |
 | Admin-Bereich | `/public/admin/adminpanel.php` | Admin | Benutzer-, Gruppen- und Sichtbarkeitsverwaltung |
+| Rechtliches | `/public/legal.php` | Öffentlich | Impressum / rechtliche Hinweise |
 
 ### 3.2 Technologien
 
@@ -112,13 +114,18 @@ Siehe Github Projekt [Pacenote24](https://github.com/users/Bylxly/projects/2/vie
 pacenote24/
 ├── public/                        # Öffentlich erreichbarer Webroot
 │   ├── home.php                   # Startseite / Landing
-│   ├── index.php                  # Karte: Route bauen + speichern (Leaflet/BRouter)
+│   ├── karte.php                  # Karte: Route bauen + speichern (Leaflet/BRouter)
 │   ├── routen.php                 # Routenübersicht (Liste, JSON-Export)
 │   ├── navigation.php             # Pacenote-Viewer (JSON-Import)
 │   ├── login.php                  # Login-Seite
 │   ├── registrieren.php           # Registrierung
 │   ├── profil.php                 # Eigenes Profil (E-Mail/Passwort/Account)
-│   ├── navbar.php / navbar-guest.php / head.php  # geteilte Layout-Partials
+│   ├── legal.php                  # Impressum / rechtliche Hinweise
+│   ├── include/                   # geteilte Layout-Partials
+│   │   ├── head.php               # <head> (Meta, CSS/JS-Einbindung)
+│   │   ├── navbar.php             # Hauptnavigation (responsive)
+│   │   ├── navbar_small.php       # kompakte Navbar-Variante
+│   │   └── footer.php             # Footer
 │   ├── admin/                     # Admin-Bereich (requireAdmin)
 │   │   ├── _header.php            # Admin-Layout (Navbar, Breadcrumb)
 │   │   ├── adminpanel.php         # Benutzerübersicht
@@ -177,7 +184,8 @@ pacenote24/
 │
 ├── sql/
 │   ├── schema.sql                 # Datenbankschema
-│   └── demo_data.sql              # Testdaten
+│   ├── demo_data.sql              # Testdaten
+│   └── datenbankschema.md         # Schema-Dokumentation
 │
 └── docs/
     ├── api.yaml                   # OpenAPI 3.0.3 Spezifikation

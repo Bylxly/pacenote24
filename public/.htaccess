@@ -1,5 +1,6 @@
 # Keine Verzeichnis-Listings
 Options -Indexes
+DirectoryIndex home.php
 
 RewriteEngine On
 
@@ -10,7 +11,7 @@ RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.+?)/?$ $1.php [L]
 
 # Eigene 404-Seite fuer nicht existierende Pfade.
-# Relativer Pfad -> funktioniert unabhaengig vom Installationsordner.
+# Relativer Pfad -> funktioniert unabhängig vom Installationsordner.
 # (errors/404.php setzt http_response_code(404) selbst)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

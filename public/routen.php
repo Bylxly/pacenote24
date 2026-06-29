@@ -341,7 +341,7 @@ function exportRoute(routeId) {
 
 /* Viewer navigation */
 function openInViewer(routeId) {
-  window.location.href = `index.php?route_id=${encodeURIComponent(routeId)}`;
+  window.location.href = `karte.php?route_id=${encodeURIComponent(routeId)}`;
 }
 
 /* Import modal */

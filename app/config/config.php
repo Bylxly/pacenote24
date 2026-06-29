@@ -10,12 +10,12 @@ return [
     ],
 
     'database' => [
-        'host' => '127.0.0.1',
-        'port' => 3306,
-        'dbname' => 'pacenote24',
-        'charset' => 'utf8mb4',
+        'host'     => 'localhost',
+        'port'     => 3306,
+        'dbname'   => 'pacenote24',
+        'charset'  => 'utf8mb4',
         'username' => 'root',
-        'password' => '',
+        'password' => '',           // Standard-XAMPP: kein Passwort
     ],
 
     'session' => [

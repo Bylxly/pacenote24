@@ -10,11 +10,18 @@ function redirect(string $path): never
         exit;
 }
 
+# Präfix relativ zur aufrufenden Seite: Admin-Seiten liegen eine Ebene tiefer (/public/admin/),
+# damit die Redirects unabhängig vom Installationsordner funktionieren.
+function pagePrefix(): string
+{
+    return str_contains($_SERVER['SCRIPT_NAME'] ?? '', '/admin/') ? '../' : '';
+}
+
 # Funktion um nicht eingeloggte Nutzer von index auf Login zu leiten
 function requireAuth(): void
 {
     if (!isAuthenticated()) {
-        redirect('../../public/login.php?status=not_logged_in');
+        redirect(pagePrefix() . 'login.php?status=not_logged_in');
     }
 }
 
@@ -22,7 +29,7 @@ function requireAuth(): void
 function requireGuest(): void
 {
     if (isAuthenticated()) {
-        redirect('../../public/home.php');
+        redirect(pagePrefix() . 'home.php');
     }
 }
 
@@ -32,7 +39,7 @@ function requireRole(int $role): void
     requireAuth();
 
     if (!hasRole($role)) {
-        redirect('../../public/home.php');
+        redirect(pagePrefix() . 'home.php');
     }
 }
 

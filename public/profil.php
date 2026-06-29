@@ -7,11 +7,11 @@ $user = currentUser();
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <?php include 'head.php'; ?>
+  <?php include './include/head.php'; ?>
 </head>
 
 <body>
-<?php include 'navbar.php'; ?>
+<?php include './include/navbar.php'; ?>
 
 <main class="py-4" style="max-width:640px;margin:0 auto;padding:2rem 1rem;">
 

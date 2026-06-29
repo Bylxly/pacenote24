@@ -6,12 +6,11 @@ requireGuest();
 <!DOCTYPE html>
 <html lang="de">
   <head>
-  <?php include 'head.php'; ?>
+  <?php include './include/head.php'; ?>
   </head>
 
   <body>
-  <?php include 'navbar-guest.php'; ?>
-
+    <?php include './include/navbar_small.php'; ?>
     <div class="login-wrapper d-flex align-items-center justify-content-center min-vh-100">
       <div class="login-card card shadow-sm p-4 p-md-5">
 

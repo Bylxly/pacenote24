@@ -6,13 +6,12 @@ requireAuth();
 
  <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <?php include 'head.php'; ?>
-  </head>
+<head>
+    <?php include './include/head.php'; ?>
+</head>
 
-  <body>
-        <!-- Navbar-->
-        <?php include 'navbar.php'; ?>
+<body>
+<?php include './include/navbar.php'; ?>
 
 <main class="container my-4">
 
@@ -98,6 +97,7 @@ requireAuth();
 
       </div>
     </main>
+<?php include './include/footer.php'; ?>
         <script type="module" src="./assets/js/homepage.js"></script>
   </body>
 </html>

@@ -5,12 +5,12 @@ requireAuth();
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <?php include 'head.php'; ?>
+  <?php include './include/head.php'; ?>
   <link href="./assets/vendor/fonts/fonts.css" rel="stylesheet">
 </head>
 
 <body>
-<?php include 'navbar.php'; ?>
+<?php include './include/navbar.php'; ?>
 
 <div class="modal-overlay" id="importModal" onclick="handleOverlayClick(event)">
   <div class="modal-box">
@@ -412,5 +412,6 @@ Object.assign(window, {
 /* Boot */
 init();
 </script>
+<?php include './include/footer.php'; ?>
 </body>
 </html>

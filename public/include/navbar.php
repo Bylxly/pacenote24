@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // Mobile: Menü nach Link-Klick schließen
+  // Handy: Menü nach Link-Klick schließen
   window.addEventListener('load', () => {
     document.querySelectorAll('#navMenu .nav-link').forEach(link => {
       link.addEventListener('click', () => {
@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <?php if (hasRole(ADMIN_ROLE_ID)): ?>
                     <a href="./admin/adminpanel.php" class="btn btn-outline-light btn-sm me-2">Adminpanel</a>
                 <?php endif; ?>
+                <a href="profil.php" class="btn btn-outline-light btn-sm me-2">Profil</a>
                 <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
             <?php else: ?>
                 <a href="./login.php" class="btn btn-outline-success btn-sm">Login</a>

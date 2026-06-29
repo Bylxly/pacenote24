@@ -33,7 +33,6 @@
                 <div class="col-lg-4">
                     <h6 class="footer-heading">Rechtliches</h6>
                     <ul class="footer-links">
-                        <li><a href="./legal.php">Anwaltliche Einschätzung</a></li>
                         <li><a href="./home.php#about">Über Pacenotes24</a></li>
                         <li><a href="./legal.php#impressum">Impressum</a></li>
                         <li><a href="./legal.php#datenschutz">Datenschutzerklärung</a></li>

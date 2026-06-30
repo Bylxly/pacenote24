@@ -140,7 +140,7 @@ import { api } from './api.js';
         const statusEl = document.getElementById('saveStatus');
 
         saveBtn.disabled = true;
-        statusEl.textContent = 'Wird gespeichert…';
+        statusEl.textContent = 'Wird gespeichert...';
         statusEl.className = 'mt-2 small text-muted';
 
         const uid = parseInt(document.querySelector('meta[name="uid"]')?.content ?? '0', 10);
@@ -210,7 +210,7 @@ import { api } from './api.js';
         }
     }
 
-    // ── Init
+    // Init
     document.addEventListener('DOMContentLoaded', function () {
         initMap();
 

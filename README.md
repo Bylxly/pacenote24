@@ -2,8 +2,8 @@
 
 Web-App zur Planung, Verwaltung und Freigabe von Rallye-**Pacenotes**. Nutzer
 zeichnen auf einer interaktiven Karte Routen, lassen daraus automatisch Pacenotes
-(Kurven mit Richtung, Schweregrad, Distanz) generieren, sehen sie Kurve für Kurve
-im Viewer und geben sie gezielt für andere Nutzer oder Gruppen frei.
+(Kurven mit Richtung, Schweregrad, Distanz) generieren und sehen sie Kurve für Kurve
+im Viewer.
 
 Projekt im Rahmen *Web-/App-Engineering* (Kurs MA-TINF25CS1).
 
@@ -40,21 +40,28 @@ Projekt im Rahmen *Web-/App-Engineering* (Kurs MA-TINF25CS1).
 ```
 pacenote24/
 ├── public/                     # Öffentlich erreichbarer Webroot
-│   ├── index.php               # Karte: Route bauen + speichern
+│   ├── karte.php               # Karte: Route bauen + speichern
 │   ├── routen.php              # Routenübersicht (Liste, Export)
 │   ├── navigation.php          # Pacenote-Viewer
 │   ├── home.php                # Startseite
 │   ├── login.php               # Login
 │   ├── registrieren.php        # Registrierung
-│   ├── navbar.php / head.php   # geteilte Partials
+│   ├── profil.php              # Eigenes Profil (E-Mail/Passwort ändern, Account löschen)
+│   ├── legal.php               # Impressum / rechtliche Hinweise
+│   ├── include/                # geteilte Partials
+│   │   ├── head.php            # <head> (Meta, CSS/JS)
+│   │   ├── navbar.php          # Hauptnavigation (responsive)
+│   │   ├── navbar_small.php    # kompakte Navbar-Variante
+│   │   └── footer.php          # Footer
 │   ├── admin/                  # Admin-Bereich
 │   │   ├── _header.php         # Admin-Layout (Navbar, Breadcrumb)
 │   │   ├── adminpanel.php      # Benutzerübersicht
 │   │   ├── user_detail.php     # Benutzer bearbeiten/löschen
+│   │   ├── groups.php          # Gruppenverwaltung
 │   │   ├── pacenote_view.php   # Routenübersicht (Admin)
 │   │   └── route_detail.php    # Route + Sichtbarkeiten
 │   ├── ajax/                   # JSON-API-Endpunkte
-│   │   ├── auth/               # login, logout, register
+│   │   ├── auth/               # login, logout, register, change-password
 │   │   ├── users(.php)         # CRUD Benutzer
 │   │   ├── groups(.php)        # CRUD Gruppen
 │   │   ├── routes(.php)        # CRUD Routen + pacenotes.php
@@ -117,6 +124,6 @@ Kurzfassung:
 
 ## Dokumentation
 
-- **[docs/setup.md](docs/setup.md)** – Installation & DB-Import
-- **[docs/api.yaml](docs/api.yaml)** – API-Endpunkte (OpenAPI)
-- **[docs/dokumentation.md](docs/dokumentation.md)** – Projektdokumentation
+- **[docs/setup.md](docs/setup.md)** - Installation & DB-Import
+- **[docs/api.yaml](docs/api.yaml)** - API-Endpunkte (OpenAPI)
+- **[docs/dokumentation.md](docs/dokumentation.md)** - Projektdokumentation

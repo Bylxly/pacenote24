@@ -13,7 +13,12 @@ final class Database {
 
     $local = __DIR__ . '/../config/config.local.php';
     if (file_exists($local)) {
-        $config = array_replace_recursive($config, require $local);
+        $localConfig = require $local;
+        // Nur mergen, wenn die lokale Datei wirklich ein Array zurückgibt.
+        // Eine auskommentierte config.local.php liefert sonst 1 (TypeError)
+        if (is_array($localConfig)) {
+            $config = array_replace_recursive($config, $localConfig);
+        }
     }
 
     $db = $config['database'];

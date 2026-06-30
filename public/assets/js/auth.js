@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await api.post('/ajax/auth/login.php', {email, password});
 
             if (data.success) {
-                window.location.href = './index.php';
+                window.location.href = './home.php';
             } else {
                 errorEl.textContent = data.error ?? 'Login fehlgeschlagen';
                 errorEl.classList.remove('d-none');

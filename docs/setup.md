@@ -1,4 +1,4 @@
-# Setup – Pacenote24
+# Setup - Pacenote24
 
 ## Voraussetzungen
 
@@ -7,7 +7,7 @@
 
 ---
 
-## Schritt 1 – Dateien entpacken
+## Schritt 1 - Dateien entpacken
 
 Das Archiv in das XAMPP-Webverzeichnis entpacken:
 
@@ -29,7 +29,7 @@ htdocs/
 
 ---
 
-## Schritt 2 – XAMPP starten
+## Schritt 2 - XAMPP starten
 
 1. XAMPP Control Panel öffnen
 2. **Apache** starten
@@ -37,7 +37,7 @@ htdocs/
 
 ---
 
-## Schritt 3 – Datenbank einrichten
+## Schritt 3 - Datenbank einrichten
 
 ### 3.1 Datenbank anlegen
 
@@ -53,7 +53,7 @@ htdocs/
 2. Oben auf den Reiter **„Importieren"** klicken
 3. Auf **„Datei auswählen"** klicken
 4. Datei `sql/schema.sql` aus dem Projektordner auswählen
-5. **„OK"** klicken
+5. **„Importieren"** klicken
 
 ### 3.3 Testdaten importieren (optional)
 
@@ -67,27 +67,31 @@ Für Demo-Daten denselben Vorgang mit `sql/demo_data.sql` wiederholen.
 
 ---
 
-## Schritt 4 – Konfiguration anpassen
+## Schritt 4 - Konfiguration anpassen
 
 Die Datei `app/config/config.php` öffnen und die Datenbankzugangsdaten prüfen:
 
 ```php
 return [
-    'db' => [
+    // ...
+    'database' => [
         'host'     => 'localhost',
+        'port'     => 3306,
         'dbname'   => 'pacenote24',
-        'user'     => 'root',
-        'password' => '',        // Standard-XAMPP: kein Passwort
+        'charset'  => 'utf8mb4',
+        'username' => 'root',
+        'password' => '',           // Standard-XAMPP: kein Passwort
     ],
     'session' => [
-        'timeout_seconds' => 3600,  // Auto-Logout nach 1 Stunde
+        'name'            => 'pacenote24_session',
+        'timeout_seconds' => 1800,  // Auto-Logout nach 30 Minuten
     ],
 ];
 ```
 
 ---
 
-## Schritt 5 – Anwendung starten
+## Schritt 5 - Anwendung starten
 
 Im Browser öffnen:
 
@@ -103,8 +107,9 @@ Die Anwendung leitet automatisch auf die Login-Seite weiter.
 
 | E-Mail | Passwort | Rolle |
 |---|---|---|
-| `admin@pacenote24.de` | `Admin1234!` | Admin |
-| `user@pacenote24.de` | `User1234!` | Benutzer |
+| `admin@test.de` | `Admin123!` | Admin |
+| `user1@test.de` | `User123!` | Benutzer |
+| `user2@test.de` | `User123!` | Benutzer |
 
 > Diese Zugangsdaten sind nur nach dem Import von `demo_data.sql` verfügbar.
 

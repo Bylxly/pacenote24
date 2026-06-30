@@ -1,4 +1,4 @@
-# Dokumentation – Pacenote24
+# Dokumentation - Pacenote24
 
 ---
 
@@ -6,13 +6,13 @@
 
 | |                                                                                                                  |
 |---|------------------------------------------------------------------------------------------------------------------|
+| **Datum** | 29. Juni 2026 |
 | **App-Name** | Pacenote24                                                                                                       |
 | **Kurzbeschreibung** | Web-App zur Verwaltung und Freigabe von Rallye-Pacenotes und Strecken                                            |
 | **Teamname** | Pacenote24                                                                                                       |
-| **Teammitglieder** | Tyler Hörnig, Peter Nübel, Lars Pfitzenmeyer, Jaron Kemper, Leon Theuer, Moritz Creyaufmüller, Tim Burke-Lehmann |
+| **Teammitglieder** | Tyler Hörnig, Peter Nübel, Lars Pfizenmayer, Jaron Kemper, Leon Theuer, Moritz Creyaufmüller, Tim Burke-Lehmann |
 | **Kurs** | MA-TINF25CS1                                                                                                     |
 | **Dozent** | Dipl.-Ing. Udo Erdmann                                                                                           |
-| **Datum** | 02.06.2026                                                                                                       |
 
 ---
 
@@ -20,7 +20,7 @@
 
 ### 1.1 Ziele
 
-Pacenote24 ist eine Web-App zur digitalen Erfassung, Verwaltung und Freigabe von Rallye-Pacenotes. Fahrer und Beifahrer können Streckenrouten anlegen, mit Pacenotes anreichern und gezielt für andere Benutzer oder Gruppen freigeben. Ziel ist eine einfach bedienbare, sichere und plattformunabhängige Lösung, die den bisherigen Papier-basierten Prozess digitalisiert.
+Pacenote24 ist eine Web-App zur digitalen Erfassung, Verwaltung und Freigabe von Rallye-Pacenotes. Fahrer und Beifahrer können Streckenrouten anlegen und mit Pacenotes anreichern. Ziel ist eine einfach bedienbare, sichere und plattformunabhängige Lösung, die den bisherigen Papier-basierten Prozess digitalisiert.
 
 ### 1.2 Funktionsrahmen
 
@@ -30,7 +30,6 @@ Die App bietet folgende Kernfunktionen:
 - **Sessionverwaltung**: Token-basierte Sessions mit konfigurierbarem Auto-Logout
 - **Routenverwaltung**: Anlegen, Bearbeiten, Löschen und Abrufen von Strecken (inkl. JSON-Routendaten)
 - **Pacenotes**: Erfassen und Speichern von Pacenotes je Strecke als JSON
-- **Sichtbarkeiten**: Freigabe von Routen für einzelne Benutzer oder Gruppen
 - **Rechteverwaltung**: Unterscheidung zwischen Admin und normalem Benutzer
 - **Datenexport**: Routen und Pacenotes als JSON exportierbar
 - **Responsive UI**: Bedienbar auf Desktop und mobilen Geräten
@@ -47,7 +46,7 @@ Die App bietet folgende Kernfunktionen:
 
 ### 1.4 Umsetzungsstrategie
 
-Die Anwendung folgt einer klassischen Drei-Schichten-Architektur:
+Die Anwendung folgt einer Drei-Schichten-Architektur:
 
 - **Frontend** (`public/`): PHP/HTML-Seiten mit Bootstrap 5 und Vanilla-JavaScript (ES-Module), Leaflet für die Karte, AJAX-Kommunikation über `api.js`
 - **API-Schicht** (`public/ajax/`): PHP-Endpunkte, die JSON entgegennehmen und zurückgeben
@@ -61,7 +60,7 @@ Die API ist vollständig in `docs/api.yaml` (OpenAPI 3.0.3) dokumentiert. Alle E
 |------------------------------|------------------------------------|
 | Datenbankschema & Services   | Tim Burke-Lehmann                  |
 | API-Endpunkte                | Tim Burke-Lehmann                  |
-| Authentifizierung & Sessions | Tyler Hörnig, Lars Pfitzenmeyer    |
+| Authentifizierung & Sessions | Tyler Hörnig, Lars Pfizenmayer     |
 | Frontend / UI                | Jaron Kemper, Moritz Creyaufmüller |
 | Dokumentation                | Alle                               |
 | Routengenerierung & Karte    | Leon Theuer                        |
@@ -71,11 +70,11 @@ Die API ist vollständig in `docs/api.yaml` (OpenAPI 3.0.3) dokumentiert. Alle E
 
 ## 2. Product Backlog
 
-Siehe Github Projekt
+Siehe Github Projekt [Pacenote24](https://github.com/users/Bylxly/projects/2/views/1)
 
 ---
 
-## 3. Frontend – Aufbau und Bedienbarkeit
+## 3. Frontend - Aufbau und Bedienbarkeit
 
 ### 3.1 Seitenstruktur
 
@@ -84,10 +83,12 @@ Siehe Github Projekt
 | Startseite | `/public/home.php` | Öffentlich | Landing-Page |
 | Login | `/public/login.php` | Gast | Anmeldeformular |
 | Registrierung | `/public/registrieren.php` | Gast | Neues Konto erstellen |
-| Karte | `/public/index.php` | Eingeloggt | Route bauen (Leaflet/BRouter) + speichern |
+| Profil | `/public/profil.php` | Eingeloggt | E-Mail/Passwort ändern, Account löschen |
+| Karte | `/public/karte.php` | Eingeloggt | Route bauen (Leaflet/BRouter) + speichern |
 | Routen | `/public/routen.php` | Eingeloggt | Liste eigener/freigegebener Routen, JSON-Export |
 | Viewer | `/public/navigation.php` | Eingeloggt | Pacenotes Kurve für Kurve, JSON-Import |
 | Admin-Bereich | `/public/admin/adminpanel.php` | Admin | Benutzer-, Gruppen- und Sichtbarkeitsverwaltung |
+| Rechtliches | `/public/legal.php` | Öffentlich | Impressum / rechtliche Hinweise |
 
 ### 3.2 Technologien
 
@@ -113,16 +114,23 @@ Siehe Github Projekt
 pacenote24/
 ├── public/                        # Öffentlich erreichbarer Webroot
 │   ├── home.php                   # Startseite / Landing
-│   ├── index.php                  # Karte: Route bauen + speichern (Leaflet/BRouter)
+│   ├── karte.php                  # Karte: Route bauen + speichern (Leaflet/BRouter)
 │   ├── routen.php                 # Routenübersicht (Liste, JSON-Export)
 │   ├── navigation.php             # Pacenote-Viewer (JSON-Import)
 │   ├── login.php                  # Login-Seite
 │   ├── registrieren.php           # Registrierung
-│   ├── navbar.php / head.php      # geteilte Layout-Partials
+│   ├── profil.php                 # Eigenes Profil (E-Mail/Passwort/Account)
+│   ├── legal.php                  # Impressum / rechtliche Hinweise
+│   ├── include/                   # geteilte Layout-Partials
+│   │   ├── head.php               # <head> (Meta, CSS/JS-Einbindung)
+│   │   ├── navbar.php             # Hauptnavigation (responsive)
+│   │   ├── navbar_small.php       # kompakte Navbar-Variante
+│   │   └── footer.php             # Footer
 │   ├── admin/                     # Admin-Bereich (requireAdmin)
 │   │   ├── _header.php            # Admin-Layout (Navbar, Breadcrumb)
 │   │   ├── adminpanel.php         # Benutzerübersicht
 │   │   ├── user_detail.php        # Benutzer bearbeiten/löschen
+│   │   ├── groups.php             # Gruppenverwaltung (anlegen/umbenennen/löschen)
 │   │   ├── pacenote_view.php      # Routenübersicht (Admin)
 │   │   └── route_detail.php       # Route + Sichtbarkeiten
 │   ├── errors/                    # 403.php, 404.php
@@ -131,23 +139,24 @@ pacenote24/
 │   │   └── js/                    # api.js, auth.js, map.js, homepage.js, validation.js
 │   └── ajax/                      # API-Endpunkte (JSON)
 │       ├── auth/
-│       │   ├── login.php          # POST – Login
-│       │   ├── logout.php         # POST – Logout
-│       │   └── register.php       # POST – Registrierung (öffentlich)
-│       ├── users.php              # GET – Benutzer lesen (Admin)
+│       │   ├── login.php          # POST - Login
+│       │   ├── logout.php         # POST - Logout
+│       │   ├── register.php       # POST - Registrierung (öffentlich)
+│       │   └── change-password.php # POST - eigenes Passwort ändern (Self)
+│       ├── users.php              # GET - Benutzer lesen (Admin)
 │       ├── users/
-│       │   ├── create.php         # POST – Benutzer erstellen (Admin)
-│       │   ├── update.php         # POST – Benutzer bearbeiten (Self/Admin)
-│       │   └── delete.php         # POST – Benutzer löschen (Self/Admin)
-│       ├── groups.php             # GET – Gruppen lesen
+│       │   ├── create.php         # POST - Benutzer erstellen (Admin)
+│       │   ├── update.php         # POST - Benutzer bearbeiten (Self/Admin)
+│       │   └── delete.php         # POST - Benutzer löschen (Self/Admin)
+│       ├── groups.php             # GET - Gruppen lesen
 │       ├── groups/                # create / update / delete (Admin)
-│       ├── routes.php             # GET – Routen lesen (zugriffsgefiltert)
+│       ├── routes.php             # GET - Routen lesen (zugriffsgefiltert)
 │       ├── routes/
-│       │   ├── create.php         # POST – Route erstellen (+ Pacenote-Generierung)
-│       │   ├── update.php         # POST – Route bearbeiten (Owner/Admin)
-│       │   ├── delete.php         # POST – Route löschen (Owner/Admin)
-│       │   └── pacenotes.php      # GET/POST – Pacenotes lesen/speichern
-│       ├── group-members.php      # GET – Gruppenmitgliedschaften lesen
+│       │   ├── create.php         # POST - Route erstellen (+ Pacenote-Generierung)
+│       │   ├── update.php         # POST - Route bearbeiten (Owner/Admin)
+│       │   ├── delete.php         # POST - Route löschen (Owner/Admin)
+│       │   └── pacenotes.php      # GET/POST - Pacenotes lesen/speichern
+│       ├── group-members.php      # GET - Gruppenmitgliedschaften lesen
 │       ├── group-members/         # create / delete (Admin)
 │       ├── track-visible-users.php
 │       ├── track-visible-users/   # create / delete (Admin)
@@ -175,7 +184,8 @@ pacenote24/
 │
 ├── sql/
 │   ├── schema.sql                 # Datenbankschema
-│   └── demo_data.sql              # Testdaten
+│   ├── demo_data.sql              # Testdaten
+│   └── datenbankschema.md         # Schema-Dokumentation
 │
 └── docs/
     ├── api.yaml                   # OpenAPI 3.0.3 Spezifikation
@@ -282,4 +292,4 @@ Legt fest, welche Gruppen eine Route sehen dürfen.
 
 ### 5.3 Foreign Key Constraints
 
-Alle Fremdschlüssel sind mit `ON DELETE CASCADE` definiert – beim Löschen eines Benutzers oder einer Gruppe werden alle abhängigen Einträge automatisch entfernt.
+Alle Fremdschlüssel sind mit `ON DELETE CASCADE` definiert - beim Löschen eines Benutzers oder einer Gruppe werden alle abhängigen Einträge automatisch entfernt.

@@ -7,9 +7,13 @@ let marker = null;
 let routePolyline = null;
 let activeCurveMarker = null;
 
-// ── DOM Elemente 
+// DOM Elemente
 const fileInput      = document.getElementById('fileInput');
-const noteCard       = document.getElementById('noteCard');
+const curveCard      = document.getElementById('curveCard');
+const dataCard       = document.getElementById('dataCard');
+const resetZoomBtn   = document.getElementById('resetZoomBtn');
+const prevNoteBtn    = document.getElementById('prevNoteBtn');
+const nextNoteBtn    = document.getElementById('nextNoteBtn');
 const noteName       = document.getElementById('noteName');
 const noteDirection  = document.getElementById('noteDirection');
 const distStart      = document.getElementById('distStart');
@@ -22,7 +26,7 @@ const turnArrow      = document.getElementById('turnArrow');
 const arrowPath      = document.getElementById('arrowPath');
 const arrowHead      = document.getElementById('arrowHead');
 
-// ── Vollbild 
+//  Vollbild
 function vollbild() {
     const container = document.getElementById('kartenContainer') || document.getElementById('map');
     if (!container) return;
@@ -33,7 +37,7 @@ function vollbild() {
     }
 }
 
-// ── Farbe nach Severity (1–6) 
+//  Farbe nach Severity (1-6)
 function getColorBySeverity(severity) {
     const sev = Math.min(Math.max(parseInt(severity) || 2, 1), 6);
     switch (sev) {
@@ -47,7 +51,7 @@ function getColorBySeverity(severity) {
     }
 }
 
-// ── BRouter:
+//  BRouter:
 async function fetchRouteSegment(from, to) {
     const url = `https://brouter.de/brouter?lonlats=${from.lng},${from.lat}|${to.lng},${to.lat}&profile=trekking&alternativeidx=0&format=geojson`;
     try {
@@ -57,13 +61,13 @@ async function fetchRouteSegment(from, to) {
             return data.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
         }
     } catch (err) {
-        console.warn(`BRouter Segment-Fehler (${from.lat},${from.lng} → ${to.lat},${to.lng}):`, err);
+        console.warn(`BRouter Segment-Fehler (${from.lat},${from.lng} -> ${to.lat},${to.lng}):`, err);
     }
     // Fallback: direkte Linie zwischen den zwei Punkten
     return [[from.lat, from.lng], [to.lat, to.lng]];
 }
 
-// ── Karte initialisieren + Route Segment für Segment 
+//  Karte initialisieren + Route Segment für Segment
 async function initMap(lat, lng) {
     if (!mapPlaceholder || !document.getElementById('map')) return;
 
@@ -78,13 +82,13 @@ async function initMap(lat, lng) {
     const validNotes = notes.filter(n => n.lat && n.lng);
 
     if (validNotes.length < 2) {
-        // Nur ein Punkt – kein Routing nötig
+        // Nur ein Punkt - kein Routing nötig
         marker = L.marker([lat, lng]).addTo(map);
         updateMapAndCurveHighlight(notes[currentIndex]);
         return;
     }
 
-    // Segmente nacheinander abrufen (nicht parallel → Rate-Limit vermeiden)
+    // Segmente nacheinander abrufen (nicht parallel -> Rate-Limit vermeiden)
     let allCoords = [];
     for (let i = 0; i < validNotes.length - 1; i++) {
         const segment = await fetchRouteSegment(validNotes[i], validNotes[i + 1]);
@@ -111,7 +115,7 @@ async function initMap(lat, lng) {
     updateMapAndCurveHighlight(notes[currentIndex]);
 }
 
-// ── Karten-Marker aktualisieren 
+//  Karten-Marker aktualisieren
 function updateMapAndCurveHighlight(currentNote) {
     if (!map || !marker || !currentNote || !currentNote.lat || !currentNote.lng) return;
 
@@ -131,10 +135,11 @@ function updateMapAndCurveHighlight(currentNote) {
         fillOpacity: 0.95
     }).addTo(map);
 
-    map.setView([currentNote.lat, currentNote.lng], 16);
+    // Zentriert auf den aktuellen Punkt, behält aber die aktuelle Zoomstufe bei
+    map.panTo([currentNote.lat, currentNote.lng]);
 }
 
-// ── Pfeil-Visualisierung 
+//  Pfeil-Visualisierung
 function updateArrowVisual(direction, severity) {
     if (!turnArrow || !arrowPath || !arrowHead) return;
 
@@ -164,7 +169,7 @@ function updateArrowVisual(direction, severity) {
     turnArrow.style.color = getColorBySeverity(sev);
 }
 
-// ── Notes anzeigen 
+//  Notes anzeigen
 function showNote() {
     if (notes.length === 0) return;
     const current = notes[currentIndex];
@@ -186,8 +191,8 @@ function showNote() {
 
     if (distStart) distStart.textContent = `${current.distance_from_start_m} m`;
 
-    if (noteCard) {
-        noteCard.style.setProperty('border-left-color', severityColor, 'important');
+    if (curveCard) {
+        curveCard.style.setProperty('border-left-color', severityColor, 'important');
     }
 
     const distNextLabel = document.getElementById('distNextLabel');
@@ -208,7 +213,11 @@ function showNote() {
         noteSeverity.style.color = severityColor;
     }
 
-    if (noteProgress) noteProgress.textContent = `Klicken für nächste Note (${currentIndex + 1} / ${notes.length})`;
+    if (noteProgress) noteProgress.textContent = `${currentIndex + 1} / ${notes.length}`;
+
+    // Buttons an den Enden deaktivieren (kein Wrap-around)
+    if (prevNoteBtn) prevNoteBtn.disabled = currentIndex === 0;
+    if (nextNoteBtn) nextNoteBtn.disabled = currentIndex === notes.length - 1;
 
     updateArrowVisual(current.direction, current.severity);
 
@@ -217,7 +226,7 @@ function showNote() {
     }
 }
 
-// ── File-Input 
+//  File-Input
 if (fileInput) {
     fileInput.addEventListener('change', function (e) {
         const file = e.target.files[0];
@@ -240,7 +249,7 @@ if (fileInput) {
                         marker = null;
                     }
 
-                    if (noteCard) noteCard.style.display = 'block';
+                    showPanels(true);
 
                     showNote();
 
@@ -261,12 +270,34 @@ if (fileInput) {
     });
 }
 
-// ── Klick auf Karte → nächste Note 
-if (noteCard) {
-    noteCard.addEventListener('click', function () {
-        if (notes.length === 0) return;
-        currentIndex = (currentIndex + 1) % notes.length;
-        showNote();
+// Panels (Kurve + Daten + Zoom-Reset) ein-/ausblenden
+function showPanels(show) {
+    // '' = Inline-Display entfernen, damit die CSS-Regeln (.card = flex) wieder greifen
+    const disp = show ? '' : 'none';
+    if (curveCard)    curveCard.style.display    = disp;
+    if (dataCard)     dataCard.style.display     = disp;
+    if (resetZoomBtn) resetZoomBtn.style.display = show ? 'block' : 'none';
+}
+
+// Navigation: Weiter / Zurück / Klick auf Kurve
+function gotoNote(delta) {
+    if (notes.length === 0) return;
+    const next = currentIndex + delta;
+    if (next < 0 || next >= notes.length) return; // an den Enden stoppen (kein Wrap-around)
+    currentIndex = next;
+    showNote();
+}
+if (nextNoteBtn) nextNoteBtn.addEventListener('click', () => gotoNote(1));
+if (prevNoteBtn) prevNoteBtn.addEventListener('click', () => gotoNote(-1));
+if (curveCard)   curveCard.addEventListener('click', () => gotoNote(1)); // Klick auf Kurve = weiter
+
+// Zoom zurücksetzen (Standard-Zoom auf aktuellem Punkt)
+if (resetZoomBtn) {
+    resetZoomBtn.addEventListener('click', () => {
+        const n = notes[currentIndex];
+        if (map && n && n.lat && n.lng) {
+            map.setView([n.lat, n.lng], 16);
+        }
     });
 }
 
@@ -355,7 +386,7 @@ if (noteCard) {
                 marker = null;
             }
 
-            if (noteCard) noteCard.style.display = 'block';
+            showPanels(true);
             showNote();
 
             if (notes[0].lat && notes[0].lng) {

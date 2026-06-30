@@ -6,11 +6,11 @@ requireGuest();
 <!DOCTYPE html>
 <html lang="de">
   <head>
-  <?php include 'head.php'; ?>
+  <?php include './include/head.php'; ?>
   </head>
 
   <body>
-
+    <?php include './include/navbar_small.php'; ?>
     <div class="login-wrapper d-flex align-items-center justify-content-center min-vh-100">
       <div class="login-card card shadow-sm p-4 p-md-5">
 
@@ -71,7 +71,7 @@ requireGuest();
       </div>
     </div>
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/vendor/bootstrap/bootstrap.bundle.min.js"></script>
   </body>
 </html>
 

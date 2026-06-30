@@ -159,7 +159,7 @@ class PaceNoteService {
      *
      * Instead of walking straight through the original vertices (linear interpolation),
      * the path is rerouted through the midpoints of consecutive edges. At each interior
-     * vertex P[i], a quadratic Bezier from M[i-1] → M[i] with P[i] as the control point
+     * vertex P[i], a quadratic Bezier from M[i-1] -> M[i] with P[i] as the control point
      * rounds the corner. This prevents phantom high-severity notes at 90° GPS artefacts.
      *
      * Equivalent to the "cubic midpoint interpolation" step described in:
@@ -185,7 +185,7 @@ class PaceNoteService {
         }
 
         // Build a dense polyline that approximates the smooth Bezier path.
-        // Layout: P[0] → M[0] → Bezier(M[0]→M[1], ctrl=P[1]) → … → M[n-2] → P[n-1]
+        // Layout: P[0] -> M[0] -> Bezier(M[0]->M[1], ctrl=P[1]) -> ... -> M[n-2] -> P[n-1]
         $smooth = [$points[0], $mids[0]];
 
         for ($i = 1; $i < $n - 1; $i++) {
@@ -215,7 +215,7 @@ class PaceNoteService {
 
     /**
      * Main entry point: parses a GeoJSON route and returns an array of pace note entries.
-     * Each note contains position, direction, severity (1–6), corner radius, and gradient data.
+     * Each note contains position, direction, severity (1-6), corner radius, and gradient data.
      * Returns an empty array if the route has too few points to classify.
      */
     public function createPaceNotes(string $geoJsonString): array {
@@ -266,9 +266,9 @@ class PaceNoteService {
 
                 if (abs($divisor) > 0.0001) {
                     $xc = ((($localPrev['x'] * $localPrev['x']) + ($localPrev['z'] * $localPrev['z'])) * $localNext['z']
-                        - (($localNext['x'] * $localNext['x']) + ($localNext['z'] * $localNext['z'])) * $localPrev['z']) / $divisor;
+                            - (($localNext['x'] * $localNext['x']) + ($localNext['z'] * $localNext['z'])) * $localPrev['z']) / $divisor;
                     $yc = ((($localPrev['x'] * $localPrev['x']) + ($localPrev['z'] * $localPrev['z'])) * $localNext['x']
-                        - (($localNext['x'] * $localNext['x']) + ($localNext['z'] * $localNext['z'])) * $localPrev['x']) / (-$divisor);
+                            - (($localNext['x'] * $localNext['x']) + ($localNext['z'] * $localNext['z'])) * $localPrev['x']) / (-$divisor);
                     $radius = sqrt(($xc * $xc) + ($yc * $yc));
 
                     if ($radius > 0) {
@@ -324,7 +324,7 @@ class PaceNoteService {
 
     /**
      * Removes a note when the corner immediately loosens in the same turn direction
-     * (e.g. R3 → R5 collapses to R3, because the driver is already warned about the tighter apex).
+     * (e.g. R3 -> R5 collapses to R3, because the driver is already warned about the tighter apex).
      */
     private function filterDescendingSeverity(array $candidates): array {
         for ($i = count($candidates) - 1; $i >= 1; $i--) {
@@ -415,11 +415,11 @@ class PaceNoteService {
 
         for ($i = 1; $i < count($points); $i++) {
             $distances[$i] = $distances[$i - 1] + $this->calculateDistanceMeters(
-                $points[$i - 1]['lat'],
-                $points[$i - 1]['lng'],
-                $points[$i]['lat'],
-                $points[$i]['lng']
-            );
+                    $points[$i - 1]['lat'],
+                    $points[$i - 1]['lng'],
+                    $points[$i]['lat'],
+                    $points[$i]['lng']
+                );
         }
 
         return $distances;
@@ -428,7 +428,7 @@ class PaceNoteService {
     /**
      * Computes the road gradient (in %) at a given route index by averaging elevation change
      * over a symmetric window of GRADIENT_WINDOW_M metres on each side.
-     * Formula: gradient% = (Δelevation / Δhorizontal_distance) × 100
+     * Formula: gradient% = (Δelevation / Δhorizontal_distance) x 100
      */
     private function getGradientAtIndex(array $points, int $index, array $cumulativeDistances): ?float {
         if (($points[$index]['elevation_m'] ?? null) === null) {
@@ -623,7 +623,7 @@ class PaceNoteService {
     }
 
     /**
-     * Returns a marking array for a directional turn with the given severity class (1–6).
+     * Returns a marking array for a directional turn with the given severity class (1-6).
      * The label uses the rally co-driver shorthand, e.g. 'L3' or 'R1'.
      */
     private function createTurnMarking(string $direction, int $severity): array {
@@ -674,7 +674,7 @@ class PaceNoteService {
     }
 
     /**
-     * Maps a corner's comfortable-speed estimate (km/h) to a severity class 1–6.
+     * Maps a corner's comfortable-speed estimate (km/h) to a severity class 1-6.
      * Returns 0 when the speed exceeds the class-6 limit, treating the section as a straight.
      */
     private function severityFromSpeedKmh(float $speedKmh): int {
@@ -725,7 +725,7 @@ class PaceNoteService {
     /**
      * Primary entry point for pace note generation.
      *
-     * Runs the full pipeline: GeoJSON parsing → route classification → validation → JSON serialisation.
+     * Runs the full pipeline: GeoJSON parsing -> route classification -> validation -> JSON serialisation.
      * Always use this method instead of calling the individual steps manually.
      *
      * Returns a JSON string conforming to schema version 1.0 (see exportToJson()).

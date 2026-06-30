@@ -15,7 +15,7 @@ $h = static fn (string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= $h($adminTitle) ?></title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="../assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/stylesheetmain.css">
   <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
@@ -23,9 +23,9 @@ $h = static fn (string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 
 <nav class="navbar navbar-expand-lg px-3">
   <div class="container-fluid">
-    <a class="navbar-brand" href="../index.php">
+    <a class="navbar-brand" href="../karte.php">
       Pacenotes24<span>.de</span>
-      <span class="badge ms-2 align-middle" style="background:var(--accent);color:#000;font-size:.6rem;letter-spacing:1px;">ADMIN</span>
+      <span class="badge ms-2 align-middle" style="background:var(--accent);color:#000!important;font-size:.6rem;letter-spacing:1px;">ADMIN</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
       <span class="navbar-toggler-icon"></span>
@@ -33,9 +33,10 @@ $h = static fn (string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
     <div class="collapse navbar-collapse" id="adminNav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item"><a class="nav-link<?= $adminToggle === 'users'     ? ' active' : '' ?>" href="adminpanel.php">Users</a></li>
+        <li class="nav-item"><a class="nav-link<?= $adminToggle === 'groups'    ? ' active' : '' ?>" href="groups.php">Gruppen</a></li>
         <li class="nav-item"><a class="nav-link<?= $adminToggle === 'pacenotes' ? ' active' : '' ?>" href="pacenote_view.php">Pacenotes</a></li>
       </ul>
-      <a href="../index.php" class="btn btn-outline-light btn-sm me-2">Zur App</a>
+      <a href="../karte.php" class="btn btn-outline-light btn-sm me-2">Zur App</a>
       <button class="btn btn-outline-danger btn-sm" onclick="adminLogout()">Logout</button>
     </div>
   </div>
@@ -75,7 +76,7 @@ $h = static fn (string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+<script src="../assets/vendor/bootstrap/bootstrap.bundle.min.js" defer></script>
 <script>
     function adminLogout() {
         fetch('../ajax/auth/logout.php', { method: 'POST' })

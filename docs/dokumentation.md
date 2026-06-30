@@ -10,7 +10,7 @@
 | **App-Name** | Pacenote24                                                                                                       |
 | **Kurzbeschreibung** | Web-App zur Verwaltung und Freigabe von Rallye-Pacenotes und Strecken                                            |
 | **Teamname** | Pacenote24                                                                                                       |
-| **Teammitglieder** | Tyler Hörnig, Peter Nübel, Lars Pfitzenmeyer, Jaron Kemper, Leon Theuer, Moritz Creyaufmüller, Tim Burke-Lehmann |
+| **Teammitglieder** | Tyler Hörnig, Peter Nübel, Lars Pfizenmayer, Jaron Kemper, Leon Theuer, Moritz Creyaufmüller, Tim Burke-Lehmann |
 | **Kurs** | MA-TINF25CS1                                                                                                     |
 | **Dozent** | Dipl.-Ing. Udo Erdmann                                                                                           |
 
@@ -60,7 +60,7 @@ Die API ist vollständig in `docs/api.yaml` (OpenAPI 3.0.3) dokumentiert. Alle E
 |------------------------------|------------------------------------|
 | Datenbankschema & Services   | Tim Burke-Lehmann                  |
 | API-Endpunkte                | Tim Burke-Lehmann                  |
-| Authentifizierung & Sessions | Tyler Hörnig, Lars Pfitzenmeyer    |
+| Authentifizierung & Sessions | Tyler Hörnig, Lars Pfizenmayer     |
 | Frontend / UI                | Jaron Kemper, Moritz Creyaufmüller |
 | Dokumentation                | Alle                               |
 | Routengenerierung & Karte    | Leon Theuer                        |
